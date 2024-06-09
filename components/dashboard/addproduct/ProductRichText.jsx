@@ -4,7 +4,7 @@ import "quill/dist/quill.snow.css";
 
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
-export default function AddProductRichText() {
+export default function AddProductRichText({ preValue }) {
   const [content, setContent] = useState("");
 
   const quillModules = {
@@ -42,21 +42,20 @@ export default function AddProductRichText() {
   };
 
 
-
-
   return (
-      <main>
-        <div className="w-full flex items-center flex-col">
-          <div className="h-full w-full">
-            <QuillEditor
-              value={content}
-              onChange={handleEditorChange}
-              modules={quillModules}
-              formats={quillFormats}
-              className="w-full h-[70%] mt-10 bg-white"
-            />
-          </div>
+    <main>
+      <div className="w-full flex items-center flex-col">
+        <div className="h-full w-full">
+          <QuillEditor
+            // value={content}
+            defaultValue={preValue || content}
+            onChange={handleEditorChange}
+            modules={quillModules}
+            formats={quillFormats}
+            className="w-full h-[70%] mt-10 bg-white"
+          />
         </div>
-      </main>
+      </div>
+    </main>
   );
 }

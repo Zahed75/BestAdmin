@@ -86,19 +86,56 @@ export default function AddProductPage() {
       setIsLoading(false);
     }
   };
+  const handleGalleryUpload = async (file) => {
+    const apiKey = "7a0f43e157252e0ca3031dea1d8dcccd";
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?key=${apiKey}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        return data.data.url;
+      } else {
+        throw new Error("Failed to upload image");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
+  };
   const handleGalleryImgFileChange = async (event) => {
     const files = event.target.files;
     const maxImages = 9;
 
-    const fileToUrl = (file) => URL.createObjectURL(file);
+    setIsLoading(true);
 
-    const currentGallery = [...productGallery];
+    const uploadPromises = [];
 
     for (let i = 0; i < Math.min(files.length, maxImages); i++) {
-      currentGallery.push(fileToUrl(files[i]));
+      uploadPromises.push(handleGalleryUpload(files[i]));
     }
 
-    setProductGallery(currentGallery);
+    try {
+      const uploadedImageUrls = await Promise.all(uploadPromises);
+      setProductGallery((prevGallery) => [...prevGallery, ...uploadedImageUrls]);
+    } catch (error) {
+      console.error("Error uploading images:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   const handleTagValue = (e) => {
     e.preventDefault();
@@ -163,6 +200,8 @@ export default function AddProductPage() {
       date: new Date().toISOString(),
     };
 
+    console.log("Product Data:", productData);
+
     setIsLoading(true);
     try {
       const response = await fetchApi(
@@ -191,10 +230,13 @@ export default function AddProductPage() {
 
       <form onSubmit={handleAddProduct}>
         <section className="mt-10 flex justify-between items-center">
-          <AddProductDynamicHead />
+          <AddProductDynamicHead title={"Add New Product"} />
           <button
             type="submit"
-            className="text-sm text-white bg-black rounded-md px-3 py-2"
+            disabled={categoryId === "" ? true : false}
+            className={`text-sm text-white bg-black rounded-md px-3 py-2 ${
+              categoryId === "" ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
           >
             {isLoading ? "Adding Product..." : "Add Product"}
           </button>
@@ -294,6 +336,7 @@ export default function AddProductPage() {
                         className="object-cover rounded-md w-full h-[90px]"
                       />
                     ))}
+
                     <div>
                       <input
                         type="file"
@@ -917,7 +960,7 @@ export default function AddProductPage() {
                 className="text-white text-sm bg-black px-3 py-2 rounded-md mt-5 w-full uppercase font-semibold hover:bg-gray-800 focus:outline-none"
               >
                 Toggle to
-                {productStatus === "Published" ? "Draft" : "Published"}
+                {productStatus === "Published" ? " Draft" : " Published"}
               </button>
             </div>
 
