@@ -25,7 +25,9 @@ export default function Product({ product }) {
   const [activeTab, setActiveTab] = useState("general");
   const [categoryTab, setCategoryTab] = useState("all");
   const [categoryId, setCategoryId] = useState("");
-  const [productStatus, setProductStatus] = useState("Draft");
+  const [productStatus, setProductStatus] = useState(
+    product?.productStatus || "Draft"
+  );
   const [titleInputValue, setTitleInputValue] = useState("");
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
 
@@ -39,6 +41,12 @@ export default function Product({ product }) {
   const router = useRouter();
 
   const AllCategories = categories?.categories?.categories;
+
+  useEffect(() => {
+    if (window !== undefined) {
+      setProductStatus(product?.productStatus);
+    }
+  }, [product]);
 
   const calculateTitleProgress = (value) => {
     let progress = (value.length / 100) * 100;
@@ -159,6 +167,7 @@ export default function Product({ product }) {
   const toggleProductStatus = () => {
     setProductStatus(productStatus === "Draft" ? "Published" : "Draft");
   };
+
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     const productDescription = localStorage.getItem("Description") || "";
@@ -167,18 +176,18 @@ export default function Product({ product }) {
 
     const productData = {
       productName: e.target.productName.value,
-      categoryId: categoryId,
-      productImage: imageUrl,
+      categoryId: product?.categoryId || categoryId,
+      productImage: product?.productImage || imageUrl,
       isTrash: false,
-      productGallery: productGallery,
+      productGallery: [...product?.productGallery, ...productGallery],
       productVideos: [],
       productDescription: productDescription,
       productShortDescription: productShortDescription,
       productStatus: productStatus,
       seo: {
-        productTitle: titleInputValue,
-        prodDescription: descriptionInputValue,
-        productTags: tagValueArray,
+        productTitle: product?.seo?.productTitle || titleInputValue,
+        prodDescription: product?.seo?.prodDescription || descriptionInputValue,
+        productTags: [...tagValueArray, ...product?.seo?.productTags],
         productNotes: e.target.productNotes.value,
       },
       general: {
@@ -210,8 +219,8 @@ export default function Product({ product }) {
     setIsLoading(true);
     try {
       const response = await fetchApi(
-        "/product/addProduct",
-        "POST",
+        `/product/updateProduct/${product?._id}`,
+        "PUT",
         productData
       );
 
@@ -221,15 +230,13 @@ export default function Product({ product }) {
         router.push("/dashboard/products");
       } else {
         const errorData = await response.json();
-        console.log("Failed to add product:", errorData);
+        console.log("Failed to add product:", errorData.response.data);
       }
     } catch (err) {
       setIsLoading(false);
       console.log("An error occurred:", err);
     }
   };
-
-  console.log("this is product single data : ", product?.seo?.productTitle);
 
   return (
     <main className="">
@@ -346,6 +353,14 @@ export default function Product({ product }) {
 
                     <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
                       {product?.productGallery?.map((image, index) => (
+                        <img
+                          key={index}
+                          src={image}
+                          alt="Uploaded"
+                          className="object-cover rounded-md w-full h-[90px]"
+                        />
+                      ))}
+                      {productGallery.map((image, index) => (
                         <img
                           key={index}
                           src={image}
@@ -1052,7 +1067,6 @@ export default function Product({ product }) {
                   </div>
                 </div>
               </div>
-
               <div className="p-5 border bg-white rounded-md shadow-md w-full">
                 <h5 className="text-md font-bold mb-3">
                   Product Short Description
@@ -1122,7 +1136,9 @@ export default function Product({ product }) {
                           <input
                             id={`checkbox-${index}`}
                             type="checkbox"
-                            checked={category?._id === product?.categoryId}
+                            defaultChecked={
+                              category?._id === product?.categoryId
+                            }
                             onClick={() => setCategoryId(category?._id)}
                             className="w-4 h-4 bg-gray-500 rounded"
                           />
@@ -1142,7 +1158,7 @@ export default function Product({ product }) {
                                     <input
                                       id={`checkbox-${index}-${subIndex}`}
                                       type="checkbox"
-                                      checked={
+                                      defaultChecked={
                                         subcategory?._id === product?.categoryId
                                       }
                                       onClick={() =>
