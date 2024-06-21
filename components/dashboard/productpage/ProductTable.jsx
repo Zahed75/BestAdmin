@@ -160,7 +160,7 @@ export default function ProductTable({ AllProducts }) {
           </button>
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
-          {/* search bar */}
+        
           <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
             <div className="grid place-items-center h-full w-12 text-gray-300">
               <svg
