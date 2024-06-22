@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
 import { FaCaretDown } from "react-icons/fa";
-import Modal from "@/components/global/modal/Modal";
 
 export default function UsersTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,10 +14,7 @@ export default function UsersTable() {
   const [showButton, setShowButton] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAction, setShowAction] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+
 
   const data = [
     {
@@ -217,13 +213,13 @@ export default function UsersTable() {
               </div>
             </div>
             <div className="text-white border border-black bg-black rounded-lg shadow-md">
-              <button
-                onClick={() => setShowMenu(true)}
+              <Link
+                href="/dashboard/usermanagement/adduser"
                 className="flex justify-center items-center px-2 py-1"
               >
                 <span className="text-xl font-semibold mr-1">+</span>{" "}
                 <span className="text-nowrap">Add Users</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -446,151 +442,7 @@ export default function UsersTable() {
           </div>
         </div>
       </div>
-      {/* modal */}
-      <Modal closeModal={() => setShowMenu(false)}>
-        <div
-          id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            showMenu ? "fixed" : "hidden"
-          } sticky-0`}
-        >
-          <div className="2xl:container h-screen 2xl:mx-auto py-48 px-4 md:px-28 flex justify-center items-center">
-            <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
-              <div className="flex justify-between items-center w-full">
-                <span className="text-3xl font-bold">Add Categories</span>
-                <button
-                  onClick={() => setShowMenu(false)}
-                  className="text-gray-400  focus:outline-none"
-                  aria-label="close"
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 6L6 18"
-                      stroke="currentColor"
-                      stroke-width="1.66667"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M6 6L18 18"
-                      stroke="currentColor"
-                      stroke-width="1.66667"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <form 
-              // onSubmit={handleSubmit}
-               className="w-full mt-10">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col space-y-1 w-full">
-                    <label
-                      htmlFor="categoriesName"
-                      className="text-sm font-semibold text-gray-600"
-                    >
-                      Categories Name
-                    </label>
-                    <input
-                      type="text"
-                      id="categoriesName"
-                      name="categoriesName"
-                      required
-                      className="border border-gray-300 rounded-md p-2 focus:outline-noneF"
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-1 w-full">
-                    <label
-                      htmlFor="categoriesSlug"
-                      className="text-sm font-semibold text-gray-600"
-                    >
-                      Slug
-                    </label>
-                    <input
-                      type="text"
-                      id="categoriesSlug"
-                      readOnly
-                      disabled
-                      className="border border-gray-300 rounded-md p-2 focus:outline-none cursor-not-allowed"
-                    />
-                  </div>
-                </div>
-                <div className="mt-5">
-                  <label
-                    htmlFor="parentCategoryId"
-                    className="text-sm font-semibold text-gray-600"
-                  >
-                    Parent Categories
-                  </label>
-                  <br />
-                  <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                    <svg
-                      className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 412 232"
-                    >
-                      <path
-                        d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                        fill="#648299"
-                        fill-rule="nonzero"
-                      />
-                    </svg>
-                    <select
-                      id="parentCategoryId"
-                      name="parentCategoryId"
-                      className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
-                    >
-                      <option value="0">Select Parent Category</option>
-                      {/* {AllCategories?.map((item) => (
-                        <option key={item._id} value={item._id}>
-                          {item.categoryName}
-                        </option>
-                      ))} */}
-                    </select>
-                  </div>
-                </div>
-                <div className="flex flex-col space-y-1 w-full mt-5">
-                  <label
-                    htmlFor="note"
-                    className="text-sm font-semibold text-gray-600"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    id="note"
-                    name="note"
-                    cols={30}
-                    rows={3}
-                    optional
-                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
-                  />
-                </div>
-
-                {error && (
-                  <div className="text-red-500 text-sm mt-2">{error}</div>
-                )}
-                {message && (
-                  <div className="text-green-500 text-sm mt-2">{message}</div>
-                )}
-
-                <button
-                  type="submit"
-                  className="py-2 px-4 mt-5 bg-black text-white rounded-md w-full"
-                >
-                  {isLoading ? "Loading..." : "Add Category"}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </Modal>
+     
     </section>
   );
 }

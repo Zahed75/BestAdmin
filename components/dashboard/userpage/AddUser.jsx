@@ -1,17 +1,20 @@
 "use client";
+import { useState } from "react";
+import AddUserDynamicHead from "./dynamic/AddUserDynamicHead";
 
-import UserDynamicHead from "@/components/dashboard/userpage/dynamic/UserDynamicHead";
-
-export default function Page() {
+export default function AddUser() {
+  const [isLoading, setIsLoading] = useState(false);
   return (
-    <main className="">
+    <div>
       <section className="mt-10 flex justify-between items-center">
-        <UserDynamicHead />
-        <button className="text-sm text-white bg-black rounded-md px-3 py-2">
-          Save Changes
+        <AddUserDynamicHead title={"Add New User"} />
+        <button
+          type="submit"
+          className="text-sm text-white bg-black rounded-md px-3 py-2"
+        >
+          {isLoading ? "Adding User..." : "Add New User"}
         </button>
       </section>
-
       <section className="grid grid-cols-1 justify-between items-start gap-5 w-full my-10">
         {/* main one section */}
         <div className="flex flex-col justify-start items-center w-full col-span-2 space-y-5">
@@ -188,32 +191,9 @@ export default function Page() {
                 </div>
               </div>
             </div>
-
-            <div className="my-10">
-              <h5 className="text-md font-bold mb-3 mt-10">
-                Account Management
-              </h5>
-              <div className="grid grid-cols-4 justify-start items-center">
-                <h5 className="text-gray-600 text-sm">Set New Password</h5>
-                <div className="flex">
-                  <input
-                    type="password"
-                    id="firstName"
-                    defaultValue={"Md Shaiful"}
-                    className="border border-gray-300 rounded-lg focus:outline-none p-1 w-full"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-4 justify-start items-center mt-5">
-                <h5 className="text-gray-600 text-sm">Password Reset Link</h5>
-                <button className="border-2 border-black px-3 py-1 text-sm text-black font-semibold rounded-md w-60 hover:bg-slate-100 duration-700">
-                  Send Password Reset Link
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
