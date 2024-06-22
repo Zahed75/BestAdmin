@@ -24,7 +24,7 @@ export default function OrderTable({ AllOrders }) {
 
   const router = useRouter();
 
-  const data = AllOrders;
+  const data = AllOrders || [];
   const titleData = [
     "All",
     "Pending Payment",
@@ -33,6 +33,8 @@ export default function OrderTable({ AllOrders }) {
     "Cancelled",
     "Failed",
   ];
+
+  console.log(data);
 
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
@@ -53,8 +55,10 @@ export default function OrderTable({ AllOrders }) {
   };
 
   const filteredData = data?.filter((item) =>
-    Object.values(item).some((value) =>
-      value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    Object.values(item).some(
+      (value) =>
+        value != null &&
+        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
@@ -135,11 +139,10 @@ export default function OrderTable({ AllOrders }) {
     }
   };
 
-
   return (
     <main>
       {isLoading && <Loading />}
-     
+
       <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
         <div className="flex justify-between md:justify-start items-center  w-full">
           <h5 className="text-lg md:text-2xl font-bold">All Orders</h5>
@@ -272,35 +275,29 @@ export default function OrderTable({ AllOrders }) {
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("order")}
+                          // onClick={() => handleSort("order")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("orderTime")}
+                          // onClick={() => handleSort("orderTime")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order time &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("amount")}
+                          // onClick={() => handleSort("amount")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Amount &#x21d5;
                         </th>
+
                         <th
                           scope="col"
-                          onClick={() => handleSort("origin")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
-                        >
-                          Origin &#x21d5;
-                        </th>
-                        <th
-                          scope="col"
-                          onClick={() => handleSort("status")}
+                          // onClick={() => handleSort("status")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status &#x21d5;
@@ -338,20 +335,34 @@ export default function OrderTable({ AllOrders }) {
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {item.orderTime}
+                            {new Date(item.createdAt).toDateString()}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             <span className="text-md">৳</span>
                             {item.totalPrice}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                            {item.origin}
-                          </td>
+
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
-                              className={`${item.bg} ${item.text} px-2 py-1 rounded-full`}
+                              className={`${
+                                item.orderStatus === "Order Received"
+                                  ? "bg-yellow-200 text-yellow-800"
+                                  : item.orderStatus === "Order Confirmed"
+                                  ? "bg-blue-200 text-blue-800"
+                                  : item.orderStatus === "Order Delivered"
+                                  ? "bg-green-200 text-green-800"
+                                  : item.orderStatus === "Order On-Hold"
+                                  ? "bg-red-200 text-red-800"
+                                  : item.orderStatus === "Order Spammed"
+                                  ? "bg-red-200 text-red-800"
+                                  : item.orderStatus === "Order Cancelled"
+                                  ? "bg-red-200 text-red-800"
+                                  : item.orderStatus === "Order Dispatched"
+                                  ? "bg-orange-200 text-orange-600"
+                                  : ""
+                              } px-2 py-1 rounded-full`}
                             >
-                              {item.status}
+                              {item.orderStatus}
                             </span>
                           </td>
                         </tr>
@@ -367,35 +378,29 @@ export default function OrderTable({ AllOrders }) {
                       <tr>
                         <th
                           scope="col"
-                          onClick={() => handleSort("order")}
+                          // onClick={() => handleSort("order")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("orderTime")}
+                          // onClick={() => handleSort("orderTime")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order time
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("amount")}
+                          // onClick={() => handleSort("amount")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
-                          Amounts
+                          Amount
                         </th>
+
                         <th
                           scope="col"
-                          onClick={() => handleSort("origin")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
-                        >
-                          Origin
-                        </th>
-                        <th
-                          scope="col"
-                          onClick={() => handleSort("status")}
+                          // onClick={() => handleSort("status")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status
@@ -403,30 +408,46 @@ export default function OrderTable({ AllOrders }) {
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {data?.map((item) => (
+                      {currentData?.map((item) => (
                         <tr
-                          key={item.id}
+                          key={item._id}
                           className={`${
-                            item.id % 2 !== 0 ? "" : "bg-gray-100"
+                            item._id % 2 !== 0 ? "" : "bg-gray-100"
                           } hover:bg-gray-100 duration-700`}
                         >
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                            {item.orderId}
+                            <Link href={`/dashboard/orders/${item._id}`}>
+                              {item.orderId}
+                            </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {item.orderTime}
+                            {new Date(item.createdAt).toDateString()}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item.totalPrice}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                            {item.origin}
-                          </td>
+
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
-                              className={`${item.bg} ${item.text} px-2 py-1 rounded-full`}
+                              className={`${
+                                item.orderStatus === "Order Received"
+                                  ? "bg-yellow-200 text-yellow-800"
+                                  : item.orderStatus === "Order Confirmed"
+                                  ? "bg-blue-200 text-blue-800"
+                                  : item.orderStatus === "Order Delivered"
+                                  ? "bg-green-200 text-green-800"
+                                  : item.orderStatus === "Order On-Hold"
+                                  ? "bg-red-200 text-red-800"
+                                  : item.orderStatus === "Order Spammed"
+                                  ? "bg-red-200 text-red-800"
+                                  : item.orderStatus === "Order Cancelled"
+                                  ? "bg-red-200 text-red-800"
+                                  : item.orderStatus === "Order Dispatched"
+                                  ? "bg-orange-200 text-orange-600"
+                                  : ""
+                              } px-2 py-1 rounded-full`}
                             >
-                              {item.status}
+                              {item.orderStatus}
                             </span>
                           </td>
                         </tr>

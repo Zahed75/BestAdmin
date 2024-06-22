@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import AddUserDynamicHead from "./dynamic/AddUserDynamicHead";
+import { fetchApi } from "@/utils/FetchApi";
 
 export default function AddUser() {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,23 +12,33 @@ export default function AddUser() {
 
     const formData = new FormData(e.target);
 
-   
     formData.set(
-        "userName",
-        formData.get("userName").replace(/\s/g, "")
+      "userName",
+      formData.get("userName").replace(/\s/g, "").toLowerCase()
     );
 
     const data = {
-      userName: formData.get("userName"),
-      outletName: formData.get("outletName"),
-      userRole: formData.get("userRole"),
+      email: formData.get("userName"),
+      outletId: "",
+      role: formData.get("userRole"),
       firstName: formData.get("firstName"),
       lastName: formData.get("lastName"),
       phoneNumber: formData.get("phoneNumber"),
+      password: formData.get("password"),
       email: formData.get("email"),
+      profilePicture: "",
     };
 
-    console.log(data);
+    try {
+      const response = fetchApi("/auth/userManage", "POST", data);
+
+      if (response) {
+        console.log(response);
+        console.log("success!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -230,6 +241,22 @@ export default function AddUser() {
                       required
                       placeholder="example.best@gmail.com"
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1 w-full md:col-span-2">
+                    <label
+                      htmlFor="outletLocation"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="text"
+                      id="password"
+                      name="password"
+                      required
+                      placeholder="********"
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
                   </div>
                 </div>
