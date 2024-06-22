@@ -1,15 +1,22 @@
-FROM node:16-alpine
+FROM node:16
 
+# Set the working directory in the container
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+# Copy package.json and package-lock.json to the container's working directory
+COPY package*.json ./
 
-RUN npm install
+# Install the application's dependencies
+RUN npm install --legacy-peer-deps
 
+# Copy the Next.js application code to the container's working directory
 COPY . .
 
+# Build the Next.js application
 RUN npm run build
 
-EXPOSE 4004
+# Expose the port on which the Next.js application is listening
+EXPOSE 3004
 
+# Command to run your Next.js application in production mode
 CMD ["npm", "start"]
