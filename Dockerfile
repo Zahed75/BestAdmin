@@ -19,8 +19,5 @@ RUN npm run build
 # Expose the port the app runs on
 EXPOSE 3004
 
-# Set the environment variable for the public API endpoint
-ENV NEXT_PUBLIC_API_ENDPOINT=https://app.bestelectronics.com.bd/api/v1
-
 # Start the Next.js application
 CMD ["npm", "run", "start"]
