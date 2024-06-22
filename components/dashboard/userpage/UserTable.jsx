@@ -6,7 +6,7 @@ import { FaCaretDown } from "react-icons/fa";
 
 export default function UsersTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [dataPerPage] = useState(5); // Change this value to adjust the number of rows per page
+  const [dataPerPage] = useState(5); 
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
