@@ -9,7 +9,7 @@ export default function ReportingPage() {
       <PageHead pageHead="Reporting" />
       <ReportingOverView />
       <Analytics />
-      <OrderTable />
+      {/* <OrderTable /> */}
     </main>
   );
 }
