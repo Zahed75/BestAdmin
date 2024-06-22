@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  onnow_admin:
+  best_admin:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - 3004:3004
-    container_name: onnow_admin
+    container_name: best-admin
     # environment:
     #   - NODE_ENV=production
     #   - NEXT_PUBLIC_BASE_API_URL=https://v2.onnow.io/api/v1
