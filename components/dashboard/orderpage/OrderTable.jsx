@@ -7,6 +7,8 @@ import "jspdf-autotable";
 import Loading from "@/app/dashboard/loading";
 import Pagination from "@/components/global/pagination/Pagination";
 import { FaCaretDown } from "react-icons/fa";
+import { fetchApi } from "@/utils/FetchApi";
+import { useRouter } from "next/navigation";
 
 export default function OrderTable({ AllOrders }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,6 +21,8 @@ export default function OrderTable({ AllOrders }) {
   const [showButton, setShowButton] = useState(true);
   const [showAction, setShowAction] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const data = AllOrders;
   const titleData = [
@@ -97,10 +101,45 @@ export default function OrderTable({ AllOrders }) {
     );
   };
 
+  const handleDeleteProduct = async () => {
+    try {
+      for (const itemId of selectedItems) {
+        const response = await fetchApi(
+          `/order/deleteOrder/${itemId}`,
+          "DELETE"
+        );
+        if (response.status === 200) {
+          const newData = data.filter((item) => item._id !== itemId);
+          setData(newData);
+        } else {
+          console.log(`Failed to delete category with ID ${itemId}.`);
+        }
+      }
+      setSelectedItems([]);
+      console.log("Selected categories deleted successfully!");
+    } catch (err) {
+      console.log("An error occurred while deleting selected categories.", err);
+    }
+  };
+
+  const handleUpdateProduct = async () => {
+    try {
+      for (const itemId of selectedItems) {
+        router.push(`/dashboard/orders/${itemId}`);
+      }
+    } catch (error) {
+      console.log(
+        "An error occurred while updating selected categories.",
+        error
+      );
+    }
+  };
+
+
   return (
     <main>
       {isLoading && <Loading />}
-      {/* order Top */}
+     
       <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
         <div className="flex justify-between md:justify-start items-center  w-full">
           <h5 className="text-lg md:text-2xl font-bold">All Orders</h5>
@@ -169,7 +208,7 @@ export default function OrderTable({ AllOrders }) {
                 <ul className="py-1" aria-labelledby="dropdown">
                   <li>
                     <button
-                      // onClick={handleUpdateProduct}
+                      onClick={handleUpdateProduct}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Update
@@ -177,7 +216,7 @@ export default function OrderTable({ AllOrders }) {
                   </li>
                   <li>
                     <button
-                      // onClick={handleDeleteProduct}
+                      onClick={handleDeleteProduct}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Delete

@@ -19,4 +19,4 @@ RUN npm run build
 EXPOSE 3004
 
 # Command to run your Next.js application in production mode
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
