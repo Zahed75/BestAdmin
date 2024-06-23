@@ -122,7 +122,7 @@ export default function SingleOrderPage({ order }) {
                   <input
                     type="text"
                     id="customer"
-                    defaultValue={"Shaiadul Islam"}
+                    defaultValue={order?.customer?.firstName + " " + order?.customer?.lastName}
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />

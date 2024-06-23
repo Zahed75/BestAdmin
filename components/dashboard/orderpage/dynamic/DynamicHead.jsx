@@ -22,7 +22,7 @@ export default function DynamicHead({ order }) {
         </h1>
       </div>
       <span className="text-sm md:text-lg">
-        Payment via {order?.paymentMethod}. Customer IP: 116.12.34.168
+        Payment via {order?.paymentMethod}. Customer IP: {order?.customerIp || "00.000.000"}
       </span>
     </div>
   );
