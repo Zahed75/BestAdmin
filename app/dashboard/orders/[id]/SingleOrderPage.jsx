@@ -122,7 +122,7 @@ export default function SingleOrderPage({ order }) {
                   <input
                     type="text"
                     id="customer"
-                    defaultValue={order?.customer?.firstName + " " + order?.customer?.lastName}
+                    defaultValue={order?.firstName + " " + order?.lastName}
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
@@ -354,6 +354,7 @@ export default function SingleOrderPage({ order }) {
                   >
                     <option value="Received">Received</option>
                     <option value="Dispatched">Dispatched</option>
+                    <option value="Confirmed">Confirmed</option>
                     <option value="Delivered">Delivered</option>
                     <option value="On-Hold">On-Hold</option>
                     <option value="Cancelled">Cancelled</option>

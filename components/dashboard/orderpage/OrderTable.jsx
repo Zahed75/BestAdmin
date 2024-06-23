@@ -291,21 +291,21 @@ export default function OrderTable({ AllOrders }) {
                         </th>
                         <th
                           scope="col"
-                          // onClick={() => handleSort("order")}
+                          onClick={() => handleSort("orderId")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          // onClick={() => handleSort("orderTime")}
+                          onClick={() => handleSort("createdAt")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order time &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          // onClick={() => handleSort("amount")}
+                          onClick={() => handleSort("totalPrice")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Amount &#x21d5;
@@ -313,7 +313,7 @@ export default function OrderTable({ AllOrders }) {
 
                         <th
                           scope="col"
-                          // onClick={() => handleSort("status")}
+                          onClick={() => handleSort("orderStatus")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status &#x21d5;
@@ -416,7 +416,7 @@ export default function OrderTable({ AllOrders }) {
 
                         <th
                           scope="col"
-                          // onClick={() => handleSort("status")}
+                          // onClick={() => handleSort("orderStatus")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status
