@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CiMenuFries, CiMenuBurger } from "react-icons/ci";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -34,7 +34,6 @@ export default function OrderTable({ AllOrders }) {
     "Cancelled",
     "Failed",
   ];
-
 
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
@@ -139,7 +138,20 @@ export default function OrderTable({ AllOrders }) {
     }
   };
 
- 
+  function formatDate(dateString) {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    if (isNaN(date)) return "N/A";
+
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return date.toLocaleDateString(undefined, options);
+  }
 
   return (
     <main>
@@ -337,7 +349,7 @@ export default function OrderTable({ AllOrders }) {
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {new Date(item.createdAt).toDateString()}
+                            {formatDate(item.createdAt)}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             <span className="text-md">৳</span>
@@ -423,7 +435,9 @@ export default function OrderTable({ AllOrders }) {
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.createdAt ? new Date(item.createdAt).toDateString() : 'N/A'}
+                            {item.createdAt
+                              ? new Date(item.createdAt).toDateString()
+                              : "N/A"}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item.totalPrice}
