@@ -138,20 +138,20 @@ export default function OrderTable({ AllOrders }) {
     }
   };
 
-  function formatDate(dateString) {
-    if (!dateString) return "N/A";
+  // function formatDate(dateString) {
+  //   if (!dateString) return "N/A";
 
-    const date = new Date(dateString);
-    if (isNaN(date)) return "N/A";
+  //   const date = new Date(dateString);
+  //   if (isNaN(date)) return "N/A";
 
-    const options = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    return date.toLocaleDateString(undefined, options);
-  }
+  //   const options = {
+  //     weekday: "short",
+  //     year: "numeric",
+  //     month: "short",
+  //     day: "numeric",
+  //   };
+  //   return date.toLocaleDateString(undefined, options);
+  // }
 
   return (
     <main>
@@ -349,7 +349,8 @@ export default function OrderTable({ AllOrders }) {
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {formatDate(item.createdAt)}
+                            {/* {formatDate(item.createdAt)} */}
+                            {item.createdAt}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             <span className="text-md">৳</span>

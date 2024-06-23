@@ -24,7 +24,7 @@ export default function Page({ params }) {
 
   return (
     <main className="">
-      <SingleOrderPage />
+      <SingleOrderPage  />
     </main>
   );
 }
