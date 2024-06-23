@@ -75,7 +75,7 @@ export default function AddUser() {
                         d="M10.0925 2.4917C6.35684 2.4917 4.48901 2.4917 3.32849 3.65177C2.16797 4.81185 2.16797 6.67896 2.16797 10.4132C2.16797 14.1473 2.16797 16.0145 3.32849 17.1746C4.48901 18.3347 6.35684 18.3347 10.0925 18.3347C13.8281 18.3347 15.6959 18.3347 16.8565 17.1746C18.017 16.0145 18.017 14.1473 18.017 10.4132V9.99626"
                         stroke="black"
                         stroke-width="1.25"
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                       />
                       <path
                         d="M4.66602 17.4913C8.17433 13.5319 12.117 8.28093 17.9993 12.2192"
@@ -86,7 +86,7 @@ export default function AddUser() {
                         d="M15.4982 1.66504V8.33847M18.8362 4.98087L12.1602 4.99327"
                         stroke="black"
                         stroke-width="1.25"
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                         stroke-linejoin="round"
                       />
                     </svg>

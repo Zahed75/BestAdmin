@@ -23,6 +23,8 @@ export default function Page({ params }) {
     fetchData();
   }, [id]);
 
+  console.log(order);
+  
   return (
     <main className="">
       {order?.orderId ? <SingleOrderPage order={order} /> : <Skeleton />}

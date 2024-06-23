@@ -2,11 +2,15 @@
 import DynamicHead from "@/components/dashboard/orderpage/dynamic/DynamicHead";
 import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loading from "../../loading";
+import { useRouter } from "next/navigation";
 
 export default function SingleOrderPage({ order }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [customerHistory, setCustomerHistory] = useState(null);
+  const customerId = order?.customer?._id;
+  const router = useRouter();
 
   function formatDate(dateString) {
     if (!dateString) return "N/A";
@@ -22,7 +26,6 @@ export default function SingleOrderPage({ order }) {
     };
     return date.toLocaleDateString(undefined, options);
   }
-  console.log(order);
 
   const handleUpdateOrderStatus = async (e) => {
     e.preventDefault();
@@ -34,11 +37,33 @@ export default function SingleOrderPage({ order }) {
         orderStatus,
       });
       setIsLoading(false);
+      router.push("/dashboard/orders");
       console.log(data);
     } catch (error) {
       console.error("Error updating order status:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchCustomerHistory = async () => {
+      if (!customerId) return;
+
+      try {
+        const res = await fetchApi(
+          `/order/customerHistory/${customerId}`,
+          "GET"
+        );
+        const data = res?.orders;
+        setCustomerHistory(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+
+    fetchCustomerHistory();
+  }, [customerId]);
+
+  console.log(customerHistory);
 
   return (
     <main className="">
@@ -123,7 +148,7 @@ export default function SingleOrderPage({ order }) {
                       type="email"
                       id="email"
                       readOnly
-                      value={order?.email}
+                      value={order?.customer?.email}
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
                     />
                   </div>
@@ -200,11 +225,13 @@ export default function SingleOrderPage({ order }) {
                             width={100}
                             height={100}
                             className="w-10 h-10 rounded-xl"
-                            src={product?.image}
+                            src={product?.productImage}
                             alt="product_images"
                           />
                           <div className="ml-2">
-                            <span className="text-sm">{product?.name}</span>
+                            <span className="text-sm">
+                              {product?.productName}
+                            </span>
                             <p className="text-sm text-gray-500">
                               SKU: {product?.sku}
                             </p>
@@ -216,7 +243,7 @@ export default function SingleOrderPage({ order }) {
                       </td>
                       <td className="py-4 px-1 text-sm font-medium text-gray-900 whitespace-nowrap ">
                         <span className="text-md">৳</span>
-                        <span className="text-md">{product?.price}</span>
+                        <span className="text-md">{product?.totalPrice}</span>
                       </td>
                     </tr>
                   ))}
@@ -287,7 +314,7 @@ export default function SingleOrderPage({ order }) {
               onSubmit={handleUpdateOrderStatus}
               className="p-5 border bg-white rounded-md shadow-md w-full"
             >
-              <h5 className="text-md font-bold mb-3">Action</h5>
+              <h5 className="text-md font-bold mb-3">{order?.orderStatus}</h5>
               <div className="mt-5">
                 <label
                   htmlFor="orderStatus"
@@ -312,7 +339,7 @@ export default function SingleOrderPage({ order }) {
                     name="orderStatus"
                     className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                   >
-                    <option value="Processing">Processing</option>
+                    <option value="Received">Received</option>
                     <option value="Dispatched">Dispatched</option>
                     <option value="Delivered">Delivered</option>
                     <option value="On-Hold">On-Hold</option>
@@ -376,22 +403,24 @@ export default function SingleOrderPage({ order }) {
                 <div>
                   <span className="text-sm text-gray-600">Total Orders</span>
                   <br />
-                  <span className="text-md text-black font-semibold">5</span>
+                  <span className="text-md text-black font-semibold">
+                    {customerHistory?.totalOrders}
+                  </span>
                 </div>
-                <div>
+                {/* <div>
                   <span className="text-sm text-gray-600">Total revenue</span>
                   <br />
                   <span className="text-md text-black font-semibold">
                     ৳4000
                   </span>
-                </div>
+                </div> */}
                 <div>
                   <span className="text-sm text-gray-600">
                     Average order value
                   </span>
                   <br />
                   <span className="text-md text-black font-semibold">
-                    ৳4000
+                    ৳{customerHistory?.averageOrderValue}
                   </span>
                 </div>
               </div>

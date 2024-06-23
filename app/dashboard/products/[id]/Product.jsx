@@ -619,13 +619,13 @@ export default function Product({ product }) {
                             d="M10.0827 17.4998C6.35073 17.4998 4.48476 17.4998 3.32538 16.3405C2.16602 15.1811 2.16602 13.3151 2.16602 9.58317C2.16602 5.85122 2.16602 3.98525 3.32538 2.82587C4.48476 1.6665 6.35073 1.6665 10.0827 1.6665C13.8146 1.6665 15.6806 1.6665 16.84 2.82587C17.9994 3.98525 17.9993 5.85122 17.9993 9.58317"
                             stroke="black"
                             stroke-width="1.25"
-                            stroke-linecap="round"
+                            strokeLinecap="round"
                           />
                           <path
                             d="M12.166 14.9998H18.8327M15.4993 18.3332V11.6665"
                             stroke="black"
                             stroke-width="1.25"
-                            stroke-linecap="round"
+                            strokeLinecap="round"
                           />
                         </svg>
                       </label>
@@ -681,13 +681,13 @@ export default function Product({ product }) {
                               d="M10.0827 17.4998C6.35073 17.4998 4.48476 17.4998 3.32538 16.3405C2.16602 15.1811 2.16602 13.3151 2.16602 9.58317C2.16602 5.85122 2.16602 3.98525 3.32538 2.82587C4.48476 1.6665 6.35073 1.6665 10.0827 1.6665C13.8146 1.6665 15.6806 1.6665 16.84 2.82587C17.9994 3.98525 17.9993 5.85122 17.9993 9.58317"
                               stroke="black"
                               stroke-width="1.25"
-                              stroke-linecap="round"
+                              strokeLinecap="round"
                             />
                             <path
                               d="M12.166 14.9998H18.8327M15.4993 18.3332V11.6665"
                               stroke="black"
                               stroke-width="1.25"
-                              stroke-linecap="round"
+                              strokeLinecap="round"
                             />
                           </svg>
                         </label>
