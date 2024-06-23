@@ -25,6 +25,7 @@ export default function OrderTable({ AllOrders }) {
   const router = useRouter();
 
   const data = AllOrders || [];
+
   const titleData = [
     "All",
     "Pending Payment",
@@ -34,7 +35,6 @@ export default function OrderTable({ AllOrders }) {
     "Failed",
   ];
 
-  console.log(data);
 
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
@@ -138,6 +138,8 @@ export default function OrderTable({ AllOrders }) {
       );
     }
   };
+
+ 
 
   return (
     <main>
@@ -421,7 +423,7 @@ export default function OrderTable({ AllOrders }) {
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {new Date(item.createdAt).toDateString()}
+                          {item.createdAt ? new Date(item.createdAt).toDateString() : 'N/A'}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item.totalPrice}
