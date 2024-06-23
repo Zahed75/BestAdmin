@@ -44,6 +44,23 @@ export default function SingleOrderPage({ order }) {
     }
   };
 
+  const handleUpdateOrderNote = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const orderNote = formData.get("orderNote");
+    setIsLoading(true);
+    try {
+      const data = await fetchApi(`/order/updateNote/${order?._id}`, "PUT", {
+        orderNote,
+      });
+      setIsLoading(false);
+      router.push("/dashboard/orders");
+      console.log(data);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchCustomerHistory = async () => {
       if (!customerId) return;
@@ -62,8 +79,6 @@ export default function SingleOrderPage({ order }) {
 
     fetchCustomerHistory();
   }, [customerId]);
-
-  console.log(customerHistory);
 
   return (
     <main className="">
@@ -131,9 +146,7 @@ export default function SingleOrderPage({ order }) {
                       cols={30}
                       rows={3}
                       readOnly
-                      value={
-                        "Engr. Syful Islam North South School, Ghorakandha, Bhairab Kishoreganj DHAKA"
-                      }
+                      value={order?.deliveryAddress}
                       className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                     />
                   </div>
@@ -182,7 +195,7 @@ export default function SingleOrderPage({ order }) {
                       readOnly
                       cols={30}
                       rows={3}
-                      value={""}
+                      value={order?.deliveryAddress}
                       className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                     />
                   </div>
@@ -426,32 +439,39 @@ export default function SingleOrderPage({ order }) {
               </div>
             </div>
             {/* four */}
-            <div className="p-5 border bg-white rounded-md shadow-md w-full">
+            <form
+              onSubmit={handleUpdateOrderNote}
+              className="p-5 border bg-white rounded-md shadow-md w-full"
+            >
               <h5 className="text-md font-bold mb-3">Order Notes</h5>
               <div className="w-full bg-gray-100 p-3 mb-5 rounded-md">
                 <p className="mb-3">
                   Payment to be made upon delivery. Order status changed from
                   Pending payment to Processing.
                 </p>
-                <p className="text-gray-600">Feb 28, 2024, 17:59</p>
               </div>
               <div className="flex flex-col space-y-1">
                 <label
-                  htmlFor="ordaerDate"
+                  htmlFor="orderNote"
                   className="text-sm font-semibold text-gray-600"
                 >
                   Note
                 </label>
                 <textarea
-                  id="note"
+                  id="orderNote"
+                  name="orderNote"
+                  defaultValue={order?.orderNote}
                   className="border border-gray-300 rounded-md p-2 focus:outline-none "
                 />
               </div>
 
-              <button className="text-white bg-black px-3 py-2 rounded-md w-full mt-5">
+              <button
+                type="submit"
+                className="text-white bg-black px-3 py-2 rounded-md w-full mt-5"
+              >
                 Proceed
               </button>
-            </div>
+            </form>
           </div>
         </section>
       </div>
