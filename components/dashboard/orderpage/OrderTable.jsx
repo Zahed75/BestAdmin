@@ -28,11 +28,13 @@ export default function OrderTable({ AllOrders }) {
 
   const titleData = [
     "All",
-    "Pending Payment",
-    "Processing",
-    "Completed",
+    "Received",
+    "Confirmed",
+    "Dispatched",
+    "Delivered",
+    "On-Hold",
     "Cancelled",
-    "Failed",
+    "Spammed",
   ];
 
   const exportPdf = async () => {
@@ -138,20 +140,20 @@ export default function OrderTable({ AllOrders }) {
     }
   };
 
-  // function formatDate(dateString) {
-  //   if (!dateString) return "N/A";
+  function formatDate(dateString) {
+    if (!dateString) return "N/A";
 
-  //   const date = new Date(dateString);
-  //   if (isNaN(date)) return "N/A";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "N/A";
 
-  //   const options = {
-  //     weekday: "short",
-  //     year: "numeric",
-  //     month: "short",
-  //     day: "numeric",
-  //   };
-  //   return date.toLocaleDateString(undefined, options);
-  // }
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return date.toLocaleDateString(undefined, options);
+  }
 
   return (
     <main>
@@ -349,8 +351,7 @@ export default function OrderTable({ AllOrders }) {
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {/* {formatDate(item.createdAt)} */}
-                            {item.createdAt}
+                            {formatDate(item.createdAt)}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             <span className="text-md">৳</span>
@@ -360,19 +361,19 @@ export default function OrderTable({ AllOrders }) {
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
                               className={`${
-                                item.orderStatus === "Order Received"
+                                item.orderStatus === "Received"
                                   ? "bg-yellow-200 text-yellow-800"
-                                  : item.orderStatus === "Order Confirmed"
+                                  : item.orderStatus === "Confirmed"
                                   ? "bg-blue-200 text-blue-800"
-                                  : item.orderStatus === "Order Delivered"
+                                  : item.orderStatus === "Delivered"
                                   ? "bg-green-200 text-green-800"
-                                  : item.orderStatus === "Order On-Hold"
+                                  : item.orderStatus === "On-Hold"
                                   ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Order Spammed"
+                                  : item.orderStatus === "Spammed"
                                   ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Order Cancelled"
+                                  : item.orderStatus === "Cancelled"
                                   ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Order Dispatched"
+                                  : item.orderStatus === "Dispatched"
                                   ? "bg-orange-200 text-orange-600"
                                   : ""
                               } px-2 py-1 rounded-full`}
@@ -436,9 +437,7 @@ export default function OrderTable({ AllOrders }) {
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {item.createdAt
-                              ? new Date(item.createdAt).toDateString()
-                              : "N/A"}
+                            {formatDate(item.createdAt)}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item.totalPrice}
@@ -447,19 +446,19 @@ export default function OrderTable({ AllOrders }) {
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
                               className={`${
-                                item.orderStatus === "Order Received"
+                                item.orderStatus === "Received"
                                   ? "bg-yellow-200 text-yellow-800"
-                                  : item.orderStatus === "Order Confirmed"
+                                  : item.orderStatus === "Confirmed"
                                   ? "bg-blue-200 text-blue-800"
-                                  : item.orderStatus === "Order Delivered"
+                                  : item.orderStatus === "Delivered"
                                   ? "bg-green-200 text-green-800"
-                                  : item.orderStatus === "Order On-Hold"
+                                  : item.orderStatus === "On-Hold"
                                   ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Order Spammed"
+                                  : item.orderStatus === "Spammed"
                                   ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Order Cancelled"
+                                  : item.orderStatus === "Cancelled"
                                   ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Order Dispatched"
+                                  : item.orderStatus === "Dispatched"
                                   ? "bg-orange-200 text-orange-600"
                                   : ""
                               } px-2 py-1 rounded-full`}

@@ -3,17 +3,18 @@
 import { fetchApi } from "@/utils/FetchApi";
 import { useEffect, useState } from "react";
 import SingleOrderPage from "./SingleOrderPage";
+import Skeleton from "@/components/global/skeleton/Skeleton";
 
 export default function Page({ params }) {
   const id = params.id;
 
-  const [data, setData] = useState({});
+  const [order, setOrder] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchApi(`/order/getOrderById/${id}`, "GET");
-        setData(data?.order);
+        setOrder(data?.order);
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
@@ -24,7 +25,7 @@ export default function Page({ params }) {
 
   return (
     <main className="">
-      <SingleOrderPage  />
+      {order?.orderId ? <SingleOrderPage order={order} /> : <Skeleton />}
     </main>
   );
 }
