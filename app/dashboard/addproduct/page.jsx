@@ -20,6 +20,7 @@ export default function AddProductPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
   const [categoryTab, setCategoryTab] = useState("all");
+  const [brandTab, setBrandTab] = useState("brand");
   const [categoryId, setCategoryId] = useState("");
   const [productStatus, setProductStatus] = useState("Draft");
   const [titleInputValue, setTitleInputValue] = useState("");
@@ -130,7 +131,10 @@ export default function AddProductPage() {
 
     try {
       const uploadedImageUrls = await Promise.all(uploadPromises);
-      setProductGallery((prevGallery) => [...prevGallery, ...uploadedImageUrls]);
+      setProductGallery((prevGallery) => [
+        ...prevGallery,
+        ...uploadedImageUrls,
+      ]);
     } catch (error) {
       console.error("Error uploading images:", error);
     } finally {
@@ -1043,6 +1047,83 @@ export default function AddProductPage() {
                 `}
               >
                 Non Found For This Time
+              </div>
+            </div>
+
+            <div className="p-5 border bg-white rounded-md shadow-md w-full">
+              <h5 className="text-md font-bold mb-3">Product Brand</h5>
+              <div className="flex justify-between items-center gap-5 mb-5">
+                <button
+                  type="button"
+                  className={`${
+                    brandTab === "brand"
+                      ? "border-gray-500 text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                  onClick={() => setBrandTab("brand")}
+                >
+                  Brand
+                </button>
+                <button
+                  type="button"
+                  className={`${
+                    brandTab === "new"
+                      ? "border-gray-500 text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                  onClick={() => setBrandTab("new")}
+                >
+                  Add New Brand
+                </button>
+              </div>
+              <div
+                className={`
+                ${brandTab === "brand" ? "block" : "hidden"}
+                `}
+              >
+                <div className="relative flex border border-gray-300 px-2 mt-1 w-full rounded-md bg-white hover:border-gray-400">
+                  <svg
+                    className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 412 232"
+                  >
+                    <path
+                      d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
+                      fill="#648299"
+                      fill-rule="nonzero"
+                    />
+                  </svg>
+                  <select
+                    id="productBrand"
+                    name="productBrand"
+                    className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                  >
+                    <option value="none">None</option>
+                    <option value="conion">Conion</option>
+                    <option value="hitachi">Hitachi</option>
+                    <option value="lg">LG</option>
+                    <option value="hisense">Hisense</option>
+                  </select>
+                </div>
+              </div>
+              <div
+                className={`
+                ${brandTab === "new" ? "block" : "hidden"}
+                `}
+              >
+                <input
+                  type="text"
+                  id="brandName"
+                  name="brandName"
+                  placeholder="Brand Name"
+                  className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                />
+                <button
+                  type="button"
+                  className="text-white text-sm bg-black px-3 py-2 rounded-md mt-5 w-full uppercase font-semibold hover:bg-gray-800 focus:outline-none"
+                >
+                  Add Brand
+                </button>
               </div>
             </div>
 
