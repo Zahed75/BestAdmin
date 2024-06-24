@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
-import { set } from "date-fns";
 
 export default function AddProductPage() {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -31,6 +30,9 @@ export default function AddProductPage() {
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
+  const user = useSelector((state) => state.user?.items || {});
+  console.log(user?.user);
+
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -53,6 +55,7 @@ export default function AddProductPage() {
   const router = useRouter();
 
   const AllCategories = categories?.categories?.categories;
+
 
   const calculateTitleProgress = (value) => {
     let progress = (value.length / 100) * 100;
@@ -262,6 +265,7 @@ export default function AddProductPage() {
     console.log("Brand Data:", brandData);
   };
 
+
   return (
     <main className="">
       {isLoading && <Loading />}
@@ -324,6 +328,7 @@ export default function AddProductPage() {
                           id="featuredImageUpload"
                           className="hidden"
                           accept="image/*"
+                          required
                           onChange={handleProductImgFileChange}
                         />
                         <label
@@ -1166,6 +1171,7 @@ export default function AddProductPage() {
                     <select
                       id="productBrand"
                       name="productBrand"
+                      required
                       className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                     >
                       {productBrand?.map((brand, index) => (
@@ -1229,4 +1235,4 @@ export default function AddProductPage() {
     </main>
   );
 }
-// test comment 
+

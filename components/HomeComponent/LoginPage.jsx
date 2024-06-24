@@ -5,12 +5,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import { addUserInfo } from "@/redux/slice/userSlice";
+import { useDispatch } from "react-redux";
 
 export default function LoginPage() {
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -23,7 +26,7 @@ export default function LoginPage() {
         password,
       });
       setShowError(false);
-      localStorage.setItem("user", JSON.stringify(response.user));
+      dispatch(addUserInfo(response?.user));
       Cookies.set("token", response.user.accessToken, { expires: 7 });
       router.push("/dashboard");
     } catch (error) {
