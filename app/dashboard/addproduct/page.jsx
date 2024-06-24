@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
+import { set } from "date-fns";
 
 export default function AddProductPage() {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -25,12 +26,28 @@ export default function AddProductPage() {
   const [productStatus, setProductStatus] = useState("Draft");
   const [titleInputValue, setTitleInputValue] = useState("");
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
+  const [productBrand, setProductBrand] = useState("");
+  const [brandName, setBrandName] = useState("");
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
 
   useEffect(() => {
     dispatch(fetchCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetchApi("/brand/getAll", "GET");
+
+        setProductBrand(response.brands);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchData();
   }, [dispatch]);
 
   const router = useRouter();
@@ -165,6 +182,7 @@ export default function AddProductPage() {
     const productData = {
       productName: e.target.productName.value,
       categoryId: categoryId,
+      productBrand: e.target.productBrand.value,
       productImage: imageUrl,
       isTrash: false,
       productGallery: productGallery,
@@ -226,6 +244,22 @@ export default function AddProductPage() {
       setIsLoading(false);
       console.log("An error occurred:", err);
     }
+  };
+  const handleCreateBrand = async (e) => {
+    e.preventDefault();
+    const brandData = {
+      name: brandName,
+      title: "Best Electronics",
+      description:
+        "Best Electronics is a leading electronics store in Bangladesh.",
+    };
+    try {
+      const response = await fetchApi("/brand/create", "POST", brandData);
+      console.log("Brand Response:", response);
+    } catch (error) {
+      console.error("Error creating brand:", error);
+    }
+    console.log("Brand Data:", brandData);
   };
 
   return (
@@ -1051,6 +1085,41 @@ export default function AddProductPage() {
             </div>
 
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
+              <h5 className="text-md font-bold mb-3">Product Tags</h5>
+              <div className="grid grid-cols-4 gap-2">
+                <input
+                  type="text"
+                  id="productTag"
+                  value={tagInputValue}
+                  onChange={(e) => setTagInputValue(e.target.value)}
+                  className="border border-gray-300 rounded-md p-2 focus:outline-none col-span-3"
+                />
+                <button
+                  onClick={handleTagValue}
+                  className="border text-black font-semibold rounded-md"
+                >
+                  Add
+                </button>
+              </div>
+              <div className="my-3 flex flex-wrap justify-start items-center gap-2">
+                {tagValueArray.map((tag, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center "
+                  >
+                    <span className="text-md text-black">{tag}</span>
+                    <button
+                      onClick={() => handleRemoveTag(index)}
+                      className="text-gray-300 font-semibold ml-2"
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Product Brand</h5>
               <div className="flex justify-between items-center gap-5 mb-5">
                 <button
@@ -1093,17 +1162,19 @@ export default function AddProductPage() {
                       fill-rule="nonzero"
                     />
                   </svg>
-                  <select
-                    id="productBrand"
-                    name="productBrand"
-                    className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
-                  >
-                    <option value="none">None</option>
-                    <option value="conion">Conion</option>
-                    <option value="hitachi">Hitachi</option>
-                    <option value="lg">LG</option>
-                    <option value="hisense">Hisense</option>
-                  </select>
+                  {productBrand?.length > 0 && (
+                    <select
+                      id="productBrand"
+                      name="productBrand"
+                      className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                    >
+                      {productBrand?.map((brand, index) => (
+                        <option key={index} value={brand.name}>
+                          {brand.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
               <div
@@ -1115,50 +1186,17 @@ export default function AddProductPage() {
                   type="text"
                   id="brandName"
                   name="brandName"
+                  onChange={(e) => setBrandName(e.target.value)}
                   placeholder="Brand Name"
                   className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                 />
                 <button
                   type="button"
+                  onClick={handleCreateBrand}
                   className="text-white text-sm bg-black px-3 py-2 rounded-md mt-5 w-full uppercase font-semibold hover:bg-gray-800 focus:outline-none"
                 >
                   Add Brand
                 </button>
-              </div>
-            </div>
-
-            <div className="p-5 border bg-white rounded-md shadow-md w-full">
-              <h5 className="text-md font-bold mb-3">Product Tags</h5>
-              <div className="grid grid-cols-4 gap-2">
-                <input
-                  type="text"
-                  id="productTag"
-                  value={tagInputValue}
-                  onChange={(e) => setTagInputValue(e.target.value)}
-                  className="border border-gray-300 rounded-md p-2 focus:outline-none col-span-3"
-                />
-                <button
-                  onClick={handleTagValue}
-                  className="border text-black font-semibold rounded-md"
-                >
-                  Add
-                </button>
-              </div>
-              <div className="my-3 flex flex-wrap justify-start items-center gap-2">
-                {tagValueArray.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center "
-                  >
-                    <span className="text-md text-black">{tag}</span>
-                    <button
-                      onClick={() => handleRemoveTag(index)}
-                      className="text-gray-300 font-semibold ml-2"
-                    >
-                      X
-                    </button>
-                  </div>
-                ))}
               </div>
             </div>
 
