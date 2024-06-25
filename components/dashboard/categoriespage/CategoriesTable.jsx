@@ -42,8 +42,8 @@ export default function CategoriesTable({ AllCategories }) {
         userId,
         categoryName,
         categoryDescription: description,
-        parentCategory: parentCategoryId,
-        fetaureImage: "getlost.jpg",
+        parentCategory: parentCategoryId || "",
+        fetaureImage: "",
         title: "",
         metaDescription: "",
       };
@@ -435,7 +435,7 @@ export default function CategoriesTable({ AllCategories }) {
                         name="parentCategoryId"
                         className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                       >
-                        <option value="0">Select Parent Category</option>
+                        <option value="">Select Parent Category</option>
                         {AllCategories?.map((item) => (
                           <option key={item._id} value={item._id}>
                             {item.categoryName}
