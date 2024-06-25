@@ -33,7 +33,6 @@ export default function AddProductPage() {
   const user = useSelector((state) => state.user?.items || {});
   console.log(user?.user);
 
-
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
@@ -55,7 +54,6 @@ export default function AddProductPage() {
   const router = useRouter();
 
   const AllCategories = categories?.categories?.categories;
-
 
   const calculateTitleProgress = (value) => {
     let progress = (value.length / 100) * 100;
@@ -186,7 +184,7 @@ export default function AddProductPage() {
       productName: e.target.productName.value,
       categoryId: categoryId,
       productBrand: e.target.productBrand.value,
-      productImage: imageUrl,
+      productImage: imageUrl || "https://i.ibb.co/bJXhK7w/3256026-200.png",
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
@@ -265,7 +263,6 @@ export default function AddProductPage() {
     console.log("Brand Data:", brandData);
   };
 
-
   return (
     <main className="">
       {isLoading && <Loading />}
@@ -275,7 +272,7 @@ export default function AddProductPage() {
           <AddProductDynamicHead title={"Add New Product"} />
           <button
             type="submit"
-            disabled={categoryId === "" ? true : false}
+            disabled={categoryId === "" && imageUrl ? true : false}
             className={`text-sm text-white bg-black rounded-md px-3 py-2 ${
               categoryId === "" ? "cursor-not-allowed" : "cursor-pointer"
             }`}
@@ -328,7 +325,6 @@ export default function AddProductPage() {
                           id="featuredImageUpload"
                           className="hidden"
                           accept="image/*"
-                          required
                           onChange={handleProductImgFileChange}
                         />
                         <label
@@ -367,6 +363,13 @@ export default function AddProductPage() {
                       <></>
                     )}
                   </div>
+                  {!imageUrl && (
+                    <div className="mt-5">
+                      <p className="text-xs text-red-500">
+                        * Upload an image for the product
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col justify-between items-start space-y-3">
                   <h5 className="text-md font-bold mb-3">Image Gallery</h5>
@@ -1235,4 +1238,3 @@ export default function AddProductPage() {
     </main>
   );
 }
-
