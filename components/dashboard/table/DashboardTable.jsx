@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function DashboardTable() {
@@ -77,7 +78,9 @@ export default function DashboardTable() {
     <section className="mb-10">
       <div className="flex justify-between items-center">
         <h5 className="text-2xl font-bold">Recent Orders</h5>
-        <button className="text-md font-bold">ViewAll</button>
+        <Link href="/dashboard/orders" className="text-md font-bold">
+          ViewAll
+        </Link>
       </div>
 
       {/* table component*/}
@@ -90,23 +93,9 @@ export default function DashboardTable() {
                   {/* table head */}
                   <thead className="bg-gray-100 ">
                     <tr>
-                      <th scope="col" className="p-4 w-6">
-                        <div className="flex items-center">
-                          <input
-                            id="checkbox_all"
-                            type="checkbox"
-                            className="w-4 h-4 bg-gray-100 rounded border-gray-300 "
-                            onChange={handleSelectAll}
-                            checked={selectAll}
-                          />
-                          <label for="checkbox-all" className="sr-only">
-                            checkbox
-                          </label>
-                        </div>
-                      </th>
                       <th
                         scope="col"
-                        className="py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                        className="py-3 px-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
                       >
                         Order
                       </th>
@@ -144,24 +133,7 @@ export default function DashboardTable() {
                           item.id % 2 !== 0 ? "" : "bg-gray-100"
                         } hover:bg-gray-100 duration-700`}
                       >
-                        <td scope="col" className="p-4">
-                          <div className="flex items-center">
-                            <input
-                              id={`checkbox_${item.id}`}
-                              type="checkbox"
-                              className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item.id)}
-                              onChange={() => handleSelectItem(item.id)}
-                            />
-                            <label
-                              htmlFor={`checkbox_${item.id}`}
-                              className="sr-only"
-                            >
-                              checkbox
-                            </label>
-                          </div>
-                        </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
+                        <td className="py-4 px-3 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
                           {item.order}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
