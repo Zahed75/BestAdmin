@@ -108,7 +108,7 @@ export default function UsersTable({ users }) {
   const handleUpdateUser = async () => {
     try {
       for (const itemId of selectedItems) {
-        router.push(`/dashboard/orders/${itemId}`);
+        router.push(`/dashboard/usermanagement/${itemId}`);
       }
     } catch (error) {
       console.log(
@@ -182,7 +182,7 @@ export default function UsersTable({ users }) {
                 <ul className="py-1" aria-labelledby="dropdown">
                   <li>
                     <button
-                      // onClick={handleUpdateProduct}
+                      onClick={handleUpdateUser}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Update
