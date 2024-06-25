@@ -3,6 +3,7 @@ import Pagination from "@/components/global/pagination/Pagination";
 import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
 import { FaCaretDown } from "react-icons/fa";
@@ -20,7 +21,7 @@ export default function UsersTable({ users }) {
 
   let data = users;
 
-  // const titleData = ["All", "Head Office", "Admin", "Branch Admin", "Manager"];
+  const router = useRouter();
   const titleData = ["All", "HQ", "AD", "BA", "MGR"];
 
   const handleTitleButtonClick = (title) => {
