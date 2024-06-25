@@ -49,6 +49,7 @@ export default function CategoriesTable({ AllCategories }) {
       };
       console.log(data);
       const response = await fetchApi("/category/addCategory", "POST", data);
+      
 
       setIsLoading(false);
 

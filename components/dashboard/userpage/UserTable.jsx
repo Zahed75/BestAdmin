@@ -1,12 +1,15 @@
 "use client";
+import Pagination from "@/components/global/pagination/Pagination";
+import { fetchApi } from "@/utils/FetchApi";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
 import { FaCaretDown } from "react-icons/fa";
 
-export default function UsersTable() {
+export default function UsersTable({ users }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [dataPerPage] = useState(5); 
+  const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
@@ -15,65 +18,10 @@ export default function UsersTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAction, setShowAction] = useState(false);
 
+  let data = users;
 
-  const data = [
-    {
-      id: 1,
-      userName: "samzaman",
-      name: "Samsuz Zaman",
-      role: "Manager",
-      email: "zaman400@gmail.com",
-      phone: "01700000000",
-    },
-    {
-      id: 2,
-      userName: "asadzaman",
-      name: "Asad Zaman",
-      role: "Employee",
-      email: "asad@gmail.com.bd",
-      phone: "01700074851",
-    },
-    {
-      id: 3,
-      userName: "sakib",
-      name: "Sakib Al Hasan",
-      role: "Administrator",
-      email: "sakib@bd.com",
-      phone: "01700694000",
-    },
-    {
-      id: 4,
-      userName: "tamim",
-      name: "Tamim Iqbal",
-      role: "Store Manager",
-      email: "tamim@gmail.com",
-      phone: "0178741259",
-    },
-    {
-      id: 5,
-      userName: "mashrafi",
-      name: "Mashrafi Bin Mortoza",
-      role: "Employee",
-      email: "nasgraf74@gmail.com",
-      phone: "01700074851",
-    },
-    {
-      id: 6,
-      userName: "mushfiq",
-      name: "Mushfiqur Rahim",
-      role: "Store Manager",
-      email: "mushi99@gmail.com",
-      phone: "0178741259",
-    },
-  ];
-
-  const titleData = [
-    "All",
-    "Administrator(5)",
-    "Manager(21)",
-    "Store Manager(71)",
-    "Employee(80)",
-  ];
+  // const titleData = ["All", "Head Office", "Admin", "Branch Admin", "Manager"];
+  const titleData = ["All", "HQ", "AD", "BA", "MGR"];
 
   const handleTitleButtonClick = (title) => {
     if (title === "All") {
@@ -83,8 +31,16 @@ export default function UsersTable() {
     }
   };
 
+  const filteredData = data?.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        value != null &&
+        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
+
   // Sorting function
-  const sortedData = data.sort((a, b) => {
+  const sortedData = filteredData.sort((a, b) => {
     if (!sortBy) return 0;
     if (sortDirection === "asc") {
       return a[sortBy].localeCompare(b[sortBy]);
@@ -116,7 +72,7 @@ export default function UsersTable() {
   };
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : [...data.map((item) => item.id)]);
+    setSelectedItems(selectAll ? [] : [...data.map((item) => item._id)]);
   };
 
   const handleSelectItem = (itemId) => {
@@ -128,6 +84,37 @@ export default function UsersTable() {
         ...selectedItems.slice(0, selectedIndex),
         ...selectedItems.slice(selectedIndex + 1),
       ]);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      for (const itemId of selectedItems) {
+        const response = await fetchApi(`/auth/users/${itemId}`, "DELETE");
+        if (response.status === 200) {
+          const newData = data.filter((item) => item._id !== itemId);
+          data = newData;
+        } else {
+          console.log(`Failed to delete category with ID ${itemId}.`);
+        }
+      }
+      setSelectedItems([]);
+      console.log("Selected categories deleted successfully!");
+    } catch (err) {
+      console.log("An error occurred while deleting selected categories.", err);
+    }
+  };
+
+  const handleUpdateUser = async () => {
+    try {
+      for (const itemId of selectedItems) {
+        router.push(`/dashboard/orders/${itemId}`);
+      }
+    } catch (error) {
+      console.log(
+        "An error occurred while updating selected categories.",
+        error
+      );
     }
   };
 
@@ -203,7 +190,7 @@ export default function UsersTable() {
                   </li>
                   <li>
                     <button
-                      // onClick={handleDeleteProduct}
+                      onClick={handleDeleteUser}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Delete
@@ -237,7 +224,15 @@ export default function UsersTable() {
             onClick={() => handleTitleButtonClick(title)}
             className="bg-gray-100 text-gray-500 px-10 py-2 text-md rounded-md hover:bg-black hover:text-white duration-700 shadow-md w-full md:w-auto"
           >
-            {title}
+            {title === "HQ"
+              ? "Head Office"
+              : title === "AD"
+              ? "Admin"
+              : title === "BA"
+              ? "Branch Admin"
+              : title === "MGR"
+              ? "Manager"
+              : title}
           </button>
         ))}
       </div>
@@ -268,17 +263,15 @@ export default function UsersTable() {
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("userName")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Username &#x21d5;
+                        Username
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("name")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Name &#x21d5;
+                        Name
                       </th>
                       <th
                         scope="col"
@@ -296,17 +289,10 @@ export default function UsersTable() {
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("phone")}
+                        onClick={() => handleSort("phoneNumber")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Phone &#x21d5;
-                      </th>
-
-                      <th
-                        scope="col"
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
-                      >
-                        Action
                       </th>
                     </tr>
                   </thead>
@@ -321,14 +307,14 @@ export default function UsersTable() {
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
                             <input
-                              id={`checkbox_${item.id}`}
+                              id={`checkbox_${item._id}`}
                               type="checkbox"
                               className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item.id)}
-                              onChange={() => handleSelectItem(item.id)}
+                              checked={selectedItems.includes(item._id)}
+                              onChange={() => handleSelectItem(item._id)}
                             />
                             <label
-                              htmlFor={`checkbox_${item.id}`}
+                              htmlFor={`checkbox_${item._id}`}
                               className="sr-only"
                             >
                               checkbox
@@ -336,36 +322,32 @@ export default function UsersTable() {
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap underline underline-offset-2 cursor-pointer">
-                          <Link href={`/dashboard/usermanagement/${item.id}`}>
-                            {item.userName}{" "}
+                          <Link href={`/dashboard/usermanagement/${item?._id}`}>
+                            {item?.userName}
                           </Link>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <div className="flex justify-start items-center">
-                            <img
+                            <Image
+                              width={30}
+                              height={30}
                               className="w-7 h-7 rounded-md"
-                              src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
+                              src={item?.profilePicture || ""}
                               alt=""
                             />
-                            <span className="ml-2">{item.name}</span>
+                            <span className="ml-2">
+                              {item?.firstName + item?.lastName}
+                            </span>
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.role}
+                          {item?.role}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.email}
+                          {item?.email}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.phone}
-                        </td>
-
-                        <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
-                          <button
-                            className={` px-2 py-1 rounded-md border border-black`}
-                          >
-                            View Details
-                          </button>
+                          {item?.phoneNumber}
                         </td>
                       </tr>
                     ))}
@@ -374,75 +356,16 @@ export default function UsersTable() {
               </div>
             </div>
           </div>
-          {/* page footer */}
-          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-y-3 my-10">
-            {/* page number */}
-            <div className="flex justify-start items-center font-semibold">
-              {showingText}
-            </div>
-            {/* Pagination */}
-            <div className="flex justify-end items-center">
-              <nav aria-label="Pagination">
-                <ul className="inline-flex border rounded-sm shadow-md">
-                  <li>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      &#x2190;
-                    </button>
-                  </li>
-
-                  <li>
-                    <button
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage - 1}
-                    </button>
-                    <button
-                      className={`py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none`}
-                    >
-                      {currentPage}
-                    </button>
-                    <button
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                      onClick={() => paginate(currentPage + 1)}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage + 1}
-                    </button>
-                    <span
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none cursor-not-allowed`}
-                    >
-                      ...
-                    </span>
-                    <button
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {Math.ceil(data.length / dataPerPage)}
-                    </button>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                    >
-                      &#x2192;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            dataPerPage={dataPerPage}
+            totalItems={sortedData.length}
+            paginate={paginate}
+            showingText={showingText}
+            data={sortedData}
+          />
         </div>
       </div>
-     
     </section>
   );
 }

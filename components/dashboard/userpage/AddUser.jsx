@@ -2,9 +2,28 @@
 import { useState } from "react";
 import AddUserDynamicHead from "./dynamic/AddUserDynamicHead";
 import { fetchApi } from "@/utils/FetchApi";
+import useImgBBUpload from "@/utils/useImgBBUpload";
+import Image from "next/image";
 
 export default function AddUser() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
+
+  const handleUserImgFileChange = async (event) => {
+    const file = event.target.files[0];
+    setIsLoading(true);
+
+    try {
+      const uploadedImageUrl = await handleUpload(file);
+      setProductImage(uploadedImageUrl);
+      setIsLoading(false);
+      console.log(uploadedImageUrl);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setIsLoading(false);
+    }
+  };
 
   const handleUserSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +37,10 @@ export default function AddUser() {
     );
 
     const data = {
-      email: formData.get("userName"),
+      userName:
+        formData.get("userName") ||
+        formData.get("firstName").replace(/\s/g, "").toLowerCase() +
+          formData.get("lastName").replace(/\s/g, "").toLowerCase(),
       outletId: "",
       role: formData.get("userRole"),
       firstName: formData.get("firstName"),
@@ -26,18 +48,19 @@ export default function AddUser() {
       phoneNumber: formData.get("phoneNumber"),
       password: formData.get("password"),
       email: formData.get("email"),
-      profilePicture: "",
+      profilePicture: imageUrl || "",
     };
 
     try {
       const response = fetchApi("/auth/userManage", "POST", data);
 
       if (response) {
+        setIsLoading(false);
         console.log(response);
-        console.log("success!");
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
@@ -58,40 +81,56 @@ export default function AddUser() {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Personal info</h5>
               <div className="grid grid-cols-3 justify-between items-start gap-5">
-                <div>
-                  <input type="file" id="file-upload" className="hidden " />
-                  <label
-                    for="file-upload"
-                    className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md"
-                  >
-                    <svg
-                      width="21"
-                      height="20"
-                      viewBox="0 0 21 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt="user"
+                    width={145}
+                    height={145}
+                    className="w-[145px] h-[145px] object-cover rounded-md"
+                  />
+                ) : (
+                  <div>
+                    <input
+                      type="file"
+                      id="file-upload"
+                      name="file-upload"
+                      onChange={handleUserImgFileChange}
+                      className="hidden "
+                    />
+                    <label
+                      for="file-upload"
+                      className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md"
                     >
-                      <path
-                        d="M10.0925 2.4917C6.35684 2.4917 4.48901 2.4917 3.32849 3.65177C2.16797 4.81185 2.16797 6.67896 2.16797 10.4132C2.16797 14.1473 2.16797 16.0145 3.32849 17.1746C4.48901 18.3347 6.35684 18.3347 10.0925 18.3347C13.8281 18.3347 15.6959 18.3347 16.8565 17.1746C18.017 16.0145 18.017 14.1473 18.017 10.4132V9.99626"
-                        stroke="black"
-                        strokeWidth="1.25"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M4.66602 17.4913C8.17433 13.5319 12.117 8.28093 17.9993 12.2192"
-                        stroke="black"
-                        strokeWidth="1.25"
-                      />
-                      <path
-                        d="M15.4982 1.66504V8.33847M18.8362 4.98087L12.1602 4.99327"
-                        stroke="black"
-                        strokeWidth="1.25"
-                        strokeLinecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                  </label>
-                </div>
+                      <svg
+                        width="21"
+                        height="20"
+                        viewBox="0 0 21 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10.0925 2.4917C6.35684 2.4917 4.48901 2.4917 3.32849 3.65177C2.16797 4.81185 2.16797 6.67896 2.16797 10.4132C2.16797 14.1473 2.16797 16.0145 3.32849 17.1746C4.48901 18.3347 6.35684 18.3347 10.0925 18.3347C13.8281 18.3347 15.6959 18.3347 16.8565 17.1746C18.017 16.0145 18.017 14.1473 18.017 10.4132V9.99626"
+                          stroke="black"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M4.66602 17.4913C8.17433 13.5319 12.117 8.28093 17.9993 12.2192"
+                          stroke="black"
+                          strokeWidth="1.25"
+                        />
+                        <path
+                          d="M15.4982 1.66504V8.33847M18.8362 4.98087L12.1602 4.99327"
+                          stroke="black"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </label>
+                  </div>
+                )}
 
                 <div className="col-span-2 grid grid-cols-2 justify-between items-center gap-5">
                   <div className="flex flex-col col-span-2 space-y-1 w-full">
@@ -105,7 +144,6 @@ export default function AddUser() {
                       type="text"
                       id="userName"
                       name="userName"
-                      required
                       placeholder="username"
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
                     />
@@ -170,11 +208,10 @@ export default function AddUser() {
                         required
                         className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                       >
+                        <option value={"BA"}>Branch Admin</option>
                         <option value={"HQ"}>Head Office</option>
                         <option value={"AD"}>Admin</option>
-                        <option value={"BA"}>Branch Admin</option>
                         <option value={"MGR"}>Manager</option>
-                        <option value={"CUS"}>Customer</option>
                       </select>
                     </div>
                   </div>
@@ -206,7 +243,6 @@ export default function AddUser() {
                       type="text"
                       id="lastName"
                       name="lastName"
-                      required
                       placeholder="Last Name"
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
                     />
@@ -223,6 +259,7 @@ export default function AddUser() {
                       id="phoneNumber"
                       name="phoneNumber"
                       required
+                      defaultValue={880}
                       placeholder="Phone Number"
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
                     />

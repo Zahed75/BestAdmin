@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import categoryReducer from "@/redux/slice/categorySlice";
 import productsReducer from "@/redux/slice/productsSlice";
 import ordersReducer from "@/redux/slice/orderSlice";
-import usersReducer from "@/redux/slice/userSlice";
+import usersReducer from "@/redux/slice/usersSlice";
 
 const store = configureStore({
   reducer: {

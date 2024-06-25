@@ -35,16 +35,15 @@ export default function OverView() {
             </div>
           </div>
         </div>
-        {/* <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
-          <p className="text-[#6B7280] mb-2">Variations Sold</p>
+        <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
+          <p className="text-[#6B7280] mb-2">Total Order Today</p>
           <div className="flex justify-between items-center">
-            <h1 className="text-[30px] font-bold">965</h1>
+            <h1 className="text-[30px] font-bold">15</h1>
             <div className="flex justify-center text-red-500 text-md">
-              <p className="">+5.6%</p>
               <p className="">&#x2193;</p>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
     </section>
   );
