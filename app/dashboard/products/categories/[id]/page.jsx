@@ -25,7 +25,7 @@ export default function DynamicPage({ params }) {
           error
         );
       });
-  }, []);
+  });
 
   return (
     <main className="w-full my-5">

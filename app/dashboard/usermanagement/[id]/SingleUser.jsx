@@ -128,7 +128,7 @@ export default function SingleUser({ user }) {
                             stroke="black"
                             strokeWidth="1.25"
                             strokeLinecap="round"
-                            stroke-linejoin="round"
+                            strokeLinejoin="round"
                           />
                         </svg>
                       </label>

@@ -366,14 +366,14 @@ export default function CategoriesTable({ AllCategories }) {
                         stroke="currentColor"
                         strokeWidth="1.66667"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M6 6L18 18"
                         stroke="currentColor"
                         strokeWidth="1.66667"
                         strokeLinecap="round"
-                        stroke-linejoin="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                   </button>

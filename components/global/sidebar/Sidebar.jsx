@@ -591,21 +591,21 @@ export default function Sidebar() {
                       stroke="black"
                       strokeWidth="1.5"
                       strokeLinecap="round"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                     />
                     <path
                       d="M15 8L9 14"
                       stroke="black"
                       strokeWidth="1.5"
                       strokeLinecap="round"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                     />
                     <path
                       d="M15 14H14.991M9.00897 8H9"
                       stroke="black"
                       strokeWidth="2"
                       strokeLinecap="round"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                   <svg
@@ -625,21 +625,21 @@ export default function Sidebar() {
                       stroke="white"
                       strokeWidth="1.5"
                       strokeLinecap="round"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                     />
                     <path
                       d="M15 8L9 14"
                       stroke="white"
                       strokeWidth="1.5"
                       strokeLinecap="round"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                     />
                     <path
                       d="M15 14H14.991M9.00897 8H9"
                       stroke="white"
                       strokeWidth="2"
                       strokeLinecap="round"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                 </span>
