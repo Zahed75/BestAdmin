@@ -3,14 +3,38 @@ import InventoryTable from "@/components/dashboard/outletspage/dynamic/Inventory
 import OutletsDynamicHead from "@/components/dashboard/outletspage/dynamic/OutletsDynamicHead";
 import Image from "next/image";
 import dum from "@/public/image/dum.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useImgBBUpload from "@/utils/useImgBBUpload";
 import Loading from "../../loading";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "@/redux/slice/usersSlice";
+import { fetchApi } from "@/utils/FetchApi";
+import { useRouter } from "next/navigation";
+import { set } from "date-fns";
 
-export default function SingleOutlet() {
+export default function SingleOutlet({ outlet }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [managerEmail, setManagerEmail] = useState("");
+  const [managerPhone, setManagerPhone] = useState("");
+  const [selectedManager, setSelectedManager] = useState(null);
 
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state?.users?.users?.users);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    setManagerEmail(outlet?.outletManager?.email);
+    setManagerPhone(outlet?.outletManager?.phoneNumber);
+    setSelectedManager(outlet?.outletManager?._id);
+  }, [outlet]);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  const OutletManager = users?.filter((user) => user?.role === "BA");
 
   const handleUserImgFileChange = async (event) => {
     const file = event.target.files[0];
@@ -26,15 +50,61 @@ export default function SingleOutlet() {
       setIsLoading(false);
     }
   };
+  const handleManagerChange = (event) => {
+    const managerId = event.target.value;
+    const manager = users?.find((user) => user?._id === managerId);
+    if (manager) {
+      setManagerEmail(manager.email);
+      setManagerPhone(manager.phoneNumber);
+      setSelectedManager(manager);
+    } else {
+      setManagerEmail("");
+      setManagerPhone("");
+      setSelectedManager(null);
+    }
+  };
+
+  const handleUpdateOutlet = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData(event.target);
+    const data = {
+      outletName: formData.get("outletName"),
+      outletLocation: formData.get("outletLocation"),
+      outletManager: selectedManager?._id,
+      outletManagerEmail: managerEmail,
+      outletManagerPhone: managerPhone,
+      outletImage: outlet?.outletImage || imageUrl,
+      cityName: formData.get("cityName"),
+    };
+
+    try {
+      const response = fetchApi(
+        `/outlet/updateOutlet/${outlet?._id}`,
+        "PUT",
+        data
+      );
+
+      if (response) {
+        setIsLoading(false);
+        router.push("/dashboard/outlets");
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+  //   /outlet/updateOutlet/
   return (
     <main className="">
       {isLoading ? (
         <Loading />
       ) : (
         <div>
-          <form action="" className="w-full">
+          <form onSubmit={handleUpdateOutlet} action="" className="w-full">
             <section className="mt-10 flex justify-between items-center">
-              <OutletsDynamicHead />
+              <OutletsDynamicHead outlet={outlet} />
               <button
                 type="submit"
                 className="text-sm text-white bg-black rounded-md px-3 py-2 text-nowrap"
@@ -48,9 +118,9 @@ export default function SingleOutlet() {
                 <div className="p-5 border bg-white rounded-md shadow-md w-full">
                   <h5 className="text-md font-bold mb-3">Outlet info</h5>
                   <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start gap-5">
-                    {/* {user?.profilePicture ? (
+                    {outlet?.outletImage ? (
                       <Image
-                        src={user?.profilePicture}
+                        src={outlet?.outletImage}
                         alt="user"
                         width={145}
                         height={145}
@@ -97,7 +167,7 @@ export default function SingleOutlet() {
                           </svg>
                         </label>
                       </div>
-                    )} */}
+                    )}
 
                     <div className="col-span-2 grid grid-cols-2 justify-between items-center gap-5">
                       <div className="flex flex-col space-y-1 w-full">
@@ -110,7 +180,8 @@ export default function SingleOutlet() {
                         <input
                           type="text"
                           id="outletName"
-                          defaultValue={"BEL Banani"}
+                          name="outletName"
+                          defaultValue={outlet?.outletName}
                           className="border border-gray-300 rounded-md p-2 focus:outline-none "
                         />
                       </div>
@@ -124,7 +195,23 @@ export default function SingleOutlet() {
                         <input
                           type="text"
                           id="outletLocation"
-                          defaultValue={"B/54 Road-5, Dhaka"}
+                          name="outletLocation"
+                          defaultValue={outlet?.outletLocation}
+                          className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                        />
+                      </div>
+                      <div className="flex flex-col space-y-1 w-full">
+                        <label
+                          htmlFor="cityName"
+                          className="text-sm font-semibold text-gray-600"
+                        >
+                          City
+                        </label>
+                        <input
+                          type="text"
+                          id="cityName"
+                          name="cityName"
+                          defaultValue={outlet?.cityName}
                           className="border border-gray-300 rounded-md p-2 focus:outline-none "
                         />
                       </div>
@@ -140,7 +227,7 @@ export default function SingleOutlet() {
                             width={32}
                             height={32}
                             className="w-8 h-8"
-                            src={dum}
+                            src={outlet?.outletImage || dum}
                             alt="img"
                           />
                           <div className=" w-full">
@@ -148,14 +235,20 @@ export default function SingleOutlet() {
                               <select
                                 id="outletName"
                                 name="outletName"
+                                onChange={handleManagerChange}
                                 required
                                 className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                               >
-                                <option value={"Banani"}>Banani</option>
-                                <option value={"Gulshan"}>Gulshan</option>
-                                <option value={"Motizhill"}>Motizhill</option>
-                                <option value={"Merul"}>Merul</option>
-                                <option value={"Demra"}>Demra</option>
+                                <option value={outlet?.outletManager?._id}>
+                                  {outlet?.outletManager?.firstName +
+                                    " " +
+                                    outlet?.outletManager?.lastName}
+                                </option>
+                                {OutletManager?.map((user, i) => (
+                                  <option key={i} value={user?._id}>
+                                    {user?.firstName + " " + user?.lastName}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                           </div>
@@ -171,13 +264,14 @@ export default function SingleOutlet() {
                         <input
                           type="text"
                           id="managerPhoneNumber"
-                          defaultValue={"0165428413"}
+                          name="managerPhoneNumber"
+                          defaultValue={managerPhone}
                           className="border border-gray-300 rounded-md p-2 focus:outline-none "
                         />
                       </div>
                       <div className="flex flex-col space-y-1 w-full">
                         <label
-                          htmlFor="outletLocation"
+                          htmlFor="managerEmail"
                           className="text-sm font-semibold text-gray-600"
                         >
                           Manager Email Address
@@ -185,7 +279,8 @@ export default function SingleOutlet() {
                         <input
                           type="text"
                           id="managerEmail"
-                          defaultValue={"managerbanani@best.com.bd"}
+                          name="managerEmail"
+                          defaultValue={managerEmail}
                           className="border border-gray-300 rounded-md p-2 focus:outline-none "
                         />
                       </div>

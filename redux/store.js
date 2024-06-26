@@ -4,6 +4,7 @@ import productsReducer from "@/redux/slice/productsSlice";
 import ordersReducer from "@/redux/slice/orderSlice";
 import usersReducer from "@/redux/slice/usersSlice";
 import authReducer from "@/redux/slice/authSlice";
+import outletsReducer from "@/redux/slice/outletSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     orders: ordersReducer,
     users: usersReducer,
     auth: authReducer,
+    outlets: outletsReducer,
   },
 });
 

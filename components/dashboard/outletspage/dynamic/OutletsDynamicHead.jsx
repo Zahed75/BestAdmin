@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function OutletsDynamicHead({ id, title }) {
+export default function OutletsDynamicHead({ outlet }) {
   return (
     <>
       <div className="flex flex-col space-y-2">
@@ -18,7 +18,9 @@ export default function OutletsDynamicHead({ id, title }) {
             </svg>
           </Link>
 
-          <h1 className="text-lg md:text-5xl font-semibold ml-5">BEL Banani</h1>
+          <h1 className="text-lg md:text-5xl font-semibold ml-5">
+            {outlet?.outletName}
+          </h1>
         </div>
       </div>
     </>

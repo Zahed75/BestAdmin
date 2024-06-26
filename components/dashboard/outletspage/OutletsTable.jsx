@@ -5,8 +5,9 @@ import Image from "next/image";
 import { FaCaretDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Pagination from "@/components/global/pagination/Pagination";
+import { fetchApi } from "@/utils/FetchApi";
 
-export default function OutletsTable() {
+export default function OutletsTable({ AllOutlets }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10); // Change this value to adjust the number of rows per page
   const [sortBy, setSortBy] = useState(null);
@@ -18,46 +19,15 @@ export default function OutletsTable() {
 
   const router = useRouter();
 
-  const data = [
-    {
-      id: 1,
-      outletName: "BEL Banani",
-      address: "House-01, Road-02",
-      city: "Dhaka",
-      phoneNumber: "01913865741",
-    },
-    {
-      id: 2,
-      outletName: "BEL Gulshan",
-      address: "House-41, Road-84",
-      city: "Dhaka",
-      phoneNumber: "01745821569",
-    },
-    {
-      id: 3,
-      outletName: "BEL GEC",
-      address: "House-145/1, Road-96",
-      city: "Chittagong",
-      phoneNumber: "01985621569",
-    },
-    {
-      id: 4,
-      outletName: "BEL Dhanmondi",
-      address: "House-41, Road-84",
-      city: "Dhaka",
-      phoneNumber: "01745821569",
-    },
-  ];
+  const data = AllOutlets;
 
-  // Filter function
-  const filteredData = data.filter((item) => {
-    return (
-      item.outletName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.phoneNumber.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+  const filteredData = data?.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        value != null &&
+        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
 
   // Sorting function
   const sortedData = filteredData.sort((a, b) => {
@@ -93,7 +63,7 @@ export default function OutletsTable() {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : [...data.map((item) => item.id)]);
+    setSelectedItems(selectAll ? [] : [...data.map((item) => item._id)]);
   };
 
   const handleSelectItem = (itemId) => {
@@ -108,10 +78,10 @@ export default function OutletsTable() {
     }
   };
 
-  const handleDeleteUser = async () => {
+  const handleDeleteOutlet = async () => {
     try {
       for (const itemId of selectedItems) {
-        const response = await fetchApi(`/auth/users/${itemId}`, "DELETE");
+        const response = await fetchApi(`/outlet/deleteOutlet/${itemId}`, "DELETE");
         if (response.status === 200) {
           const newData = data.filter((item) => item._id !== itemId);
           router.push("/dashboard/outlets");
@@ -126,10 +96,10 @@ export default function OutletsTable() {
     }
   };
 
-  const handleUpdateUser = async () => {
+  const handleUpdateOutlet = async () => {
     try {
       for (const itemId of selectedItems) {
-        router.push(`/dashboard/usermanagement/${itemId}`);
+        router.push(`/dashboard/outlets/${itemId}`);
       }
     } catch (error) {
       console.log(
@@ -193,7 +163,7 @@ export default function OutletsTable() {
                 <ul className="py-1" aria-labelledby="dropdown">
                   <li>
                     <button
-                      onClick={handleUpdateUser}
+                      onClick={handleUpdateOutlet}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Update
@@ -201,7 +171,7 @@ export default function OutletsTable() {
                   </li>
                   <li>
                     <button
-                      onClick={handleDeleteUser}
+                      onClick={handleDeleteOutlet}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Delete
@@ -212,7 +182,7 @@ export default function OutletsTable() {
             </div>
             <div className="text-white border border-black bg-black rounded-lg shadow-md">
               <Link
-                href="/dashboard/usermanagement/addoutlet"
+                href="/dashboard/outlets/addoutlet"
                 className="flex justify-center items-center px-2 py-1"
               >
                 <span className="text-xl font-semibold mr-1">+</span>{" "}
@@ -255,21 +225,21 @@ export default function OutletsTable() {
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("address")}
+                        onClick={() => handleSort("outletLocation")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Address &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("city")}
+                        onClick={() => handleSort("cityName")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         City &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("phoneNumber")}
+                        onClick={() => handleSort("outletManagerPhone")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Phone Number &#x21d5;
@@ -287,14 +257,14 @@ export default function OutletsTable() {
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
                             <input
-                              id={`checkbox_${item.id}`}
+                              id={`checkbox_${item._id}`}
                               type="checkbox"
                               className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item.id)}
-                              onChange={() => handleSelectItem(item.id)}
+                              checked={selectedItems.includes(item._id)}
+                              onChange={() => handleSelectItem(item._id)}
                             />
                             <label
-                              htmlFor={`checkbox_${item.id}`}
+                              htmlFor={`checkbox_${item._id}`}
                               className="sr-only"
                             >
                               checkbox
@@ -302,27 +272,27 @@ export default function OutletsTable() {
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <Link href={`/dashboard/outlets/${item.id}`}>
+                          <Link href={`/dashboard/outlets/${item._id}`}>
                             <div className="flex justify-start items-center">
                               <Image
                                 width={28}
                                 height={28}
                                 className="w-7 h-7 rounded-md"
-                                src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
+                                src={item?.outletImage}
                                 alt=""
                               />
-                              <span className="ml-2">{item.outletName}</span>
+                              <span className="ml-2">{item?.outletName}</span>
                             </div>
                           </Link>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.address}
+                          {item?.outletLocation}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.city}
+                          {item?.cityName}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.phoneNumber}
+                          {item?.outletManagerPhone}
                         </td>
                       </tr>
                     ))}
