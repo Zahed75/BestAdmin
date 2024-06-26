@@ -19,10 +19,10 @@ export default function UserManagementPage() {
   return (
     <main>
       {AllUsers.length > 0 ? (
-        <>
+        <div>
           <PageHead title="User Management" />
           <UsersTable users={AllUsers} />
-        </>
+        </div>
       ) : (
         <Skeleton />
       )}

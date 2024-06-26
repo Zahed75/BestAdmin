@@ -2,6 +2,7 @@
 import Skeleton from "@/components/global/skeleton/Skeleton";
 import { fetchCategories } from "@/redux/slice/categorySlice";
 import { fetchApi } from "@/utils/FetchApi";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -246,7 +247,9 @@ export default function SingleCtgPage({ category }) {
                       <div className="p-3 border bg-white rounded-md shadow-md w-full mb-5 md:col-span-2">
                         <div>
                           <div className="flex justify-start items-center gap-3">
-                            <img
+                            <Image
+                              width={50}
+                              height={50}
                               src="https://i.ibb.co/2k6sk2y/cropped-Favicon.png"
                               alt="cropped-Favicon"
                               border="0"

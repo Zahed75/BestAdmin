@@ -1,6 +1,7 @@
 "use client";
 import InventoryTable from "@/components/dashboard/outletspage/dynamic/InventoryTable";
 import OutletsDynamicHead from "@/components/dashboard/outletspage/dynamic/OutletsDynamicHead";
+import Image from "next/image";
 
 export default function Page() {
   return (
@@ -92,7 +93,9 @@ export default function Page() {
                     Outlet Manager
                   </label>
                   <div className="flex justify-start border border-gray-300 rounded-md p-2 gap-3">
-                    <img
+                    <Image
+                      width={32}
+                      height={32}
                       className="w-8 h-8"
                       src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
                       alt="img"

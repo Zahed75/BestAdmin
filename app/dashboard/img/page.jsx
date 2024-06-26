@@ -1,7 +1,7 @@
 "use client";
-import useImgBBUpload from '@/utils/useImgBBUpload';
-import { useState } from 'react';
-
+import useImgBBUpload from "@/utils/useImgBBUpload";
+import Image from "next/image";
+import { useState } from "react";
 
 export default function YourComponent() {
   const [image, setImage] = useState(null);
@@ -19,13 +19,19 @@ export default function YourComponent() {
     <main className="my-10">
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUploadClick} disabled={uploading}>
-        {uploading ? 'Uploading...' : 'Upload Image'}
+        {uploading ? "Uploading..." : "Upload Image"}
       </button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {imageUrl && (
         <div>
           <p>Image uploaded successfully:</p>
-          <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%' }} />
+          <Image
+            width={200}
+            height={200}
+            src={imageUrl}
+            alt="Uploaded"
+            style={{ maxWidth: "100%" }}
+          />
         </div>
       )}
     </main>

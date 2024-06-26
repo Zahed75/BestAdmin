@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import Image from "next/image";
 
 export default function InventoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -272,7 +273,6 @@ export default function InventoryTable() {
   };
   return (
     <section className="w-full my-5">
-    
       <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
         <div className="flex justify-between md:justify-start items-center w-full">
           <h5 className="text-lg md:text-2xl font-bold">Inventory</h5>
@@ -444,7 +444,9 @@ export default function InventoryTable() {
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <Link href={`/dashboard/outlets/${item.id}`}>
                             <div className="flex justify-start items-center">
-                              <img
+                              <Image
+                                width={30}
+                                height={30}
                                 className="w-7 h-7 rounded-md"
                                 src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
                                 alt=""

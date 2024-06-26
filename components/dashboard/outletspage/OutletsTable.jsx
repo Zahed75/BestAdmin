@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import Image from "next/image";
 
 export default function OutletsTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -277,7 +278,9 @@ export default function OutletsTable() {
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <Link href={`/dashboard/outlets/${item.id}`}>
                             <div className="flex justify-start items-center">
-                              <img
+                              <Image
+                                width={28}
+                                height={28}
                                 className="w-7 h-7 rounded-md"
                                 src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
                                 alt=""

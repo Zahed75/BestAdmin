@@ -16,7 +16,7 @@ export default function AddUser() {
 
     try {
       const uploadedImageUrl = await handleUpload(file);
-      setProductImage(uploadedImageUrl);
+
       setIsLoading(false);
       console.log(uploadedImageUrl);
     } catch (error) {

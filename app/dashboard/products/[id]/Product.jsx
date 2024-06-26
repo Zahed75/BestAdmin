@@ -284,7 +284,9 @@ export default function Product({ product }) {
                     <h5 className="text-md font-bold mb-3">Featured Image</h5>
                     {product?.productImage && (
                       <div className="flex flex-col w-full">
-                        <img
+                        <Image
+                          width={200}
+                          height={200}
                           src={product?.productImage}
                           alt="Uploaded"
                           className="w-full h-full rounded-md"
@@ -294,7 +296,9 @@ export default function Product({ product }) {
                     {!product?.productImage && (
                       <div className="flex flex-col w-full">
                         {imageUrl && (
-                          <img
+                          <Image
+                            width={200}
+                            height={200}
                             src={imageUrl}
                             alt="Uploaded"
                             className="w-full h-full rounded-md"
@@ -353,7 +357,9 @@ export default function Product({ product }) {
 
                     <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
                       {product?.productGallery?.map((image, index) => (
-                        <img
+                        <Image
+                          width={100}
+                          height={100}
                           key={index}
                           src={image}
                           alt="Uploaded"
@@ -361,7 +367,9 @@ export default function Product({ product }) {
                         />
                       ))}
                       {productGallery.map((image, index) => (
-                        <img
+                        <Image
+                          width={100}
+                          height={100}
                           key={index}
                           src={image}
                           alt="Uploaded"
@@ -414,7 +422,9 @@ export default function Product({ product }) {
                     {!product?.productGallery && (
                       <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
                         {productGallery.map((image, index) => (
-                          <img
+                          <Image
+                            width={100}
+                            height={100}
                             key={index}
                             src={image}
                             alt="Uploaded"
@@ -476,7 +486,9 @@ export default function Product({ product }) {
                     <div className="p-3 border bg-white rounded-md shadow-md w-full mb-5 md:col-span-2">
                       <div>
                         <div className="flex justify-start items-center gap-3">
-                          <img
+                          <Image
+                            width={50}
+                            height={50}
                             src="https://i.ibb.co/2k6sk2y/cropped-Favicon.png"
                             alt="cropped-Favicon"
                             border="0"

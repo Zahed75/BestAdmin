@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function AddProductPage() {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -311,7 +312,9 @@ export default function AddProductPage() {
                   <h5 className="text-md font-bold mb-3">Featured Image</h5>
                   <div className="flex flex-col w-full">
                     {imageUrl && (
-                      <img
+                      <Image
+                        width={200}
+                        height={200}
                         src={imageUrl}
                         alt="Uploaded"
                         className="w-full h-full rounded-md"
@@ -375,7 +378,9 @@ export default function AddProductPage() {
                   <h5 className="text-md font-bold mb-3">Image Gallery</h5>
                   <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
                     {productGallery.map((image, index) => (
-                      <img
+                      <Image
+                        width={90}
+                        height={90}
                         key={index}
                         src={image}
                         alt="Uploaded"
@@ -437,7 +442,9 @@ export default function AddProductPage() {
                   <div className="p-3 border bg-white rounded-md shadow-md w-full mb-5 md:col-span-2">
                     <div>
                       <div className="flex justify-start items-center gap-3">
-                        <img
+                        <Image
+                          width={50}
+                          height={50}
                           src="https://i.ibb.co/2k6sk2y/cropped-Favicon.png"
                           alt="cropped-Favicon"
                           border="0"
@@ -459,7 +466,9 @@ export default function AddProductPage() {
                         <div className="col-span-2">
                           <span>{descriptionInputValue}</span>
                         </div>
-                        <img
+                        <Image
+                          width={200}
+                          height={200}
                           src={
                             imageUrl ||
                             "https://i.ibb.co/bJXhK7w/3256026-200.png"
