@@ -4,9 +4,14 @@ import AddUserDynamicHead from "./dynamic/AddUserDynamicHead";
 import { fetchApi } from "@/utils/FetchApi";
 import useImgBBUpload from "@/utils/useImgBBUpload";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 export default function AddUser() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const user = useSelector((state) => state.auth.user);
+  const router = useRouter();
 
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
 
@@ -56,7 +61,7 @@ export default function AddUser() {
 
       if (response) {
         setIsLoading(false);
-        console.log(response);
+        router.push("/dashboard/usermanagement");
       }
     } catch (error) {
       console.log(error);

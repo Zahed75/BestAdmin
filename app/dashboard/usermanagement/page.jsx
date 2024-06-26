@@ -20,7 +20,7 @@ export default function UserManagementPage() {
     <main>
       {AllUsers.length > 0 ? (
         <div>
-          <PageHead title="User Management" />
+          <PageHead pageHead="User Management" />
           <UsersTable users={AllUsers} />
         </div>
       ) : (
