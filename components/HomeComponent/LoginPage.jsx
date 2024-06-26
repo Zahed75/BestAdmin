@@ -40,7 +40,7 @@ export default function LoginPage() {
           <div>
             <h3 className="text-2xl font-bold ">Login to your account!</h3>
             <p className="text-sm text-[#6B7280] pt-2">
-              Lorem ipsum dolor sit amet consectetur. Risus enim scelerisque
+              Lorem ipsum dolor amet consectetur. Risus enim scelerisque
               fermentum fermentum.
             </p>
           </div>
