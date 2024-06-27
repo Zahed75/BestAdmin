@@ -1,5 +1,5 @@
 "use client";
-import CouponTab from "@/components/dashboard/coupon/dynamic/CouponTab";
+// import CouponTab from "@/components/dashboard/coupon/dynamic/CouponTab";
 import SettingTab from "@/components/dashboard/settings/SettingsTab";
 import PageHead from "@/components/global/pageHead/PageHead";
 import { useState } from "react";
@@ -983,7 +983,7 @@ export default function SettingOption() {
     <div>
       <PageHead pageHead="Settings" />
       <div>
-        <CouponTab tabs={couponDataTabs} />
+        {/* <CouponTab tabs={couponDataTabs} /> */}
       </div>
     </div>
   );

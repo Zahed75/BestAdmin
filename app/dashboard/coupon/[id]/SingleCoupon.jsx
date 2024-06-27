@@ -1,15 +1,9 @@
 "use client";
+import CouponDynamicHead from "@/components/dashboard/coupon/dynamic/CouponDynamicHead";
+import { useState } from "react";
 
-import { useState, useEffect } from "react";
-import CouponTab from "@/components/dashboard/coupon/dynamic/CouponTab";
-import { format } from "date-fns";
-import { DayPicker } from "react-day-picker";
-import "react-day-picker/dist/style.css";
-import CustomTimePicker from "./CustomTimePicker";
-
-export default function CouponOption() {
-  const [selected, setSelected] = useState(0);
-
+export default function SingleCoupon() {
+  const [activeTab, setActiveTab] = useState("general");
   const [productInputValue, setProductInputValue] = useState("");
   const [productValueArray, setProductValueArray] = useState([
     "Conion delta selling fan 56 inch",
@@ -50,17 +44,61 @@ export default function CouponOption() {
 
   const freeShippingText =
     "Check this box if the coupon grants free shipping. A free shipping method must be enabled in your shipping zone and be set to require 'a valid free shipping coupon' (see the 'Free Shipping Requires' setting).";
+  return (
+    <main>
+      <form action="" method="post" className="w-full">
+        <section className="mt-10 flex justify-between items-center">
+          <CouponDynamicHead />
+          <button className="text-sm text-white bg-black rounded-md px-3 py-2">
+            Save Changes
+          </button>
+        </section>
+        <section>
+          <div className="flex gap-x-2 my-5">
+            <button
+              type="button"
+              onClick={() => setActiveTab("general")}
+              className={`${
+                activeTab === "general"
+                  ? "border-gray-500 text-black"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
+            >
+              General
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("usage")}
+              className={`${
+                activeTab === "usage"
+                  ? "border-gray-500 text-black"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
+            >
+              Usage Restrictions
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("limits")}
+              className={`${
+                activeTab === "limits"
+                  ? "border-gray-500 text-black"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
+            >
+              Usage Limits
+            </button>
+          </div>
+        </section>
 
-  const couponDataTabs = [
-    {
-      title: "General",
-      content: (
-        <section className="border bg-white rounded-md shadow-md p-5 my-10">
+        <section
+          className={`
+        ${activeTab === "general" ? "block" : "hidden"} 
+        border bg-white rounded-md shadow-md p-5 my-10
+      `}
+        >
           <div className="flex justify-between items-center mt-5">
             <h2 className="text-black font-bold text-2xl">General</h2>
-            <button className="text-sm text-white bg-black rounded-md px-3 py-2">
-              Save Changes
-            </button>
           </div>
           <div className="my-10">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center my-5">
@@ -114,7 +152,7 @@ export default function CouponOption() {
             <div className="grid grid-cols-1 md:grid-cols-3 justify-start items-start my-5">
               <h4 className="text-gray-600 text-sm ">Coupon Expiry Date</h4>
               <div className="md:col-span-2">
-                <div className="grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-2">
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-2">
                   <div className="border border-gray-300 shadow-lg rounded-md p-2">
                     <DayPicker
                       mode="single"
@@ -126,24 +164,21 @@ export default function CouponOption() {
                   <div className="border border-gray-300 shadow-lg rounded-md p-2">
                     <CustomTimePicker />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </section>
-      ),
-    },
-    {
-      title: "Usage Restrictions",
-      content: (
-        <section className="border bg-white rounded-md shadow-md p-5 my-10">
+        <section
+          className={`
+        ${activeTab === "usage" ? "block" : "hidden"} 
+        border bg-white rounded-md shadow-md p-5 my-10
+      `}
+        >
           <div className="flex justify-between items-center mt-5">
             <h2 className="text-black font-bold text-2xl">
               Usage Restrictions
             </h2>
-            <button className="text-sm text-white bg-black rounded-md px-3 py-2">
-              Save Changes
-            </button>
           </div>
           <div className="my-10">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center my-5">
@@ -283,17 +318,14 @@ export default function CouponOption() {
             </div> */}
           </div>
         </section>
-      ),
-    },
-    {
-      title: "Usage Limits",
-      content: (
-        <section className="border bg-white rounded-md shadow-md p-5 my-10">
+        <section
+          className={`
+        ${activeTab === "limits" ? "block" : "hidden"} 
+        border bg-white rounded-md shadow-md p-5 my-10
+      `}
+        >
           <div className="flex justify-between items-center mt-5">
             <h2 className="text-black font-bold text-2xl">Usage Limits</h2>
-            <button className="text-sm text-white bg-black rounded-md px-3 py-2">
-              Save Changes
-            </button>
           </div>
           <div className="my-10">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center my-5">
@@ -337,14 +369,7 @@ export default function CouponOption() {
             </div>
           </div>
         </section>
-      ),
-    },
-  ];
-  return (
-    <div>
-      <div>
-        <CouponTab tabs={couponDataTabs} />
-      </div>
-    </div>
+      </form>
+    </main>
   );
 }

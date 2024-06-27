@@ -1,16 +1,18 @@
 "use client";
+import Pagination from "@/components/global/pagination/Pagination";
 import Link from "next/link";
 import { useState } from "react";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import { FaCaretDown } from "react-icons/fa";
 
 export default function CouponTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [dataPerPage] = useState(5);
+  const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [showAction, setShowAction] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const data = [
     {
@@ -95,8 +97,15 @@ export default function CouponTable() {
     },
   ];
 
-  // Sorting function
-  const sortedData = data.sort((a, b) => {
+  const filteredData = data?.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        value != null &&
+        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
+
+  const sortedData = filteredData.sort((a, b) => {
     if (!sortBy) return 0;
     if (sortDirection === "asc") {
       return a[sortBy].localeCompare(b[sortBy]);
@@ -144,26 +153,37 @@ export default function CouponTable() {
     }
   };
 
-  // make pdf
-  const exportPdf = async () => {
-    const doc = new jsPDF({ orientation: "landscape" });
+  // const handleDeleteOutlet = async () => {
+  //   try {
+  //     for (const itemId of selectedItems) {
+  //       const response = await fetchApi(`/outlet/deleteOutlet/${itemId}`, "DELETE");
+  //       if (response.status === 200) {
+  //         const newData = data.filter((item) => item._id !== itemId);
+  //         router.push("/dashboard/outlets");
+  //       } else {
+  //         console.log(`Failed to delete category with ID ${itemId}.`);
+  //       }
+  //     }
+  //     setSelectedItems([]);
+  //     console.log("Selected categories deleted successfully!");
+  //   } catch (err) {
+  //     console.log("An error occurred while deleting selected categories.", err);
+  //   }
+  // };
 
-    doc.autoTable({
-      html: "#my-table",
-      // theme: "grid",
-      // styles: {
-      //   font: "helvetica",
-      //   lineColor: [0, 0, 0],
-      //   lineWidth: 0.5,
-      // },
-      headStyles: {
-        fillColor: "#F26522",
-        textColor: [255, 255, 255],
-      },
-    });
+  // const handleUpdateOutlet = async () => {
+  //   try {
+  //     for (const itemId of selectedItems) {
+  //       router.push(`/dashboard/outlets/${itemId}`);
+  //     }
+  //   } catch (error) {
+  //     console.log(
+  //       "An error occurred while updating selected categories.",
+  //       error
+  //     );
+  //   }
+  // };
 
-    doc.save("dataTable.pdf");
-  };
   return (
     <section className="w-full my-5">
       <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
@@ -198,47 +218,54 @@ export default function CouponTable() {
               placeholder="Search something.."
             />
           </div>
-          <div className="flex justify-between items-center gap-3 w-full">
-            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <button
-                onClick={exportPdf}
-                className="flex mx-auto py-2 text-nowrap px-3"
+
+          <div className="flex justify-end items-center gap-3 ml-auto ">
+            <div className="flex justify-between items-center gap-3 relative">
+              <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
+                <button
+                  onClick={() => setShowAction(!showAction)}
+                  className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
+                >
+                  Action <FaCaretDown className="ml-3" />
+                </button>
+              </div>
+              <div
+                onMouseLeave={() => setShowAction(false)}
+                className={`
+              ${showAction ? "block" : "hidden"}
+              absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
+                id="dropdown"
               >
-                Export As &#x2193;
-              </button>
+                <ul className="py-1" aria-labelledby="dropdown">
+                  <li>
+                    <button
+                      // onClick={handleUpdateOutlet}
+                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                    >
+                      Update
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      // onClick={handleDeleteOutlet}
+                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div className="mx-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <select className="bg-[#F9FAFB] mx-3 py-2 outline-none ">
-                <option className="bg-[#F9FAFB]" value="30">
-                  Action
-                </option>
-                <option className="bg-[#F9FAFB]" value="15">
-                  Last 15 Days
-                </option>
-                <option className="bg-[#F9FAFB]" value="7">
-                  Last 07 Days
-                </option>
-                <option className="bg-[#F9FAFB]" value="1">
-                  Last 1 Days
-                </option>
-              </select>
+
+            <div className="text-white border border-black bg-black rounded-lg shadow-md">
+              <Link
+                href="/dashboard/coupon/addcoupon"
+                className="flex justify-center items-center px-2 py-1"
+              >
+                <span className="text-xl font-semibold mr-1">+</span>{" "}
+                <span className="text-nowrap">Add Coupon</span>
+              </Link>
             </div>
-          </div>
-          <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md">
-            <select className="bg-[#F9FAFB] mx-3 py-2 outline-none">
-              <option className="bg-[#F9FAFB]" value="30">
-                Filter with
-              </option>
-              <option className="bg-[#F9FAFB]" value="15">
-                Outlets Name
-              </option>
-              <option className="bg-[#F9FAFB]" value="7">
-                Outlets City
-              </option>
-              <option className="bg-[#F9FAFB]" value="1">
-                Outlets Address
-              </option>
-            </select>
           </div>
         </div>
       </div>
@@ -301,12 +328,6 @@ export default function CouponTable() {
                       >
                         expire date &#x21d5;
                       </th>
-                      <th
-                        scope="col"
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
-                      >
-                        Action
-                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white text-black">
@@ -335,7 +356,9 @@ export default function CouponTable() {
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <span className=" ">{item.code}</span>
+                          <Link href={`/dashboard/coupon/${item.id}`}>
+                            <span className=" ">{item.code}</span>
+                          </Link>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <div className="flex justify-start items-center">
@@ -351,14 +374,6 @@ export default function CouponTable() {
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           {item.expireDate}
                         </td>
-                        <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
-                          <Link
-                            href={`/dashboard/coupon/${item.id}`}
-                            className={` px-2 py-1 rounded-md border border-black`}
-                          >
-                            Manage
-                          </Link>
-                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -366,72 +381,14 @@ export default function CouponTable() {
               </div>
             </div>
           </div>
-          {/* page footer */}
-          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-y-3 my-10">
-            {/* page number */}
-            <div className="flex justify-start items-center font-semibold">
-              {showingText}
-            </div>
-            {/* Pagination */}
-            <div className="flex justify-end items-center">
-              <nav aria-label="Pagination">
-                <ul className="inline-flex border rounded-sm shadow-md">
-                  <li>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      &#x2190;
-                    </button>
-                  </li>
-
-                  <li>
-                    <button
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage - 1}
-                    </button>
-                    <button
-                      className={`py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none`}
-                    >
-                      {currentPage}
-                    </button>
-                    <button
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                      onClick={() => paginate(currentPage + 1)}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage + 1}
-                    </button>
-                    <span
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none cursor-not-allowed`}
-                    >
-                      ...
-                    </span>
-                    <button
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {Math.ceil(data.length / dataPerPage)}
-                    </button>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                    >
-                      &#x2192;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            dataPerPage={dataPerPage}
+            totalItems={sortedData.length}
+            paginate={paginate}
+            showingText={showingText}
+            data={sortedData}
+          />
         </div>
       </div>
     </section>

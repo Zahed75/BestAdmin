@@ -1,9 +1,10 @@
-import SingleCoupon from "./SingleCoupon";
+
+import AddCoupon from "./AddCoupon";
 
 export default function page() {
   return (
     <main>
-      <SingleCoupon />
+      <AddCoupon />
     </main>
   );
 }
