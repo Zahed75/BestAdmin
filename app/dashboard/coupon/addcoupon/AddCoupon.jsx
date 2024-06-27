@@ -1,5 +1,6 @@
 "use client";
 import AddCouponDynamicHead from "@/components/dashboard/coupon/dynamic/AddCouponDynamicHead";
+import { fetchCategories } from "@/redux/slice/categorySlice";
 import { fetchProducts } from "@/redux/slice/productsSlice";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,16 +11,36 @@ export default function AddCoupon() {
   const [productInputValue, setProductInputValue] = useState("");
   const [productValueArray, setProductValueArray] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [excludeProductInputValue, setExcludeProductInputValue] = useState("");
+  const [excludeProductValueArray, setExcludeProductValueArray] = useState([]);
+  const [excludeSearchResults, setExcludeSearchResults] = useState([]);
+  const [categoryInputValue, setCategoryInputValue] = useState("");
+  const [categoryValueArray, setCategoryValueArray] = useState([]);
+  const [categorySearchResults, setCategorySearchResults] = useState([]);
+  const [excludeCategoryInputValue, setExcludeCategoryInputValue] =
+    useState("");
+  const [excludeCategoryValueArray, setExcludeCategoryValueArray] = useState(
+    []
+  );
+  const [excludeCategorySearchResults, setExcludeCategorySearchResults] =
+    useState([]);
 
   const dispatch = useDispatch();
   const product = useSelector((state) => state?.products);
+  const categories = useSelector((state) => state?.categories);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
   const AllProducts = product?.products?.products;
   const data = AllProducts || [];
+  const AllCategories = categories?.categories?.categories;
+  const categoryData = AllCategories || [];
 
   const handleTagValue = (e) => {
     e.preventDefault();
@@ -38,7 +59,7 @@ export default function AddCoupon() {
   const handleSearchProduct = (e) => {
     const searchText = e.target.value.toLowerCase();
     setProductInputValue(e.target.value);
-    const filteredProducts = data.filter((product) =>
+    const filteredProducts = data?.filter((product) =>
       product?.productName?.toLowerCase().includes(searchText)
     );
     setSearchResults(filteredProducts);
@@ -51,6 +72,119 @@ export default function AddCoupon() {
       setProductValueArray(newProductValueArray);
       setSearchResults([]); // Clear search results after selection
       setProductInputValue(""); // Clear input field after selection
+    }
+  };
+
+  const handleExcludeTagValue = (e) => {
+    e.preventDefault();
+    const newProductValueArray = [
+      ...excludeProductValueArray,
+      excludeProductInputValue,
+    ];
+    setExcludeProductValueArray(newProductValueArray);
+    setExcludeProductInputValue(""); // Clear input value after adding
+  };
+  const handleExcludeRemoveTag = (indexToRemove) => {
+    const newProductValueArray = excludeProductValueArray.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setExcludeProductValueArray(newProductValueArray);
+  };
+
+  const handleExcludeSearchProduct = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setExcludeProductInputValue(e.target.value);
+    const filteredProducts = data?.filter((product) =>
+      product?.productName?.toLowerCase().includes(searchText)
+    );
+    setExcludeSearchResults(filteredProducts);
+  };
+
+  const handleExcludeProductClick = (productId) => {
+    const product = data?.find((p) => p._id === productId);
+    if (product) {
+      const newProductValueArray = [
+        ...excludeProductValueArray,
+        product.productName,
+      ];
+      setExcludeProductValueArray(newProductValueArray);
+      setExcludeSearchResults([]);
+      setExcludeProductInputValue("");
+    }
+  };
+
+  const handleCategoryTagValue = (e) => {
+    e.preventDefault();
+    const newCategoryValueArray = [...categoryValueArray, categoryInputValue];
+    setCategoryValueArray(newCategoryValueArray);
+    setCategoryInputValue(""); // Clear input value after adding
+  };
+
+  const handleCategoryRemoveTag = (indexToRemove) => {
+    const newCategoryValueArray = categoryValueArray.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setCategoryValueArray(newCategoryValueArray);
+  };
+
+  const handleSearchCategory = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setCategoryInputValue(e.target.value);
+    const filteredCategories = categoryData?.filter((category) =>
+      category?.categoryName?.toLowerCase().includes(searchText)
+    );
+    setCategorySearchResults(filteredCategories);
+  };
+
+  const handleCategoryClick = (categoryId) => {
+    const category = categoryData?.find((c) => c._id === categoryId);
+    if (category) {
+      const newCategoryValueArray = [
+        ...categoryValueArray,
+        category.categoryName,
+      ];
+      setCategoryValueArray(newCategoryValueArray);
+      setCategorySearchResults([]); // Clear search results after selection
+      setCategoryInputValue(""); // Clear input field after selection
+    }
+  };
+
+  const handleExcludeCategoryTagValue = (e) => {
+    e.preventDefault();
+    const newCategoryValueArray = [
+      ...excludeCategoryValueArray,
+      excludeCategoryInputValue,
+    ];
+    setExcludeCategoryValueArray(newCategoryValueArray);
+    setExcludeCategoryInputValue(""); // Clear input value after adding
+  };
+
+  const handleExcludeCategoryRemoveTag = (indexToRemove) => {
+    const newCategoryValueArray = excludeCategoryValueArray.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setExcludeCategoryValueArray(newCategoryValueArray);
+  };
+
+  const handleExcludeSearchCategory = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setExcludeCategoryInputValue(e.target.value);
+    const filteredCategories = categoryData?.filter((category) =>
+      category?.categoryName?.toLowerCase().includes(searchText)
+    );
+    setExcludeCategorySearchResults(filteredCategories);
+  };
+
+  const handleExcludeCategoryClick = (categoryId) => {
+    const category = categoryData?.find((c) => c._id === categoryId);
+    if (category) {
+      const newCategoryValueArray = [
+        ...excludeCategoryValueArray,
+        category.categoryName,
+      ];
+      setExcludeCategoryValueArray(newCategoryValueArray);
+      setExcludeCategorySearchResults([]); // Clear search results after selection
+      setExcludeCategoryInputValue(""); // Clear input field after selection
     }
   };
 
@@ -284,7 +418,7 @@ export default function AddCoupon() {
             <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
               <h4 className="text-gray-600 text-sm ">Products</h4>
               <div className="col-span-2">
-                {/* <div className="flex justify-start items-center gap-2">
+                <div className="flex justify-start items-center gap-2">
                   <div className="border border-gray-300 rounded-md p-2 w-full">
                     <div>
                       <input
@@ -325,7 +459,159 @@ export default function AddCoupon() {
                       ))}
                     </div>
                   </div>
-                </div> */}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
+              <h4 className="text-gray-600 text-sm ">Exclude Products</h4>
+              <div className="col-span-2">
+                <div className="flex justify-start items-center gap-2">
+                  <div className="border border-gray-300 rounded-md p-2 w-full">
+                    <div>
+                      <input
+                        type="text"
+                        id="excludeProduct"
+                        value={excludeProductInputValue}
+                        onChange={handleExcludeSearchProduct}
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                      />
+                    </div>
+                    {excludeSearchResults.length > 0 && (
+                      <div className="border border-gray-300 rounded-md p-2 max-h-40 overflow-y-auto">
+                        {excludeSearchResults.map((product) => (
+                          <div
+                            key={product?._id}
+                            onClick={() =>
+                              handleExcludeProductClick(product._id)
+                            }
+                            className="cursor-pointer hover:bg-gray-100 p-2"
+                          >
+                            {product?.productName}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="my-3 flex flex-wrap justify-start items-center gap-2">
+                      {excludeProductValueArray.map((tag, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center"
+                        >
+                          <span className="text-md text-black">{tag}</span>
+                          <button
+                            onClick={() => handleExcludeRemoveTag(index)}
+                            className="text-gray-300 font-semibold ml-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
+              <h4 className="text-gray-600 text-sm ">Product Categories</h4>
+              <div className="col-span-2">
+                <div className="flex justify-start items-center gap-2">
+                  <div className="border border-gray-300 rounded-md p-2 w-full">
+                    <div>
+                      <input
+                        type="text"
+                        id="category"
+                        value={categoryInputValue}
+                        onChange={handleSearchCategory}
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                      />
+                    </div>
+                    {categorySearchResults.length > 0 && (
+                      <div className="border border-gray-300 rounded-md p-2 max-h-40 overflow-y-auto">
+                        {categorySearchResults.map((category) => (
+                          <div
+                            key={category?._id}
+                            onClick={() => handleCategoryClick(category._id)}
+                            className="cursor-pointer hover:bg-gray-100 p-2"
+                          >
+                            {category?.categoryName}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="my-3 flex flex-wrap justify-start items-center gap-2">
+                      {categoryValueArray.map((tag, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center"
+                        >
+                          <span className="text-md text-black">{tag}</span>
+                          <button
+                            onClick={() => handleCategoryRemoveTag(index)}
+                            className="text-gray-300 font-semibold ml-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
+              <h4 className="text-gray-600 text-sm ">
+                Exclude Product Categories
+              </h4>
+              <div className="col-span-2">
+                <div className="flex justify-start items-center gap-2">
+                  <div className="border border-gray-300 rounded-md p-2 w-full">
+                    <div>
+                      <input
+                        type="text"
+                        id="excludeCategory"
+                        value={excludeCategoryInputValue}
+                        onChange={handleExcludeSearchCategory}
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                      />
+                    </div>
+                    {excludeCategorySearchResults.length > 0 && (
+                      <div className="border border-gray-300 rounded-md p-2 max-h-40 overflow-y-auto">
+                        {excludeCategorySearchResults.map((category) => (
+                          <div
+                            key={category?._id}
+                            onClick={() =>
+                              handleExcludeCategoryClick(category._id)
+                            }
+                            className="cursor-pointer hover:bg-gray-100 p-2"
+                          >
+                            {category?.categoryName}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="my-3 flex flex-wrap justify-start items-center gap-2">
+                      {excludeCategoryValueArray.map((tag, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center"
+                        >
+                          <span className="text-md text-black">{tag}</span>
+                          <button
+                            onClick={() =>
+                              handleExcludeCategoryRemoveTag(index)
+                            }
+                            className="text-gray-300 font-semibold ml-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -346,8 +632,8 @@ export default function AddCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="number"
-                    id="usagelimit"
-                    defaultValue={10}
+                    id="usageLimitPerCoupon"
+                    name="usageLimitPerCoupon"
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>
@@ -359,8 +645,8 @@ export default function AddCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="number"
-                    id="limitusagetoxitems"
-                    defaultValue={10}
+                    id="limitUsageToXItems"
+                    name="limitUsageToXItems"
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>
@@ -372,8 +658,8 @@ export default function AddCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="number"
-                    id="limitperuser"
-                    defaultValue={10}
+                    id="usageLimitPerUser"
+                    name="usageLimitPerUser"
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>
