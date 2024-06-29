@@ -2,12 +2,16 @@
 import AddCouponDynamicHead from "@/components/dashboard/coupon/dynamic/AddCouponDynamicHead";
 import { fetchCategories } from "@/redux/slice/categorySlice";
 import { fetchProducts } from "@/redux/slice/productsSlice";
+import { fetchUsers } from "@/redux/slice/usersSlice";
+import { fetchApi } from "@/utils/FetchApi";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Loading from "../../loading";
+import { useRouter } from "next/navigation";
 
 export default function AddCoupon() {
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("usage");
+  const [activeTab, setActiveTab] = useState("general");
   const [productInputValue, setProductInputValue] = useState("");
   const [productValueArray, setProductValueArray] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -24,10 +28,14 @@ export default function AddCoupon() {
   );
   const [excludeCategorySearchResults, setExcludeCategorySearchResults] =
     useState([]);
+  const [userInputValue, setUserInputValue] = useState("");
+  const [userValueArray, setUserValueArray] = useState([]);
+  const [userSearchResults, setUserSearchResults] = useState([]);
 
   const dispatch = useDispatch();
   const product = useSelector((state) => state?.products);
   const categories = useSelector((state) => state?.categories);
+  const users = useSelector((state) => state?.users);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -37,17 +45,48 @@ export default function AddCoupon() {
     dispatch(fetchCategories());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  const router = useRouter();
+
   const AllProducts = product?.products?.products;
   const data = AllProducts || [];
   const AllCategories = categories?.categories?.categories;
   const categoryData = AllCategories || [];
+  const AllUsers = users?.users?.users;
+  const userData = AllUsers?.find((user) => user?.role === "CUS") || [];
 
-  const handleTagValue = (e) => {
-    e.preventDefault();
-    const newProductValueArray = [...productValueArray, productInputValue];
-    setProductValueArray(newProductValueArray);
-    setProductInputValue(""); // Clear input value after adding
-  };
+  const productValueArrayProductNameToProductId = productValueArray.map(
+    (productName) => {
+      const product = data?.find((p) => p.productName === productName);
+      return product?._id;
+    }
+  );
+
+  const excludeProductValueArrayProductNameToProductId =
+    excludeProductValueArray.map((productName) => {
+      const product = data?.find((p) => p.productName === productName);
+      return product?._id;
+    });
+
+  const categoryValueArrayCategoryNameToCategoryId = categoryValueArray.map(
+    (categoryName) => {
+      const category = categoryData?.find(
+        (c) => c.categoryName === categoryName
+      );
+      return category?._id;
+    }
+  );
+
+  const excludeCategoryValueArrayCategoryNameToCategoryId =
+    excludeCategoryValueArray.map((categoryName) => {
+      const category = categoryData?.find(
+        (c) => c.categoryName === categoryName
+      );
+      return category?._id;
+    });
 
   const handleRemoveTag = (indexToRemove) => {
     const newProductValueArray = productValueArray.filter(
@@ -75,15 +114,6 @@ export default function AddCoupon() {
     }
   };
 
-  const handleExcludeTagValue = (e) => {
-    e.preventDefault();
-    const newProductValueArray = [
-      ...excludeProductValueArray,
-      excludeProductInputValue,
-    ];
-    setExcludeProductValueArray(newProductValueArray);
-    setExcludeProductInputValue(""); // Clear input value after adding
-  };
   const handleExcludeRemoveTag = (indexToRemove) => {
     const newProductValueArray = excludeProductValueArray.filter(
       (_, index) => index !== indexToRemove
@@ -111,13 +141,6 @@ export default function AddCoupon() {
       setExcludeSearchResults([]);
       setExcludeProductInputValue("");
     }
-  };
-
-  const handleCategoryTagValue = (e) => {
-    e.preventDefault();
-    const newCategoryValueArray = [...categoryValueArray, categoryInputValue];
-    setCategoryValueArray(newCategoryValueArray);
-    setCategoryInputValue(""); // Clear input value after adding
   };
 
   const handleCategoryRemoveTag = (indexToRemove) => {
@@ -149,16 +172,6 @@ export default function AddCoupon() {
     }
   };
 
-  const handleExcludeCategoryTagValue = (e) => {
-    e.preventDefault();
-    const newCategoryValueArray = [
-      ...excludeCategoryValueArray,
-      excludeCategoryInputValue,
-    ];
-    setExcludeCategoryValueArray(newCategoryValueArray);
-    setExcludeCategoryInputValue(""); // Clear input value after adding
-  };
-
   const handleExcludeCategoryRemoveTag = (indexToRemove) => {
     const newCategoryValueArray = excludeCategoryValueArray.filter(
       (_, index) => index !== indexToRemove
@@ -188,11 +201,59 @@ export default function AddCoupon() {
     }
   };
 
+  const handleAddCoupon = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData(e.target);
+    const data = {
+      general: {
+        couponName: formData.get("couponName"),
+        discountType: formData.get("discountType"),
+        couponAmount: formData.get("couponAmount"),
+        allowFreeShipping:
+          formData.get("allowFreeShipping") === "on" ? true : false,
+        couponExpiry: formData.get("couponExpiry"),
+      },
+      usageRestriction: {
+        minimumSpend: formData.get("minimumSpend"),
+        maximumSpend: formData.get("maximumSpend"),
+        individualUseOnly:
+          formData.get("individualUseOnly") === "on" ? true : false,
+        excludeSaleItems:
+          formData.get("excludeSaleItems") === "on" ? true : false,
+        products: productValueArrayProductNameToProductId,
+        excludeProducts: excludeProductValueArrayProductNameToProductId,
+        categories: categoryValueArrayCategoryNameToCategoryId,
+        excludeCategories: excludeCategoryValueArrayCategoryNameToCategoryId,
+        blockedAccounts: [],
+      },
+      usageLimit: {
+        usageLimitPerCoupon: formData.get("usageLimitPerCoupon"),
+        limitUsageToXItems: formData.get("limitUsageToXItems"),
+        usageLimitPerUser: formData.get("usageLimitPerUser"),
+      },
+    };
+
+    console.log(data);
+    try {
+      const response = fetchApi("/discount/createCoupon", "POST", data);
+
+      if (response) {
+        setIsLoading(false);
+        router.push("/dashboard/coupon");
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
   const freeShippingText =
     "Check this box if the coupon grants free shipping. A free shipping method must be enabled in your shipping zone and be set to require 'a valid free shipping coupon' (see the 'Free Shipping Requires' setting).";
   return (
     <main>
-      <form action="" method="post" className="w-full">
+      {isLoading && <Loading />}
+      <form onSubmit={handleAddCoupon} className="w-full">
         <section className="mt-10 flex justify-between items-center">
           <AddCouponDynamicHead title={"Add New Coupon"} />
           <button
@@ -276,8 +337,8 @@ export default function AddCoupon() {
                       required
                       className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                     >
-                      <option>Fixed</option>
-                      <option>Percentage</option>
+                      <option value="fixed">Fixed</option>
+                      <option value="percentage">Percentage</option>
                     </select>
                   </div>
                 </div>
@@ -450,6 +511,7 @@ export default function AddCoupon() {
                         >
                           <span className="text-md text-black">{tag}</span>
                           <button
+                            type="button"
                             onClick={() => handleRemoveTag(index)}
                             className="text-gray-300 font-semibold ml-2"
                           >
@@ -500,6 +562,7 @@ export default function AddCoupon() {
                         >
                           <span className="text-md text-black">{tag}</span>
                           <button
+                            type="button"
                             onClick={() => handleExcludeRemoveTag(index)}
                             className="text-gray-300 font-semibold ml-2"
                           >
@@ -548,6 +611,7 @@ export default function AddCoupon() {
                         >
                           <span className="text-md text-black">{tag}</span>
                           <button
+                            type="button"
                             onClick={() => handleCategoryRemoveTag(index)}
                             className="text-gray-300 font-semibold ml-2"
                           >
@@ -600,6 +664,7 @@ export default function AddCoupon() {
                         >
                           <span className="text-md text-black">{tag}</span>
                           <button
+                            type="button"
                             onClick={() =>
                               handleExcludeCategoryRemoveTag(index)
                             }
