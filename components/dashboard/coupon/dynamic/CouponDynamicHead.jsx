@@ -1,6 +1,20 @@
 import Link from "next/link";
 
-export default function CouponDynamicHead({ id, title }) {
+export default function CouponDynamicHead({ coupon }) {
+  function formatDate(dateString) {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    if (isNaN(date)) return "N/A";
+
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return date.toLocaleDateString(undefined, options);
+  }
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex justify-start items-center">
@@ -17,11 +31,16 @@ export default function CouponDynamicHead({ id, title }) {
           </svg>
         </Link>
 
-        <h1 className="text-lg md:text-5xl font-semibold ml-5">EID2024</h1>
+        <h1 className="text-lg md:text-5xl font-semibold ml-5">
+          {coupon?.general?.couponName}
+        </h1>
       </div>
       <div className="text-sm md:text-lg flex flex-col md:flex-row">
-        <p className="">Coupon Created at jan 15, 2024</p> <span className="hidden md:block mx-5">.</span> <p className="">Expires
-        Jan 24, 2024</p>
+        <p className="">
+          Coupon Created at {formatDate(coupon?.createdAt)}
+        </p>{" "}
+        <span className="hidden md:block mx-5">.</span>{" "}
+        <p className="">Expires {formatDate(coupon?.general?.couponExpiry)}</p>
       </div>
     </div>
   );

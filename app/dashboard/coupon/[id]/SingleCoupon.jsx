@@ -1,21 +1,123 @@
 "use client";
 import CouponDynamicHead from "@/components/dashboard/coupon/dynamic/CouponDynamicHead";
-import { useState } from "react";
+import { fetchCategories } from "@/redux/slice/categorySlice";
+import { fetchProducts } from "@/redux/slice/productsSlice";
+import { fetchUsers } from "@/redux/slice/usersSlice";
+import { fetchApi } from "@/utils/FetchApi";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Loading from "../../loading";
+import { useRouter } from "next/navigation";
 
-export default function SingleCoupon() {
+export default function SingleCoupon({ coupon }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
   const [productInputValue, setProductInputValue] = useState("");
-  const [productValueArray, setProductValueArray] = useState([
-    "Conion delta selling fan 56 inch",
-    "Sony 4k 55 inch TV",
-  ]);
+  const [productValueArray, setProductValueArray] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [excludeProductInputValue, setExcludeProductInputValue] = useState("");
+  const [excludeProductValueArray, setExcludeProductValueArray] = useState([]);
+  const [excludeSearchResults, setExcludeSearchResults] = useState([]);
+  const [categoryInputValue, setCategoryInputValue] = useState("");
+  const [categoryValueArray, setCategoryValueArray] = useState([]);
+  const [categorySearchResults, setCategorySearchResults] = useState([]);
+  const [excludeCategoryInputValue, setExcludeCategoryInputValue] =
+    useState("");
+  const [excludeCategoryValueArray, setExcludeCategoryValueArray] = useState(
+    []
+  );
+  const [excludeCategorySearchResults, setExcludeCategorySearchResults] =
+    useState([]);
 
-  const handleTagValue = (e) => {
-    e.preventDefault();
-    const newProductValueArray = [...productValueArray, productInputValue];
-    setProductValueArray(newProductValueArray);
-    setProductInputValue(""); // Clear input value after adding
-  };
+  const dispatch = useDispatch();
+  const product = useSelector((state) => state?.products);
+  const categories = useSelector((state) => state?.categories);
+  const users = useSelector((state) => state?.users);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const productData = product?.products?.products || [];
+    const categoryData = categories?.categories?.categories || [];
+
+    const productNames =
+      coupon?.usageRestriction?.products?.map((productId) => {
+        const product = productData.find((p) => p._id === productId);
+        return product?.productName || productId;
+      }) || [];
+
+    const excludeProductNames =
+      coupon?.usageRestriction?.excludeProducts?.map((productId) => {
+        const product = productData.find((p) => p._id === productId);
+        return product?.productName || productId;
+      }) || [];
+
+    const categoryNames =
+      coupon?.usageRestriction?.categories?.map((categoryId) => {
+        const category = categoryData.find((c) => c._id === categoryId);
+        return category?.categoryName || categoryId;
+      }) || [];
+
+    const excludeCategoryNames =
+      coupon?.usageRestriction?.excludeCategories?.map((categoryId) => {
+        const category = categoryData.find((c) => c._id === categoryId);
+        return category?.categoryName || categoryId;
+      }) || [];
+
+    setProductValueArray(productNames);
+    setExcludeProductValueArray(excludeProductNames);
+    setCategoryValueArray(categoryNames);
+    setExcludeCategoryValueArray(excludeCategoryNames);
+  }, [coupon, product, categories]);
+
+  const router = useRouter();
+
+  const AllProducts = product?.products?.products;
+  const data = AllProducts || [];
+  const AllCategories = categories?.categories?.categories;
+  const categoryData = AllCategories || [];
+  const AllUsers = users?.users?.users;
+
+  const productValueArrayProductNameToProductId = productValueArray.map(
+    (productName) => {
+      const product = data?.find((p) => p.productName === productName);
+      return product?._id;
+    }
+  );
+
+  const excludeProductValueArrayProductNameToProductId =
+    excludeProductValueArray.map((productName) => {
+      const product = data?.find((p) => p.productName === productName);
+      return product?._id;
+    });
+
+  const categoryValueArrayCategoryNameToCategoryId = categoryValueArray.map(
+    (categoryName) => {
+      const category = categoryData?.find(
+        (c) => c.categoryName === categoryName
+      );
+      return category?._id;
+    }
+  );
+
+  const excludeCategoryValueArrayCategoryNameToCategoryId =
+    excludeCategoryValueArray.map((categoryName) => {
+      const category = categoryData?.find(
+        (c) => c.categoryName === categoryName
+      );
+      return category?._id;
+    });
+
   const handleRemoveTag = (indexToRemove) => {
     const newProductValueArray = productValueArray.filter(
       (_, index) => index !== indexToRemove
@@ -23,37 +125,185 @@ export default function SingleCoupon() {
     setProductValueArray(newProductValueArray);
   };
 
-  const disabledDays = [
-    {
-      before: new Date(),
-    },
-  ];
+  const handleSearchProduct = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setProductInputValue(e.target.value);
+    const filteredProducts = data?.filter((product) =>
+      product?.productName?.toLowerCase().includes(searchText)
+    );
+    setSearchResults(filteredProducts);
+  };
 
-  const handleBaseColorChange = (event) => {
-    setBaseSelectedColor(event.target.value);
+  const handleProductClick = (productId) => {
+    const product = data?.find((p) => p._id === productId);
+    if (product) {
+      const newProductValueArray = [...productValueArray, product.productName];
+      setProductValueArray(newProductValueArray);
+      setSearchResults([]); // Clear search results after selection
+      setProductInputValue(""); // Clear input field after selection
+    }
   };
-  const handleBodyBgColorChange = (event) => {
-    setBodyBgSelectedColor(event.target.value);
+
+  const handleExcludeRemoveTag = (indexToRemove) => {
+    const newProductValueArray = excludeProductValueArray.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setExcludeProductValueArray(newProductValueArray);
   };
-  const handleBgColorChange = (event) => {
-    setBgSelectedColor(event.target.value);
+
+  const handleExcludeSearchProduct = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setExcludeProductInputValue(e.target.value);
+    const filteredProducts = data?.filter((product) =>
+      product?.productName?.toLowerCase().includes(searchText)
+    );
+    setExcludeSearchResults(filteredProducts);
   };
-  const handleBodyTextColorChange = (event) => {
-    setBodyTextSelectedColor(event.target.value);
+
+  const handleExcludeProductClick = (productId) => {
+    const product = data?.find((p) => p._id === productId);
+    if (product) {
+      const newProductValueArray = [
+        ...excludeProductValueArray,
+        product.productName,
+      ];
+      setExcludeProductValueArray(newProductValueArray);
+      setExcludeSearchResults([]);
+      setExcludeProductInputValue("");
+    }
+  };
+
+  const handleCategoryRemoveTag = (indexToRemove) => {
+    const newCategoryValueArray = categoryValueArray.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setCategoryValueArray(newCategoryValueArray);
+  };
+
+  const handleSearchCategory = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setCategoryInputValue(e.target.value);
+    const filteredCategories = categoryData?.filter((category) =>
+      category?.categoryName?.toLowerCase().includes(searchText)
+    );
+    setCategorySearchResults(filteredCategories);
+  };
+
+  const handleCategoryClick = (categoryId) => {
+    const category = categoryData?.find((c) => c._id === categoryId);
+    if (category) {
+      const newCategoryValueArray = [
+        ...categoryValueArray,
+        category.categoryName,
+      ];
+      setCategoryValueArray(newCategoryValueArray);
+      setCategorySearchResults([]); // Clear search results after selection
+      setCategoryInputValue(""); // Clear input field after selection
+    }
+  };
+
+  const handleExcludeCategoryRemoveTag = (indexToRemove) => {
+    const newCategoryValueArray = excludeCategoryValueArray.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setExcludeCategoryValueArray(newCategoryValueArray);
+  };
+
+  const handleExcludeSearchCategory = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setExcludeCategoryInputValue(e.target.value);
+    const filteredCategories = categoryData?.filter((category) =>
+      category?.categoryName?.toLowerCase().includes(searchText)
+    );
+    setExcludeCategorySearchResults(filteredCategories);
+  };
+
+  const handleExcludeCategoryClick = (categoryId) => {
+    const category = categoryData?.find((c) => c._id === categoryId);
+    if (category) {
+      const newCategoryValueArray = [
+        ...excludeCategoryValueArray,
+        category.categoryName,
+      ];
+      setExcludeCategoryValueArray(newCategoryValueArray);
+      setExcludeCategorySearchResults([]); // Clear search results after selection
+      setExcludeCategoryInputValue(""); // Clear input field after selection
+    }
+  };
+
+  const handleUpdateCoupon = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData(e.target);
+
+    const data = {
+      general: {
+        couponName: formData.get("couponName"),
+        discountType: formData.get("discountType"),
+        couponAmount: formData.get("couponAmount"),
+        allowFreeShipping:
+          formData.get("allowFreeShipping") === "on" ? true : false,
+        couponExpiry: formData.get("couponExpiry"),
+      },
+      usageRestriction: {
+        minimumSpend: formData.get("minimumSpend"),
+        maximumSpend: formData.get("maximumSpend"),
+        individualUseOnly:
+          formData.get("individualUseOnly") === "on" ? true : false,
+        excludeSaleItems:
+          formData.get("excludeSaleItems") === "on" ? true : false,
+        products: productValueArrayProductNameToProductId,
+        excludeProducts: excludeProductValueArrayProductNameToProductId,
+        categories: categoryValueArrayCategoryNameToCategoryId,
+        excludeCategories: excludeCategoryValueArrayCategoryNameToCategoryId,
+        blockedAccounts: [],
+      },
+      usageLimit: {
+        usageLimitPerCoupon: formData.get("usageLimitPerCoupon"),
+        limitUsageToXItems: formData.get("limitUsageToXItems"),
+        usageLimitPerUser: formData.get("usageLimitPerUser"),
+      },
+    };
+    try {
+      const response = fetchApi(`/discount/updateCoupon/${coupon?._id}`, "PUT", data);
+
+      if (response) {
+        setIsLoading(false);
+        router.push("/dashboard/coupon");
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
   };
 
   const freeShippingText =
     "Check this box if the coupon grants free shipping. A free shipping method must be enabled in your shipping zone and be set to require 'a valid free shipping coupon' (see the 'Free Shipping Requires' setting).";
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   return (
     <main>
-      <form action="" method="post" className="w-full">
+      <form onSubmit={handleUpdateCoupon} className="w-full">
         <section className="mt-10 flex justify-between items-center">
-          <CouponDynamicHead />
-          <button className="text-sm text-white bg-black rounded-md px-3 py-2">
-            Save Changes
+          <CouponDynamicHead coupon={coupon} />
+          <button
+            type="submit"
+            className="text-sm text-white bg-black rounded-md px-3 py-2"
+          >
+            {isLoading ? "Updating Coupon..." : "Update Coupon"}
           </button>
         </section>
-        <section>
+
+        <section className=" mt-10">
           <div className="flex gap-x-2 my-5">
             <button
               type="button"
@@ -102,24 +352,34 @@ export default function SingleCoupon() {
           </div>
           <div className="my-10">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center my-5">
+              <h4 className="text-gray-600 text-sm ">Coupon Name</h4>
+              <div className="">
+                <div className="flex justify-start items-center gap-2">
+                  <input
+                    type="text"
+                    id="couponName"
+                    name="couponName"
+                    defaultValue={coupon?.general?.couponName}
+                    required
+                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center my-5">
               <h4 className="text-gray-600 text-sm ">Discount Type </h4>
               <div className="">
                 <div>
                   <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                    <svg
-                      className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 412 232"
+                    <select
+                      id="discountType"
+                      name="discountType"
+                      defaultValue={coupon?.general?.discountType}
+                      required
+                      className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                     >
-                      <path
-                        d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                        fill="#648299"
-                        fill-rule="nonzero"
-                      />
-                    </svg>
-                    <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
-                      <option>Fixed Product Discount</option>
-                      <option>Percentage Discount</option>
+                      <option value="fixed">Fixed</option>
+                      <option value="percentage">Percentage</option>
                     </select>
                   </div>
                 </div>
@@ -131,8 +391,10 @@ export default function SingleCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="number"
-                    id="sku"
-                    defaultValue={10}
+                    id="couponAmount"
+                    name="couponAmount"
+                    defaultValue={coupon?.general?.couponAmount}
+                    required
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>
@@ -142,33 +404,40 @@ export default function SingleCoupon() {
               <h4 className="text-gray-600 text-sm ">Allow Free Shipping</h4>
               <div className="col-span-2">
                 <div className="flex justify-start items-start gap-2">
-                  <input className="mt-1" type="checkbox" />
-                  <span className="font-semibold text-md">
+                  <input
+                    id="allowFreeShipping"
+                    name="allowFreeShipping"
+                    className="mt-1"
+                    type="checkbox"
+                    defaultChecked={coupon?.general?.allowFreeShipping}
+                  />
+                  <label
+                    htmlFor="allowFreeShipping"
+                    className="font-semibold text-md"
+                  >
                     {freeShippingText}
-                  </span>
+                  </label>
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 justify-start items-start my-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-start items-center my-5">
               <h4 className="text-gray-600 text-sm ">Coupon Expiry Date</h4>
-              <div className="md:col-span-2">
-                {/* <div className="grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-2">
-                  <div className="border border-gray-300 shadow-lg rounded-md p-2">
-                    <DayPicker
-                      mode="single"
-                      selected={selected}
-                      onSelect={setSelected}
-                      disabled={disabledDays}
-                    />
-                  </div>
-                  <div className="border border-gray-300 shadow-lg rounded-md p-2">
-                    <CustomTimePicker />
-                  </div>
-                </div> */}
+              <div className="">
+                <div className="flex justify-start items-center gap-2">
+                  <input
+                    type="date"
+                    id="couponExpiry"
+                    name="couponExpiry"
+                    defaultValue={formatDate(coupon?.general?.couponExpiry)}
+                    required
+                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </section>
+
         <section
           className={`
         ${activeTab === "usage" ? "block" : "hidden"} 
@@ -187,8 +456,9 @@ export default function SingleCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="text"
-                    id="sku"
-                    defaultValue={"No Minimum"}
+                    id="minimumSpend"
+                    name="minimumSpend"
+                    defaultValue={coupon?.usageRestriction?.minimumSpend}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>
@@ -200,8 +470,9 @@ export default function SingleCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="number"
-                    id="sku"
-                    defaultValue={10}
+                    id="maximumSpend"
+                    name="maximumSpend"
+                    defaultValue={coupon?.usageRestriction?.maximumSpend}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>
@@ -211,12 +482,20 @@ export default function SingleCoupon() {
               <h4 className="text-gray-600 text-sm ">Individual Use Only</h4>
               <div className="col-span-2">
                 <div className="flex justify-start items-start gap-2">
-                  <input className="mt-1" type="checkbox" />
-                  <span className="font-semibold text-md">
-                    {
-                      "Check this box if the coupon cannot be used in conjunction with other coupons."
-                    }
-                  </span>
+                  <input
+                    id="individualUseOnly"
+                    name="individualUseOnly"
+                    className="mt-1"
+                    type="checkbox"
+                    defaultChecked={coupon?.usageRestriction?.individualUseOnly}
+                  />
+                  <label
+                    htmlFor="individualUseOnly"
+                    className="font-semibold text-md cursor-pointer"
+                  >
+                    Check this box if the coupon cannot be used in conjunction
+                    with other coupons.
+                  </label>
                 </div>
               </div>
             </div>
@@ -224,12 +503,22 @@ export default function SingleCoupon() {
               <h4 className="text-gray-600 text-sm ">Exclude sale items</h4>
               <div className="col-span-2">
                 <div className="flex justify-start items-start gap-2">
-                  <input className="mt-1" type="checkbox" />
-                  <span className="font-semibold text-md">
-                    {
-                      "Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale."
-                    }
-                  </span>
+                  <input
+                    id="excludeSaleItems"
+                    name="excludeSaleItems"
+                    className="mt-1"
+                    type="checkbox"
+                    defaultChecked={coupon?.usageRestriction?.excludeSaleItems}
+                  />
+                  <label
+                    htmlFor="excludeSaleItems"
+                    className="font-semibold text-md"
+                  >
+                    Check this box if the coupon should not apply to items on
+                    sale. Per-item coupons will only work if the item is not on
+                    sale. Per-cart coupons will only work if there are items in
+                    the cart that are not on sale.
+                  </label>
                 </div>
               </div>
             </div>
@@ -240,30 +529,38 @@ export default function SingleCoupon() {
               <h4 className="text-gray-600 text-sm ">Products</h4>
               <div className="col-span-2">
                 <div className="flex justify-start items-center gap-2">
-                  <div className="border border-gray-300 rounded-md p-2  w-full">
-                    <div className="grid grid-cols-4 gap-2">
+                  <div className="border border-gray-300 rounded-md p-2 w-full">
+                    <div>
                       <input
                         type="text"
                         id="product"
                         value={productInputValue}
-                        onChange={(e) => setProductInputValue(e.target.value)}
-                        className="border border-gray-300 rounded-md p-2 focus:outline-none col-span-3"
+                        onChange={handleSearchProduct}
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                       />
-                      <button
-                        onClick={handleTagValue}
-                        className="border text-black font-semibold rounded-md"
-                      >
-                        Add
-                      </button>
                     </div>
+                    {searchResults.length > 0 && (
+                      <div className="border border-gray-300 rounded-md p-2 max-h-40 overflow-y-auto">
+                        {searchResults.map((product) => (
+                          <div
+                            key={product?._id}
+                            onClick={() => handleProductClick(product._id)}
+                            className="cursor-pointer hover:bg-gray-100 p-2"
+                          >
+                            {product?.productName}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     <div className="my-3 flex flex-wrap justify-start items-center gap-2">
                       {productValueArray.map((tag, index) => (
                         <div
                           key={index}
-                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center "
+                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center"
                         >
                           <span className="text-md text-black">{tag}</span>
                           <button
+                            type="button"
                             onClick={() => handleRemoveTag(index)}
                             className="text-gray-300 font-semibold ml-2"
                           >
@@ -276,35 +573,46 @@ export default function SingleCoupon() {
                 </div>
               </div>
             </div>
-            {/* <div className="grid grid-cols-3 justify-between items-start my-5">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
               <h4 className="text-gray-600 text-sm ">Exclude Products</h4>
               <div className="col-span-2">
                 <div className="flex justify-start items-center gap-2">
-                  <div className="border border-gray-300 rounded-md p-2  w-full">
-                    <div className="grid grid-cols-4 gap-2">
+                  <div className="border border-gray-300 rounded-md p-2 w-full">
+                    <div>
                       <input
                         type="text"
-                        id="product"
-                        value={productInputValue}
-                        onChange={(e) => setProductInputValue(e.target.value)}
-                        className="border border-gray-300 rounded-md p-2 focus:outline-none col-span-3"
+                        id="excludeProduct"
+                        value={excludeProductInputValue}
+                        onChange={handleExcludeSearchProduct}
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                       />
-                      <button
-                        onClick={handleTagValue}
-                        className="border text-black font-semibold rounded-md"
-                      >
-                        Add
-                      </button>
                     </div>
+                    {excludeSearchResults.length > 0 && (
+                      <div className="border border-gray-300 rounded-md p-2 max-h-40 overflow-y-auto">
+                        {excludeSearchResults.map((product) => (
+                          <div
+                            key={product?._id}
+                            onClick={() =>
+                              handleExcludeProductClick(product._id)
+                            }
+                            className="cursor-pointer hover:bg-gray-100 p-2"
+                          >
+                            {product?.productName}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     <div className="my-3 flex flex-wrap justify-start items-center gap-2">
-                      {productValueArray.map((tag, index) => (
+                      {excludeProductValueArray.map((tag, index) => (
                         <div
                           key={index}
-                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center "
+                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center"
                         >
                           <span className="text-md text-black">{tag}</span>
                           <button
-                            onClick={() => handleRemoveTag(index)}
+                            type="button"
+                            onClick={() => handleExcludeRemoveTag(index)}
                             className="text-gray-300 font-semibold ml-2"
                           >
                             X
@@ -315,9 +623,114 @@ export default function SingleCoupon() {
                   </div>
                 </div>
               </div>
-            </div> */}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
+              <h4 className="text-gray-600 text-sm ">Product Categories</h4>
+              <div className="col-span-2">
+                <div className="flex justify-start items-center gap-2">
+                  <div className="border border-gray-300 rounded-md p-2 w-full">
+                    <div>
+                      <input
+                        type="text"
+                        id="category"
+                        value={categoryInputValue}
+                        onChange={handleSearchCategory}
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                      />
+                    </div>
+                    {categorySearchResults.length > 0 && (
+                      <div className="border border-gray-300 rounded-md p-2 max-h-40 overflow-y-auto">
+                        {categorySearchResults.map((category) => (
+                          <div
+                            key={category?._id}
+                            onClick={() => handleCategoryClick(category._id)}
+                            className="cursor-pointer hover:bg-gray-100 p-2"
+                          >
+                            {category?.categoryName}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="my-3 flex flex-wrap justify-start items-center gap-2">
+                      {categoryValueArray.map((tag, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center"
+                        >
+                          <span className="text-md text-black">{tag}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleCategoryRemoveTag(index)}
+                            className="text-gray-300 font-semibold ml-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
+              <h4 className="text-gray-600 text-sm ">
+                Exclude Product Categories
+              </h4>
+              <div className="col-span-2">
+                <div className="flex justify-start items-center gap-2">
+                  <div className="border border-gray-300 rounded-md p-2 w-full">
+                    <div>
+                      <input
+                        type="text"
+                        id="excludeCategory"
+                        value={excludeCategoryInputValue}
+                        onChange={handleExcludeSearchCategory}
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                      />
+                    </div>
+                    {excludeCategorySearchResults.length > 0 && (
+                      <div className="border border-gray-300 rounded-md p-2 max-h-40 overflow-y-auto">
+                        {excludeCategorySearchResults.map((category) => (
+                          <div
+                            key={category?._id}
+                            onClick={() =>
+                              handleExcludeCategoryClick(category._id)
+                            }
+                            className="cursor-pointer hover:bg-gray-100 p-2"
+                          >
+                            {category?.categoryName}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="my-3 flex flex-wrap justify-start items-center gap-2">
+                      {excludeCategoryValueArray.map((tag, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center"
+                        >
+                          <span className="text-md text-black">{tag}</span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleExcludeCategoryRemoveTag(index)
+                            }
+                            className="text-gray-300 font-semibold ml-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
+
         <section
           className={`
         ${activeTab === "limits" ? "block" : "hidden"} 
@@ -334,8 +747,9 @@ export default function SingleCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="number"
-                    id="usagelimit"
-                    defaultValue={10}
+                    id="usageLimitPerCoupon"
+                    name="usageLimitPerCoupon"
+                    defaultValue={coupon?.usageLimit?.usageLimitPerCoupon}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>
@@ -347,8 +761,9 @@ export default function SingleCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="number"
-                    id="limitusagetoxitems"
-                    defaultValue={10}
+                    id="limitUsageToXItems"
+                    name="limitUsageToXItems"
+                    defaultValue={coupon?.usageLimit?.limitUsageToXItems}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>
@@ -360,8 +775,9 @@ export default function SingleCoupon() {
                 <div className="flex justify-start items-center gap-2">
                   <input
                     type="number"
-                    id="limitperuser"
-                    defaultValue={10}
+                    id="usageLimitPerUser"
+                    name="usageLimitPerUser"
+                    defaultValue={coupon?.usageLimit?.usageLimitPerUser}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
                 </div>

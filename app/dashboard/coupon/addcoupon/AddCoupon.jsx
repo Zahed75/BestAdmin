@@ -235,7 +235,7 @@ export default function AddCoupon() {
       },
     };
 
-    console.log(data);
+    
     try {
       const response = fetchApi("/discount/createCoupon", "POST", data);
 

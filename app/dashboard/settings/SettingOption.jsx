@@ -983,7 +983,7 @@ export default function SettingOption() {
     <div>
       <PageHead pageHead="Settings" />
       <div>
-        {/* <CouponTab tabs={couponDataTabs} /> */}
+        <SettingTab tabs={couponDataTabs} />
       </div>
     </div>
   );
