@@ -1,10 +1,11 @@
 "use client";
 import Pagination from "@/components/global/pagination/Pagination";
+import { fetchApi } from "@/utils/FetchApi";
 import Link from "next/link";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
-export default function CouponTable() {
+export default function CouponTable({ AllCoupons }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
@@ -14,105 +15,35 @@ export default function CouponTable() {
   const [showAction, setShowAction] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const data = [
-    {
-      id: 1,
-      code: "EID2021",
-      couponType: "Fixed Product Discount",
-      amount: "10",
-      limit: "0/∞",
-      expireDate: "17:53, Jan 14, 2024",
-    },
-    {
-      id: 2,
-      code: "EID2022",
-      couponType: "Percentage Discount",
-      amount: "10",
-      limit: "0/∞",
-      expireDate: "17:53, Jan 14, 2024",
-    },
-    {
-      id: 3,
-      code: "EID2023",
-      couponType: "Fixed Product Discount",
-      amount: "15",
-      limit: "5/12",
-      expireDate: "02:30, May 30, 2024",
-    },
-    {
-      id: 4,
-      code: "EID2024",
-      couponType: "Percentage Discount",
-      amount: "10",
-      limit: "0/∞",
-      expireDate: "17:53, Jan 14, 2024",
-    },
-    {
-      id: 5,
-      code: "EID2025",
-      couponType: "Fixed Product Discount",
-      amount: "25",
-      limit: "5/12",
-      expireDate: "17:53, Jan 14, 2024",
-    },
-    {
-      id: 6,
-      code: "EID2026",
-      couponType: "Percentage Discount",
-      amount: "10",
-      limit: "0/∞",
-      expireDate: "01:30, May 25, 2024",
-    },
-    {
-      id: 7,
-      code: "EID2027",
-      couponType: "Fixed Product Discount",
-      amount: "30",
-      limit: "5/12",
-      expireDate: "17:53, Jan 14, 2024",
-    },
-    {
-      id: 8,
-      code: "EID2028",
-      couponType: "Percentage Discount",
-      amount: "10",
-      limit: "0/∞",
-      expireDate: "03:34, Feb 14, 2024",
-    },
-    {
-      id: 9,
-      code: "EID2029",
-      couponType: "Fixed Product Discount",
-      amount: "05",
-      limit: "5/12",
-      expireDate: "17:53, Jan 14, 2024",
-    },
-    {
-      id: 10,
-      code: "EID2030",
-      couponType: "Percentage Discountt",
-      amount: "30",
-      limit: "0/∞",
-      expireDate: "12:53, May 14, 2024",
-    },
-  ];
+  const data = AllCoupons || [];
 
-  const filteredData = data?.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        value != null &&
-        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    )
+  const filteredData = data.filter((item) =>
+    item.general?.couponName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const sortedData = filteredData.sort((a, b) => {
-    if (!sortBy) return 0;
-    if (sortDirection === "asc") {
-      return a[sortBy].localeCompare(b[sortBy]);
-    } else {
-      return b[sortBy].localeCompare(a[sortBy]);
-    }
-  });
+  
+  const sortData = (filteredData, sortBy, sortDirection) => {
+    if (!sortBy) return filteredData;
+
+    return [...filteredData].sort((a, b) => {
+      const aValue = sortBy.split(".").reduce((o, i) => (o ? o[i] : ""), a);
+      const bValue = sortBy.split(".").reduce((o, i) => (o ? o[i] : ""), b);
+
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      } else if (aValue instanceof Date && bValue instanceof Date) {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      } else {
+        return 0;
+      }
+    });
+  };
+
+  const sortedData = sortData(filteredData, sortBy, sortDirection);
 
   // Pagination
   const indexOfLastData = currentPage * dataPerPage;
@@ -138,7 +69,7 @@ export default function CouponTable() {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : [...data.map((item) => item.id)]);
+    setSelectedItems(selectAll ? [] : [...data.map((item) => item._id)]);
   };
 
   const handleSelectItem = (itemId) => {
@@ -153,36 +84,53 @@ export default function CouponTable() {
     }
   };
 
-  // const handleDeleteOutlet = async () => {
-  //   try {
-  //     for (const itemId of selectedItems) {
-  //       const response = await fetchApi(`/outlet/deleteOutlet/${itemId}`, "DELETE");
-  //       if (response.status === 200) {
-  //         const newData = data.filter((item) => item._id !== itemId);
-  //         router.push("/dashboard/outlets");
-  //       } else {
-  //         console.log(`Failed to delete category with ID ${itemId}.`);
-  //       }
-  //     }
-  //     setSelectedItems([]);
-  //     console.log("Selected categories deleted successfully!");
-  //   } catch (err) {
-  //     console.log("An error occurred while deleting selected categories.", err);
-  //   }
-  // };
+  const handleDeleteCoupon = async () => {
+    try {
+      for (const itemId of selectedItems) {
+        const response = await fetchApi(
+          `/discount/deleteCouponById/${itemId}`,
+          "DELETE"
+        );
+        if (response.status === 200) {
+          router.push("/dashboard/coupon");
+        } else {
+          console.log(`Failed to delete category with ID ${itemId}.`);
+        }
+      }
+      setSelectedItems([]);
+      console.log("Selected categories deleted successfully!");
+    } catch (err) {
+      console.log("An error occurred while deleting selected categories.", err);
+    }
+  };
 
-  // const handleUpdateOutlet = async () => {
-  //   try {
-  //     for (const itemId of selectedItems) {
-  //       router.push(`/dashboard/outlets/${itemId}`);
-  //     }
-  //   } catch (error) {
-  //     console.log(
-  //       "An error occurred while updating selected categories.",
-  //       error
-  //     );
-  //   }
-  // };
+  const handleUpdateCoupon = async () => {
+    try {
+      for (const itemId of selectedItems) {
+        router.push(`/dashboard/coupon/${itemId}`);
+      }
+    } catch (error) {
+      console.log(
+        "An error occurred while updating selected categories.",
+        error
+      );
+    }
+  };
+
+  function formatDate(dateString) {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    if (isNaN(date)) return "N/A";
+
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return date.toLocaleDateString(undefined, options);
+  }
 
   return (
     <section className="w-full my-5">
@@ -215,6 +163,7 @@ export default function CouponTable() {
               className="peer h-full w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pr-2"
               type="text"
               id="search"
+              name="search"
               placeholder="Search something.."
             />
           </div>
@@ -239,7 +188,7 @@ export default function CouponTable() {
                 <ul className="py-1" aria-labelledby="dropdown">
                   <li>
                     <button
-                      // onClick={handleUpdateOutlet}
+                      onClick={handleUpdateCoupon}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Update
@@ -247,7 +196,7 @@ export default function CouponTable() {
                   </li>
                   <li>
                     <button
-                      // onClick={handleDeleteOutlet}
+                      onClick={handleDeleteCoupon}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Delete
@@ -288,42 +237,43 @@ export default function CouponTable() {
                             onChange={handleSelectAll}
                             checked={selectAll}
                           />
-                          <label for="checkbox-all" className="sr-only">
+                          <label htmlFor="checkbox-all" className="sr-only">
                             checkbox
                           </label>
                         </div>
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("code")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Code &#x21d5;
+                        Code
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("couponType")}
+                        onClick={() => handleSort("general.discountType")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Coupon Type &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("amount")}
+                        onClick={() => handleSort("general.couponAmount")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Amount &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("limit")}
+                        onClick={() =>
+                          handleSort("usageLimit.usageLimitPerCoupon")
+                        }
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         limit &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("expireDate")}
+                        onClick={() => handleSort("general.couponExpiry")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         expire date &#x21d5;
@@ -331,24 +281,24 @@ export default function CouponTable() {
                     </tr>
                   </thead>
                   <tbody className="bg-white text-black">
-                    {currentData?.map((item) => (
+                    {currentData?.map((item, i) => (
                       <tr
-                        key={item.id}
+                        key={item._id}
                         className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          i % 2 !== 0 ? "" : "bg-gray-100"
                         } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
                             <input
-                              id={`checkbox_${item.id}`}
+                              id={`checkbox_${item._id}`}
                               type="checkbox"
                               className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item.id)}
-                              onChange={() => handleSelectItem(item.id)}
+                              checked={selectedItems.includes(item._id)}
+                              onChange={() => handleSelectItem(item._id)}
                             />
                             <label
-                              htmlFor={`checkbox_${item.id}`}
+                              htmlFor={`checkbox_${item._id}`}
                               className="sr-only"
                             >
                               checkbox
@@ -356,23 +306,27 @@ export default function CouponTable() {
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <Link href={`/dashboard/coupon/${item.id}`}>
-                            <span className=" ">{item.code}</span>
+                          <Link href={`/dashboard/coupon/${item._id}`}>
+                            <span className=" ">
+                              {item?.general?.couponName}
+                            </span>
                           </Link>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <div className="flex justify-start items-center">
-                            <span className="">{item.couponType}</span>
+                            <span className="">
+                              {item?.general?.discountType}
+                            </span>
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.amount}
+                          {item?.general?.couponAmount}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.limit}
+                          {item?.usageLimit?.usageLimitPerCoupon || "&#8734;"}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.expireDate}
+                          {formatDate(item?.general?.couponExpiry)}
                         </td>
                       </tr>
                     ))}

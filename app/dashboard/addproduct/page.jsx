@@ -545,7 +545,7 @@ export default function AddProductPage() {
                       className="hidden"
                     />
                     <label
-                      for="featuredVideoUpload"
+                      htmlFor="featuredVideoUpload"
                       className="z-20 flex flex-col-reverse items-center justify-center h-[430px] cursor-pointer border py-20 bg-gray-200 rounded-md"
                     >
                       <svg
@@ -607,7 +607,7 @@ export default function AddProductPage() {
                         className="hidden "
                       />
                       <label
-                        for="galleryVideoUpload"
+                        htmlFor="galleryVideoUpload"
                         className="z-20 flex flex-col-reverse items-center justify-center w-[95px] h-[160px] cursor-pointer border py-2 bg-gray-200 rounded-md"
                       >
                         <svg

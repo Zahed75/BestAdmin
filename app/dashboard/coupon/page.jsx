@@ -1,11 +1,9 @@
-import CouponTable from "@/components/dashboard/coupon/CouponTable";
-import PageHead from "@/components/global/pageHead/PageHead";
+import CouponPage from "./CouponPage";
 
 export default function page() {
   return (
     <main>
-      <PageHead pageHead="Coupon" />
-      <CouponTable />
+      <CouponPage />
     </main>
   );
 }

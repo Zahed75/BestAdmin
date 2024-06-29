@@ -211,7 +211,7 @@ export default function OutletsTable({ AllOutlets }) {
                             onChange={handleSelectAll}
                             checked={selectAll}
                           />
-                          <label for="checkbox-all" className="sr-only">
+                          <label htmlFor="checkbox-all" className="sr-only">
                             checkbox
                           </label>
                         </div>
