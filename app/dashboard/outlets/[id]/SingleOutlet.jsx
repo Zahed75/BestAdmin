@@ -244,9 +244,12 @@ export default function SingleOutlet({ outlet }) {
                                     " " +
                                     outlet?.outletManager?.lastName}
                                 </option>
-                                {OutletManager?.map((user, i) => (
-                                  <option key={i} value={user?._id}>
-                                    {user?.firstName + " " + user?.lastName}
+                                {OutletManager?.filter(
+                                  (manager) =>
+                                    manager._id !== outlet?.outletManager?._id
+                                ).map((manager) => (
+                                  <option key={manager._id} value={manager._id}>
+                                    {manager.firstName + " " + manager.lastName}
                                   </option>
                                 ))}
                               </select>
