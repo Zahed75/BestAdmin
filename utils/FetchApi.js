@@ -4,7 +4,7 @@ const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
 export const fetchApi = async (path, method, data = null) => {
   const url = `${API_ENDPOINT}${path}`;
-  const user = localStorage.getItem("user"); 
+  const user = localStorage.getItem("user");
   const token = user ? JSON.parse(user).accessToken : "";
 
   try {
@@ -12,7 +12,7 @@ export const fetchApi = async (path, method, data = null) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     };
 
@@ -25,6 +25,9 @@ export const fetchApi = async (path, method, data = null) => {
         break;
       case "PUT":
         response = await axios.put(url, data, config);
+        break;
+      case "PATCH":
+        response = await axios.patch(url, data, config);
         break;
       case "DELETE":
         response = await axios.delete(url, config);

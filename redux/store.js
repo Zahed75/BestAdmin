@@ -6,6 +6,7 @@ import usersReducer from "@/redux/slice/usersSlice";
 import authReducer from "@/redux/slice/authSlice";
 import outletsReducer from "@/redux/slice/outletSlice";
 import couponsReducer from "@/redux/slice/couponSlice";
+import customersReducer from "@/redux/slice/customersSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     auth: authReducer,
     outlets: outletsReducer,
     coupons: couponsReducer,
+    customer: customersReducer,
   },
 });
 

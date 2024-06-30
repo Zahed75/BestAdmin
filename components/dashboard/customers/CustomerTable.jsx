@@ -8,8 +8,9 @@ import { FaCaretDown, FaFilter } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { MdFilterAltOff } from "react-icons/md";
 import Pagination from "@/components/global/pagination/Pagination";
+import { useRouter } from "next/navigation";
 
-export default function CustomersTable() {
+export default function CustomersTable({ AllCustomers }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
@@ -20,61 +21,30 @@ export default function CustomersTable() {
   const [showAction, setShowAction] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
-  const data = [
-    {
-      id: 1,
-      userName: "shahriarhasan",
-      customerName: "Md Shahriar Hasan",
-      emailAddress: "bro404@gmail.com",
-      city: "Dhaka",
-      phoneNumber: "01913865741",
-    },
-    {
-      id: 2,
-      userName: "imranhasan",
-      customerName: "Md Imran Hasan",
-      emailAddress: "imran@gmail.com",
-      city: "Dhaka",
-      phoneNumber: "01745821569",
-    },
-    {
-      id: 3,
-      userName: "zahidhasar",
-      customerName: "Md Zahid Hasan",
-      emailAddress: "zahed@gmail.com",
-      city: "Chittagong",
-      phoneNumber: "01985621569",
-    },
-    {
-      id: 4,
-      userName: "mdshaiadul",
-      customerName: "Md Shaiadul Basar",
-      emailAddress: "mdshaiadul@gmail.com",
-      city: "Dhaka",
-      phoneNumber: "01745821569",
-    },
-    {
-      id: 5,
-      userName: "tasinbro",
-      customerName: "Md Tasin",
-      emailAddress: "tasin@gmail.com",
-      city: "Dhaka",
-      phoneNumber: "01913865741",
-    },
-  ];
+  const data = AllCustomers;
 
-  // Search function
+  const router = useRouter();
+
+  // const filterHandler = (e) => {
+  //   e.preventDefault();
+  //   const userName = e.target.userName.value;
+  //   const customerName = e.target.customerName.value;
+  //   const emailAddress = e.target.emailAddress.value;
+  //   const city = e.target.city.value;
+  //   const phoneNumber = e.target.phoneNumber.value;
+
+  //   setSearchQuery(userName);
+  //   setSearchQuery(customerName);
+  //   setSearchQuery(emailAddress);
+  //   setSearchQuery(city);
+  //   setSearchQuery(phoneNumber);
+  //   setShowFilter(false);
+  // };
+
   const filteredData = data.filter((item) => {
-    return (
-      item.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.emailAddress.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.phoneNumber.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return item.userName.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  // Sorting function
   const sortedData = filteredData.sort((a, b) => {
     if (!sortBy) return 0;
     if (sortDirection === "asc") {
@@ -84,7 +54,6 @@ export default function CustomersTable() {
     }
   });
 
-  // Pagination
   const indexOfLastData = currentPage * dataPerPage;
   const indexOfFirstData = indexOfLastData - dataPerPage;
   const currentData = sortedData.slice(indexOfFirstData, indexOfLastData);
@@ -108,7 +77,7 @@ export default function CustomersTable() {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : [...data.map((item) => item.id)]);
+    setSelectedItems(selectAll ? [] : [...data.map((item) => item._id)]);
   };
 
   const handleSelectItem = (itemId) => {
@@ -123,7 +92,19 @@ export default function CustomersTable() {
     }
   };
 
-  // make pdf
+  const handleUpdateCustomer = () => {
+    try {
+      for (const itemId of selectedItems) {
+        router.push(`/dashboard/customers/${itemId}`);
+      }
+    } catch (error) {
+      console.log(
+        "An error occurred while updating selected categories.",
+        error
+      );
+    }
+  };
+
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
 
@@ -205,7 +186,7 @@ export default function CustomersTable() {
                 <ul className="py-1" aria-labelledby="dropdown">
                   <li>
                     <button
-                      // onClick={handleUpdateCoupon}
+                      onClick={handleUpdateCustomer}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Update
@@ -214,7 +195,7 @@ export default function CustomersTable() {
                   <li>
                     <button
                       // onClick={handleDeleteCoupon}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full disabled cursor-not-allowed"
                     >
                       Delete
                     </button>
@@ -265,24 +246,22 @@ export default function CustomersTable() {
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("userName")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        User Name &#x21d5;
+                        User Name
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("customerName")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Customer Name &#x21d5;
+                        Customer Name
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("emailAddress")}
+                        onClick={() => handleSort("email")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Email Address &#x21d5;
+                        Email &#x21d5;
                       </th>
                       <th
                         scope="col"
@@ -301,24 +280,24 @@ export default function CustomersTable() {
                     </tr>
                   </thead>
                   <tbody className="bg-white text-black">
-                    {currentData?.map((item) => (
+                    {currentData?.map((item, i) => (
                       <tr
-                        key={item.id}
+                        key={item._id}
                         className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          i % 2 !== 0 ? "" : "bg-gray-100"
                         } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
                             <input
-                              id={`checkbox_${item.id}`}
+                              id={`checkbox_${item._id}`}
                               type="checkbox"
                               className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item.id)}
-                              onChange={() => handleSelectItem(item.id)}
+                              checked={selectedItems.includes(item._id)}
+                              onChange={() => handleSelectItem(item._id)}
                             />
                             <label
-                              htmlFor={`checkbox_${item.id}`}
+                              htmlFor={`checkbox_${item._id}`}
                               className="sr-only"
                             >
                               checkbox
@@ -326,34 +305,36 @@ export default function CustomersTable() {
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <Link href={`/dashboard/customers/${item.id}`}>
+                          <Link href={`/dashboard/customers/${item?._id}`}>
                             <span className="underline underline-offset-2">
-                              {item.userName}
+                              {item?.userName}
                             </span>
                           </Link>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <Link href={`/dashboard/customers/${item.id}`}>
+                          <Link href={`/dashboard/customers/${item?._id}`}>
                             <div className="flex justify-start items-center">
                               <Image
                                 width={28}
                                 height={28}
                                 className="w-7 h-7 rounded-md"
-                                src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
+                                src={item?.profilePicture}
                                 alt=""
                               />
-                              <span className="ml-2">{item.customerName}</span>
+                              <span className="ml-2">
+                                {item?.firstName + " " + item?.lastName}
+                              </span>
                             </div>
                           </Link>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.emailAddress}
+                          {item?.email}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.city}
+                          {item?.city}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.phoneNumber}
+                          {item?.phoneNumber}
                         </td>
                       </tr>
                     ))}
@@ -386,7 +367,10 @@ export default function CustomersTable() {
               className="p-1 rounded-full bg-gray-100 w-6 h-6 cursor-pointer"
             />
           </div>
-          <div className="flex flex-col gap-3 my-5">
+          <form
+            // onSubmit={filterHandler}
+            className="flex flex-col gap-3 my-5"
+          >
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="userName"
@@ -458,11 +442,14 @@ export default function CustomersTable() {
               />
             </div>
             <div className="flex justify-end">
-              <button className="p-2 rounded-lg bg-black text-white w-full">
+              <button
+                type="submit"
+                className="p-2 rounded-lg bg-black text-white w-full"
+              >
                 Apply Filter
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </section>
