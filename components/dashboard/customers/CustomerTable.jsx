@@ -4,14 +4,22 @@ import { useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Image from "next/image";
+import { FaCaretDown, FaFilter } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
+import { MdFilterAltOff } from "react-icons/md";
+import Pagination from "@/components/global/pagination/Pagination";
 
 export default function CustomersTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [dataPerPage] = useState(5); // Change this value to adjust the number of rows per page
+  const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showAction, setShowAction] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+
   const data = [
     {
       id: 1,
@@ -55,8 +63,19 @@ export default function CustomersTable() {
     },
   ];
 
+  // Search function
+  const filteredData = data.filter((item) => {
+    return (
+      item.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.emailAddress.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.phoneNumber.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+
   // Sorting function
-  const sortedData = data.sort((a, b) => {
+  const sortedData = filteredData.sort((a, b) => {
     if (!sortBy) return 0;
     if (sortDirection === "asc") {
       return a[sortBy].localeCompare(b[sortBy]);
@@ -130,7 +149,7 @@ export default function CustomersTable() {
         <div className="flex justify-between md:justify-start items-center w-full">
           <h5 className="text-lg md:text-2xl font-bold">All Customers</h5>
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
+        <div className="flex flex-col md:flex-row justify-start items-center gap-3 ml-auto w-full md:col-span-2">
           {/* search bar */}
           <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
             <div className="grid place-items-center h-full w-12 text-gray-300">
@@ -158,8 +177,8 @@ export default function CustomersTable() {
               placeholder="Search something.."
             />
           </div>
-          <div className="flex justify-between items-center gap-3 w-full">
-            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
+          <div className="flex justify-between items-center gap-3 ml-auto">
+            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md ">
               <button
                 onClick={exportPdf}
                 className="flex mx-auto py-2 text-nowrap px-3"
@@ -167,38 +186,56 @@ export default function CustomersTable() {
                 Export As &#x2193;
               </button>
             </div>
-            <div className="mx-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <select className="bg-[#F9FAFB] mx-3 py-2 outline-none ">
-                <option className="bg-[#F9FAFB]" value="30">
-                  Action
-                </option>
-                <option className="bg-[#F9FAFB]" value="15">
-                  Last 15 Days
-                </option>
-                <option className="bg-[#F9FAFB]" value="7">
-                  Last 07 Days
-                </option>
-                <option className="bg-[#F9FAFB]" value="1">
-                  Last 1 Days
-                </option>
-              </select>
+            <div className="flex justify-between items-center gap-3 relative">
+              <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
+                <button
+                  onClick={() => setShowAction(!showAction)}
+                  className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
+                >
+                  Action <FaCaretDown className="ml-3" />
+                </button>
+              </div>
+              <div
+                onMouseLeave={() => setShowAction(false)}
+                className={`
+              ${showAction ? "block" : "hidden"}
+              absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
+                id="dropdown"
+              >
+                <ul className="py-1" aria-labelledby="dropdown">
+                  <li>
+                    <button
+                      // onClick={handleUpdateCoupon}
+                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                    >
+                      Update
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      // onClick={handleDeleteCoupon}
+                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-          <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md">
-            <select className="bg-[#F9FAFB] mx-3 py-2 outline-none">
-              <option className="bg-[#F9FAFB]" value="30">
-                Filter with
-              </option>
-              <option className="bg-[#F9FAFB]" value="15">
-                Outlets Name
-              </option>
-              <option className="bg-[#F9FAFB]" value="7">
-                Outlets City
-              </option>
-              <option className="bg-[#F9FAFB]" value="1">
-                Outlets Address
-              </option>
-            </select>
+            <div className="w-10 h-10 bg-[#F9FAFB] shadow-md rounded-full">
+              <FaFilter
+                className={`${
+                  !showFilter ? "block" : "hidden"
+                } text-primary cursor-pointer w-6 h-6 flex justify-center items-center mx-auto my-2 p-1`}
+                onClick={() => setShowFilter(!showFilter)}
+              />
+              <MdFilterAltOff
+                className={`${
+                  showFilter ? "block" : "hidden"
+                } text-primary cursor-pointer w-8 h-8 flex justify-center items-center mx-auto my-1 p-1`}
+                onClick={() => setShowFilter(!showFilter)}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -325,70 +362,105 @@ export default function CustomersTable() {
               </div>
             </div>
           </div>
-          {/* page footer */}
-          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-y-3 my-10">
-            {/* page number */}
-            <div className="flex justify-start items-center font-semibold">
-              {showingText}
-            </div>
-            {/* Pagination */}
-            <div className="flex justify-end items-center">
-              <nav aria-label="Pagination">
-                <ul className="inline-flex border rounded-sm shadow-md">
-                  <li>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      &#x2190;
-                    </button>
-                  </li>
+          <Pagination
+            currentPage={currentPage}
+            dataPerPage={dataPerPage}
+            totalItems={sortedData.length}
+            paginate={paginate}
+            showingText={showingText}
+            data={sortedData}
+          />
+        </div>
+      </div>
 
-                  <li>
-                    <button
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage - 1}
-                    </button>
-                    <button
-                      className={`py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none`}
-                    >
-                      {currentPage}
-                    </button>
-                    <button
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                      onClick={() => paginate(currentPage + 1)}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage + 1}
-                    </button>
-                    <span
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none cursor-not-allowed`}
-                    >
-                      ...
-                    </span>
-                    <button
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {Math.ceil(data.length / dataPerPage)}
-                    </button>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                    >
-                      &#x2192;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+      <div
+        className={`${
+          showFilter ? "block" : "hidden"
+        } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50`}
+      >
+        <div className="bg-white w-11/12 md:w-1/3 mx-auto my-10 rounded-lg shadow-lg p-5">
+          <div className="flex justify-between items-center">
+            <h5 className="text-lg font-bold">Filter</h5>
+            <IoMdClose
+              onClick={() => setShowFilter(false)}
+              className="p-1 rounded-full bg-gray-100 w-6 h-6 cursor-pointer"
+            />
+          </div>
+          <div className="flex flex-col gap-3 my-5">
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="userName"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="userName"
+                name="userName"
+                className="border border-gray-300 rounded-md p-2 focus:outline-none "
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="customerName"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Customer Name
+              </label>
+              <input
+                type="text"
+                id="customerName"
+                name="customerName"
+                className="border border-gray-300 rounded-md p-2 focus:outline-none "
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="emailAddress"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Email Address
+              </label>
+              <input
+                type="text"
+                id="emailAddress"
+                name="emailAddress"
+                className="border border-gray-300 rounded-md p-2 focus:outline-none "
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="city"
+                className="text-sm font-semibold text-gray-600"
+              >
+                City
+              </label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                className="border border-gray-300 rounded-md p-2 focus:outline-none "
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="phoneNumber"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Phone Number
+              </label>
+              <input
+                type="text"
+                id="phoneNumber"
+                name="phoneNumber"
+                className="border border-gray-300 rounded-md p-2 focus:outline-none "
+              />
+            </div>
+            <div className="flex justify-end">
+              <button className="p-2 rounded-lg bg-black text-white w-full">
+                Apply Filter
+              </button>
             </div>
           </div>
         </div>

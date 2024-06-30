@@ -1,4 +1,3 @@
-
 import CustomersTable from "@/components/dashboard/customers/CustomerTable";
 import PageHead from "@/components/global/pageHead/PageHead";
 
@@ -7,8 +6,7 @@ export default function CustomersPage() {
   return (
     <main>
       <PageHead pageHead="Customers" />
-      
-      
+
       <CustomersTable />
     </main>
   );

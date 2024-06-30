@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+.text-primary {
+  color: #f26522;
+}
+.bg-primary {
+  background-color: #f26522;
+}
+
 /* -----------------------------
     1.0 Global Styles start
 ---------------------------- */
@@ -135,7 +142,7 @@
       -35px 50px 0 #000000, -70px 90px 0 #000000;
   }
   100% {
-    box-shadow: 0 10px 0 #D1E2F2, -35px 50px 0 #000000, -70px 90px 0 #000000,
+    box-shadow: 0 10px 0 #d1e2f2, -35px 50px 0 #000000, -70px 90px 0 #000000,
       -70px 90px 0 rgba(0, 0, 0, 0);
   }
 }
