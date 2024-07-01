@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Image from "next/image";
 import { FaCaretDown, FaFilter } from "react-icons/fa";
@@ -24,22 +23,6 @@ export default function CustomersTable({ AllCustomers }) {
   const data = AllCustomers;
 
   const router = useRouter();
-
-  // const filterHandler = (e) => {
-  //   e.preventDefault();
-  //   const userName = e.target.userName.value;
-  //   const customerName = e.target.customerName.value;
-  //   const emailAddress = e.target.emailAddress.value;
-  //   const city = e.target.city.value;
-  //   const phoneNumber = e.target.phoneNumber.value;
-
-  //   setSearchQuery(userName);
-  //   setSearchQuery(customerName);
-  //   setSearchQuery(emailAddress);
-  //   setSearchQuery(city);
-  //   setSearchQuery(phoneNumber);
-  //   setShowFilter(false);
-  // };
 
   const filteredData = data.filter((item) => {
     return item.userName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -105,25 +88,6 @@ export default function CustomersTable({ AllCustomers }) {
     }
   };
 
-  const exportPdf = async () => {
-    const doc = new jsPDF({ orientation: "landscape" });
-
-    doc.autoTable({
-      html: "#joy-bangla",
-      // theme: "grid",
-      // styles: {
-      //   font: "helvetica",
-      //   lineColor: [0, 0, 0],
-      //   lineWidth: 0.5,
-      // },
-      headStyles: {
-        fillColor: "#F26522",
-        textColor: [255, 255, 255],
-      },
-    });
-
-    doc.save("dataTable.pdf");
-  };
   return (
     <section className="w-full my-5">
       <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
@@ -159,14 +123,6 @@ export default function CustomersTable({ AllCustomers }) {
             />
           </div>
           <div className="flex justify-between items-center gap-3 ml-auto">
-            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md ">
-              <button
-                onClick={exportPdf}
-                className="flex mx-auto py-2 text-nowrap px-3"
-              >
-                Export As &#x2193;
-              </button>
-            </div>
             <div className="flex justify-between items-center gap-3 relative">
               <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
                 <button
@@ -351,105 +307,6 @@ export default function CustomersTable({ AllCustomers }) {
             showingText={showingText}
             data={sortedData}
           />
-        </div>
-      </div>
-
-      <div
-        className={`${
-          showFilter ? "block" : "hidden"
-        } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50`}
-      >
-        <div className="bg-white w-11/12 md:w-1/3 mx-auto my-10 rounded-lg shadow-lg p-5">
-          <div className="flex justify-between items-center">
-            <h5 className="text-lg font-bold">Filter</h5>
-            <IoMdClose
-              onClick={() => setShowFilter(false)}
-              className="p-1 rounded-full bg-gray-100 w-6 h-6 cursor-pointer"
-            />
-          </div>
-          <form
-            // onSubmit={filterHandler}
-            className="flex flex-col gap-3 my-5"
-          >
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="userName"
-                className="text-sm font-semibold text-gray-600"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="userName"
-                name="userName"
-                className="border border-gray-300 rounded-md p-2 focus:outline-none "
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="customerName"
-                className="text-sm font-semibold text-gray-600"
-              >
-                Customer Name
-              </label>
-              <input
-                type="text"
-                id="customerName"
-                name="customerName"
-                className="border border-gray-300 rounded-md p-2 focus:outline-none "
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="emailAddress"
-                className="text-sm font-semibold text-gray-600"
-              >
-                Email Address
-              </label>
-              <input
-                type="text"
-                id="emailAddress"
-                name="emailAddress"
-                className="border border-gray-300 rounded-md p-2 focus:outline-none "
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="city"
-                className="text-sm font-semibold text-gray-600"
-              >
-                City
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                className="border border-gray-300 rounded-md p-2 focus:outline-none "
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="phoneNumber"
-                className="text-sm font-semibold text-gray-600"
-              >
-                Phone Number
-              </label>
-              <input
-                type="text"
-                id="phoneNumber"
-                name="phoneNumber"
-                className="border border-gray-300 rounded-md p-2 focus:outline-none "
-              />
-            </div>
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="p-2 rounded-lg bg-black text-white w-full"
-              >
-                Apply Filter
-              </button>
-            </div>
-          </form>
         </div>
       </div>
     </section>

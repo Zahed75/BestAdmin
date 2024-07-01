@@ -6,9 +6,11 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Loading from "@/app/dashboard/loading";
 import Pagination from "@/components/global/pagination/Pagination";
-import { FaCaretDown } from "react-icons/fa";
 import { fetchApi } from "@/utils/FetchApi";
 import { useRouter } from "next/navigation";
+import { FaCaretDown, FaFilter } from "react-icons/fa";
+import { MdFilterAltOff } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
 
 export default function OrderTable({ AllOrders }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,10 +23,12 @@ export default function OrderTable({ AllOrders }) {
   const [showButton, setShowButton] = useState(true);
   const [showAction, setShowAction] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [filterData, setFilterData] = useState([]);
 
   const router = useRouter();
 
-  const data = AllOrders || [];
+  const data = filterData.length > 0 ? filterData : AllOrders;
 
   const titleData = [
     "All",
@@ -40,15 +44,66 @@ export default function OrderTable({ AllOrders }) {
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
 
-    doc.autoTable({
-      html: "#my-table",
-      headStyles: {
-        fillColor: "#F26522",
-        textColor: [255, 255, 255],
-      },
-    });
+    const img = new Image();
+    img.src = "https://i.ibb.co/RpLHjCv/log.png";
+    img.onload = () => {
+      // Set font size
+      doc.setFontSize(12);
 
-    doc.save("dataTable.pdf");
+      doc.text("Order Summary Report", 10, 20);
+
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(128, 128, 128);
+      doc.text("Payment Method: Online payment", 10, 30);
+      doc.text("Report Generated at 09:42 AM, Jul 01, 2024", 10, 40);
+
+      doc.setTextColor(0, 0, 0);
+      doc.text("Account Details:", 10, 60);
+
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(128, 128, 128);
+      doc.text("Account Name: Syed Zaman", 10, 70);
+      doc.text("Account Address: Head Office", 10, 80);
+
+      // Add the company logo
+      const logoWidth = 90;
+      const logoHeight = 15;
+      const rightMargin = 10;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const logoX = pageWidth - logoWidth - rightMargin;
+      const logoY = 10;
+      doc.addImage(img, "PNG", logoX, logoY, logoWidth, logoHeight);
+
+      // Head Office (bold)
+      const headOfficeX = logoX;
+      const headOfficeY = logoY + logoHeight + 35;
+      doc.setTextColor(0, 0, 0);
+      doc.text("Head Office", headOfficeX, headOfficeY);
+
+      // Other text (gray)
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(128, 128, 128);
+      doc.text(
+        "Level 16, City Center, 90/1, Motijheel C/A",
+        headOfficeX,
+        headOfficeY + 10
+      );
+      doc.text("Dhaka, Bangladesh", headOfficeX, headOfficeY + 20);
+
+      // Add the table
+      doc.autoTable({
+        html: "#my-table",
+        startY: 90,
+        headStyles: {
+          fillColor: "#F26522",
+          textColor: [255, 255, 255],
+        },
+        margin: { left: 10, right: 10 },
+      });
+
+      // Save the PDF
+      doc.save("dataTable.pdf");
+    };
   };
 
   const handleTitleButtonClick = (title) => {
@@ -155,11 +210,82 @@ export default function OrderTable({ AllOrders }) {
     return date.toLocaleDateString(undefined, options);
   }
 
+  // const advanceFilterHandler = async (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetchApi(
+  //       `/order/filterOrders?orderStatus=${e.target.filterOrderStatus.value}&paymentMethod=${e.target.filterPaymentMethod.value}&outlet=${e.target.filterOutlet.value}&channel=${e.target.filterChannel.value}&startDate=${e.target.filterStartDate.value}&endDate=${e.target.filterEndDate.value}`,
+  //       "GET"
+  //     );
+  //     if (response.status === 200) {
+  //       const data = await response.json();
+  //       console.log(data);
+  //     } else {
+  //       console.log("Failed to fetch data.");
+  //     }
+  //   } catch (error) {
+  //     console.log("An error occurred while fetching data.", error);
+  //   }
+  //   setIsLoading(false);
+  // };
+
+
+  const advanceFilterHandler = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+  
+    try {
+      // Destructure the form data
+      const { filterOrderStatus, filterPaymentMethod, filterStartDate, filterEndDate } = e.target.elements;
+  
+      // Filter based on order status
+      let filteredOrders = AllOrders.filter(order => {
+        if (filterOrderStatus.value !== "" && order.orderStatus !== filterOrderStatus.value) {
+          return false;
+        }
+        return true;
+      });
+  
+      // Filter based on payment method
+      filteredOrders = filteredOrders.filter(order => {
+        if (filterPaymentMethod.value !== "" && order.paymentMethod !== filterPaymentMethod.value) {
+          return false;
+        }
+        return true;
+      });
+  
+      // Filter based on date range
+      filteredOrders = filteredOrders.filter(order => {
+        const orderDate = new Date(order.createdAt);
+        const startDate = new Date(filterStartDate.value);
+        const endDate = new Date(filterEndDate.value);
+        if (filterStartDate.value !== "" && orderDate < startDate) {
+          return false;
+        }
+        if (filterEndDate.value !== "" && orderDate > endDate) {
+          return false;
+        }
+        return true;
+      });
+  
+      // Update state with filtered data
+      setFilterData(filteredOrders);
+      console.log("Filtered data:", filteredOrders);
+  
+    } catch (error) {
+      console.log("An error occurred while filtering data.", error);
+    }
+  
+    setIsLoading(false);
+  };
+  
+
   return (
     <main>
       {isLoading && <Loading />}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
         <div className="flex justify-between md:justify-start items-center  w-full">
           <h5 className="text-lg md:text-2xl font-bold">All Orders</h5>
           <button
@@ -173,7 +299,7 @@ export default function OrderTable({ AllOrders }) {
             )}
           </button>
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full">
+        <div className="flex flex-col md:col-span-2 md:flex-row justify-between items-center gap-3 ml-auto w-full">
           {/* search bar */}
           <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
             <div className="grid place-items-center h-full w-12 text-gray-300">
@@ -201,48 +327,65 @@ export default function OrderTable({ AllOrders }) {
               placeholder="Search something.."
             />
           </div>
-
-          <div className="flex justify-between items-center gap-3 w-full">
-            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <button onClick={exportPdf} className="flex mx-auto py-2">
-                Export As &#x2193;
-              </button>
-            </div>
-            <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
-              <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
-                <button
-                  onClick={() => setShowAction(!showAction)}
-                  className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
-                >
-                  Action <FaCaretDown className="ml-3" />
+          <div className="flex justify-between items-center gap-3 ml-auto w-full">
+            <div className="flex justify-between items-center gap-3 w-full">
+              <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
+                <button onClick={exportPdf} className="flex mx-auto py-2">
+                  Export As &#x2193;
                 </button>
               </div>
-              <div
-                onMouseLeave={() => setShowAction(false)}
-                className={`
+              <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
+                <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
+                  <button
+                    onClick={() => setShowAction(!showAction)}
+                    className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
+                  >
+                    Action <FaCaretDown className="ml-3" />
+                  </button>
+                </div>
+                <div
+                  onMouseLeave={() => setShowAction(false)}
+                  className={`
               ${showAction ? "block" : "hidden"}
               absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
-                id="dropdown"
-              >
-                <ul className="py-1" aria-labelledby="dropdown">
-                  <li>
-                    <button
-                      onClick={handleUpdateProduct}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                    >
-                      Update
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleDeleteProduct}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                    >
-                      Delete
-                    </button>
-                  </li>
-                </ul>
+                  id="dropdown"
+                >
+                  <ul className="py-1" aria-labelledby="dropdown">
+                    <li>
+                      <button
+                        onClick={handleUpdateProduct}
+                        className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                      >
+                        Update
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={handleDeleteProduct}
+                        className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </div>
+              <button
+                onClick={() => setShowFilter(!showFilter)}
+                className="font-bold py-2 px-4 rounded-lg shadow-md focus:outline-0 focus:ring-0 flex justify-center items-center bg-[#F9FAFB] text-gray-500 hover:bg-gray-100 duration-700 min-w-24"
+              >
+                Filter
+                <FaFilter
+                  className={`${
+                    !showFilter ? "block" : "hidden"
+                  } text-primary cursor-pointer ml-1 w-4 h-4 flex justify-center items-center mx-auto text-gray-500`}
+                />
+                <MdFilterAltOff
+                  className={`${
+                    showFilter ? "block" : "hidden"
+                  } text-primary cursor-pointer ml-1 w-6 h-6 flex justify-center items-center mx-auto text-gray-500`}
+                />
+              </button>
             </div>
           </div>
         </div>
@@ -485,6 +628,149 @@ export default function OrderTable({ AllOrders }) {
           </div>
         </div>
       </section>
+      <div
+        className={`${
+          showFilter ? "block" : "hidden"
+        } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50`}
+      >
+        <div className="bg-white w-11/12 md:w-1/3 mx-auto my-10 rounded-lg shadow-lg p-5">
+          <div className="flex justify-between items-center">
+            <h5 className="text-lg font-bold">Filter</h5>
+            <IoMdClose
+              onClick={() => setShowFilter(false)}
+              className="p-1 rounded-full bg-gray-100 w-6 h-6 cursor-pointer"
+            />
+          </div>
+          <form
+            onSubmit={advanceFilterHandler}
+            className="flex flex-col gap-3 mt-5"
+          >
+            <div className="">
+              <label
+                htmlFor="filterOutlet"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Outlet
+              </label>{" "}
+              <br />
+              <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                <select
+                  name="filterOutlet"
+                  id="filterOutlet"
+                  className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                >
+                  <option value="">Select an Outlet</option>
+                  <option value="1">Outlet 1</option>
+                  <option value="2">Outlet 2</option>
+                  <option value="3">Outlet 3</option>
+                </select>
+              </div>
+            </div>
+            <div className="">
+              <label
+                htmlFor="filterOrderStatus"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Order Status
+              </label>{" "}
+              <br />
+              <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                <select
+                  name="filterOrderStatus"
+                  id="filterOrderStatus"
+                  className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                >
+                  <option value="">Select a Status</option>
+                  <option value="Received">Received</option>
+                  <option value="Dispatched">Dispatched</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="On-Hold">On-Hold</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Spammed">Spammed</option>
+                </select>
+              </div>
+            </div>
+            <div className="">
+              <label
+                htmlFor="filterChannel"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Channel
+              </label>{" "}
+              <br />
+              <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                <select
+                  name="filterChannel"
+                  id="filterChannel"
+                  className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                >
+                  <option value="">Select a Channel</option>
+                  <option value="Mobile">Mobile</option>
+                  <option value="Desktop">Desktop</option>
+                </select>
+              </div>
+            </div>
+            <div className="">
+              <label
+                htmlFor="filterPaymentMethod"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Payment Method
+              </label>
+              <br />
+              <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                <select
+                  name="filterPaymentMethod"
+                  id="filterPaymentMethod"
+                  className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                >
+                  <option value="">Select a Method</option>
+                  <option value="Cash">Cash On Delivery</option>
+                  <option value="Card">Card Payment</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="">
+              <label
+                htmlFor="filterDateRange"
+                className="text-sm font-semibold text-gray-600"
+              >
+                Date Range
+              </label>{" "}
+              <br />
+              <div className="grid grid-cols-2 justify-between items-center gap-3">
+                <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                  <input
+                    type="date"
+                    name="filterStartDate"
+                    id="filterStartDate"
+                    className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                  />
+                </div>
+                <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                  <input
+                    type="date"
+                    name="filterEndDate"
+                    id="filterEndDate"
+                    className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="p-2 rounded-lg bg-black text-white w-full mt-5"
+              >
+                Apply Filter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </main>
   );
 }
