@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { FaCaretDown, FaFilter } from "react-icons/fa";
 import { MdFilterAltOff } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import { set } from "date-fns";
 
 export default function OrderTable({ AllOrders }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,20 +51,20 @@ export default function OrderTable({ AllOrders }) {
       // Set font size
       doc.setFontSize(12);
 
-      doc.text("Order Summary Report", 10, 20);
+      doc.text("Order Summary Report:", 10, 20);
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
       doc.text("Payment Method: Online payment", 10, 30);
-      doc.text("Report Generated at 09:42 AM, Jul 01, 2024", 10, 40);
+      doc.text("Report Generated at 09:42 AM, Jul 01, 2024", 10, 35);
 
       doc.setTextColor(0, 0, 0);
-      doc.text("Account Details:", 10, 60);
+      doc.text("Account Details:", 10, 45);
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
-      doc.text("Account Name: Syed Zaman", 10, 70);
-      doc.text("Account Address: Head Office", 10, 80);
+      doc.text("Account Name: Syed Zaman", 10, 55);
+      doc.text("Account Address: Head Office", 10, 60);
 
       // Add the company logo
       const logoWidth = 90;
@@ -76,9 +77,9 @@ export default function OrderTable({ AllOrders }) {
 
       // Head Office (bold)
       const headOfficeX = logoX;
-      const headOfficeY = logoY + logoHeight + 35;
+      const headOfficeY = logoY + logoHeight + 20;
       doc.setTextColor(0, 0, 0);
-      doc.text("Head Office", headOfficeX, headOfficeY);
+      doc.text("Head Office:", headOfficeX, headOfficeY);
 
       // Other text (gray)
       doc.setFont("helvetica", "normal");
@@ -88,12 +89,12 @@ export default function OrderTable({ AllOrders }) {
         headOfficeX,
         headOfficeY + 10
       );
-      doc.text("Dhaka, Bangladesh", headOfficeX, headOfficeY + 20);
+      doc.text("Dhaka, Bangladesh", headOfficeX, headOfficeY + 15);
 
       // Add the table
       doc.autoTable({
         html: "#my-table",
-        startY: 90,
+        startY: 70,
         headStyles: {
           fillColor: "#F26522",
           textColor: [255, 255, 255],
@@ -230,56 +231,64 @@ export default function OrderTable({ AllOrders }) {
   //   setIsLoading(false);
   // };
 
-
   const advanceFilterHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-  
+
     try {
-      // Destructure the form data
-      const { filterOrderStatus, filterPaymentMethod, filterStartDate, filterEndDate } = e.target.elements;
-  
-      // Filter based on order status
-      let filteredOrders = AllOrders.filter(order => {
-        if (filterOrderStatus.value !== "" && order.orderStatus !== filterOrderStatus.value) {
-          return false;
-        }
-        return true;
-      });
-  
-      // Filter based on payment method
-      filteredOrders = filteredOrders.filter(order => {
-        if (filterPaymentMethod.value !== "" && order.paymentMethod !== filterPaymentMethod.value) {
-          return false;
-        }
-        return true;
-      });
-  
-      // Filter based on date range
-      filteredOrders = filteredOrders.filter(order => {
+      // Destructure the form elements
+      const {
+        filterOrderStatus,
+        filterPaymentMethod,
+        filterChannel,
+        filterStartDate,
+        filterEndDate,
+      } = e.target.elements;
+
+      // Retrieve the filter values
+      const status = filterOrderStatus.value;
+      const paymentMethod = filterPaymentMethod.value;
+      const channel = filterChannel.value;
+      const startDate = filterStartDate.value
+        ? new Date(filterStartDate.value)
+        : null;
+      const endDate = filterEndDate.value
+        ? new Date(filterEndDate.value)
+        : null;
+
+      // Filter orders based on the provided criteria
+      const filteredOrders = AllOrders.filter((order) => {
         const orderDate = new Date(order.createdAt);
-        const startDate = new Date(filterStartDate.value);
-        const endDate = new Date(filterEndDate.value);
-        if (filterStartDate.value !== "" && orderDate < startDate) {
-          return false;
-        }
-        if (filterEndDate.value !== "" && orderDate > endDate) {
-          return false;
-        }
-        return true;
+
+        const statusMatch = !status || order.orderStatus === status;
+        const paymentMethodMatch =
+          !paymentMethod || order.paymentMethod === paymentMethod;
+        const channelMatch = !channel || order.channel === channel;
+        const startDateMatch = !startDate || orderDate >= startDate;
+        const endDateMatch = !endDate || orderDate <= endDate;
+
+        return (
+          statusMatch &&
+          paymentMethodMatch &&
+          channelMatch &&
+          startDateMatch &&
+          endDateMatch
+        );
       });
-  
-      // Update state with filtered data
+
+      // Update state with the filtered data
+      if (filteredOrders.length === 0) {
+        setFilterData([]);
+      }
       setFilterData(filteredOrders);
+      setShowFilter(false);
       console.log("Filtered data:", filteredOrders);
-  
     } catch (error) {
       console.log("An error occurred while filtering data.", error);
     }
-  
+
     setIsLoading(false);
   };
-  
 
   return (
     <main>
@@ -378,18 +387,19 @@ export default function OrderTable({ AllOrders }) {
                 <FaFilter
                   className={`${
                     !showFilter ? "block" : "hidden"
-                  } text-primary cursor-pointer ml-1 w-4 h-4 flex justify-center items-center mx-auto text-gray-500`}
+                  } cursor-pointer ml-1 w-4 h-4 flex justify-center items-center mx-auto text-gray-500`}
                 />
                 <MdFilterAltOff
                   className={`${
                     showFilter ? "block" : "hidden"
-                  } text-primary cursor-pointer ml-1 w-6 h-6 flex justify-center items-center mx-auto text-gray-500`}
+                  } cursor-pointer ml-1 w-6 h-6 flex justify-center items-center mx-auto text-gray-500`}
                 />
               </button>
             </div>
           </div>
         </div>
       </div>
+
       {/* button component */}
       <div
         className={`
@@ -448,10 +458,16 @@ export default function OrderTable({ AllOrders }) {
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("totalPrice")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
-                          Amount &#x21d5;
+                          Amount
+                        </th>
+                        <th
+                          scope="col"
+                          onClick={() => handleSort("channel")}
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                          Channel &#x21d5;
                         </th>
 
                         <th
@@ -500,6 +516,9 @@ export default function OrderTable({ AllOrders }) {
                             <span className="text-md">৳</span>
                             {item.totalPrice}
                           </td>
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                            {item.channel}
+                          </td>
 
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
@@ -537,29 +556,31 @@ export default function OrderTable({ AllOrders }) {
                       <tr>
                         <th
                           scope="col"
-                          // onClick={() => handleSort("order")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order
                         </th>
                         <th
                           scope="col"
-                          // onClick={() => handleSort("orderTime")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order time
                         </th>
                         <th
                           scope="col"
-                          // onClick={() => handleSort("amount")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Amount
                         </th>
+                        <th
+                          scope="col"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                          Channel
+                        </th>
 
                         <th
                           scope="col"
-                          // onClick={() => handleSort("orderStatus")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status
@@ -584,6 +605,9 @@ export default function OrderTable({ AllOrders }) {
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item.totalPrice}
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                            {item.channel}
                           </td>
 
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
@@ -706,8 +730,8 @@ export default function OrderTable({ AllOrders }) {
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
                   <option value="">Select a Channel</option>
-                  <option value="Mobile">Mobile</option>
-                  <option value="Desktop">Desktop</option>
+                  <option value="mobile">Mobile</option>
+                  <option value="web">Web</option>
                 </select>
               </div>
             </div>
