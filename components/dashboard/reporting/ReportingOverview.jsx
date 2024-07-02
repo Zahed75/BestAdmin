@@ -25,9 +25,9 @@ export default function ReportingOverView() {
     const endDate = e.target.filterEndDate.value;
 
     dispatch(fetchReport({ startDate, endDate }));
+    setShowFilter(false);
   };
 
-  console.log("report", report?.totalSalesAndNet);
   const data = report?.totalSalesAndNet || {};
 
   return (
@@ -60,14 +60,12 @@ export default function ReportingOverView() {
                 <h1 className="text-[30px] font-bold">
                   {data?.totalSalesSum}৳
                 </h1>
-                
               </div>
             </div>
             <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
               <p className="text-[#6B7280] mb-2">Net Sales</p>
               <div className="flex justify-between items-center">
                 <h1 className="text-[30px] font-bold">{data?.netSalesSum}৳</h1>
-                
               </div>
             </div>
             <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
@@ -76,7 +74,6 @@ export default function ReportingOverView() {
                 <h1 className="text-[30px] font-bold">
                   {data?.totalOrdersInTimeFrame}
                 </h1>
-                
               </div>
             </div>
             <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
@@ -85,7 +82,6 @@ export default function ReportingOverView() {
                 <h1 className="text-[30px] font-bold">
                   {data?.totalOrdersToday}
                 </h1>
-                
               </div>
             </div>
           </div>

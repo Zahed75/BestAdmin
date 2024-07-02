@@ -22,22 +22,28 @@ ChartJS.register(
   Filler
 );
 
-const salesData = [
-  { month: "January", sales: 100 },
-  { month: "February", sales: 150 },
-  { month: "March", sales: 200 },
-  { month: "April", sales: 120 },
-  { month: "May", sales: 180 },
-  { month: "June", sales: 250 },
-];
+export default function CustomAreaChart({ salesData }) {
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
-export default function CustomAreaChart() {
   const data = {
-    labels: salesData.map((data) => data.month),
+    labels: salesData.map((data) => monthNames[data.month - 1]),
     datasets: [
       {
         label: "Sales",
-        data: salesData.map((data) => data.sales),
+        data: salesData.map((data) => data.totalSales),
         borderColor: "#25CD25",
         borderWidth: 2,
         pointBorderColor: "#78E078",

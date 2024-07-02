@@ -237,6 +237,8 @@ export default function AddProductPage() {
       setIsLoading(false);
 
       if (response) {
+        localStorage.removeItem("Description");
+        localStorage.removeItem("ShortDescription");
         router.push("/dashboard/products");
       } else {
         const errorData = await response.json();

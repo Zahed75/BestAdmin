@@ -51,17 +51,15 @@ export default function DashboardTable() {
                     <tr>
                       <th
                         scope="col"
-                        onClick={() => handleSort("orderId")}
                         className="py-3 px-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Order &#x21d5;
+                        Order
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("createdAt")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Order time &#x21d5;
+                        Order time
                       </th>
                       <th
                         scope="col"
@@ -71,18 +69,16 @@ export default function DashboardTable() {
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("channel")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Channel &#x21d5;
+                        Channel
                       </th>
 
                       <th
                         scope="col"
-                        onClick={() => handleSort("orderStatus")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Status &#x21d5;
+                        Status
                       </th>
                     </tr>
                   </thead>
