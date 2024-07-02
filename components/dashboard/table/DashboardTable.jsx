@@ -1,79 +1,35 @@
 "use client";
+import { fetchOrders } from "@/redux/slice/orderSlice";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function DashboardTable() {
-  const [selectAll, setSelectAll] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const data = [
-    {
-      id: 1,
-      order: "#7789 Md. Mahabub Islam",
-      orderTime: "Apr 23 ,2021 13:22:16",
-      amount: "43৳",
-      origin: "Google",
-      status: "Pending Payment",
-      bg: "bg-orange-100",
-      text: "text-orange-400",
-    },
-    {
-      id: 2,
-      order: "#7789 Md. Islam",
-      orderTime: "Apr 23 ,2021 13:22:16",
-      amount: "33৳",
-      origin: "Google",
-      status: "Processing",
-      bg: "bg-purple-100",
-      text: "text-purple-400",
-    },
-    {
-      id: 3,
-      order: "#7789 Md. Mahabub",
-      orderTime: "Apr 23 ,2021 13:22:16",
-      amount: "23৳",
-      origin: "Google",
-      status: "Completed",
-      bg: "bg-green-100",
-      text: "text-green-400",
-    },
-    {
-      id: 4,
-      order: "#7789 Saiful Islam",
-      orderTime: "Apr 23 ,2021 13:22:16",
-      amount: "84৳",
-      origin: "Direct",
-      status: "Cancelled",
-      bg: "bg-red-100",
-      text: "text-red-400",
-    },
-    {
-      id: 5,
-      order: "#7789 Md. Mahabub Islam",
-      orderTime: "Apr 23 ,2021 13:22:16",
-      amount: "43৳",
-      origin: "Google",
-      status: "Failed",
-      bg: "bg-red-100",
-      text: "text-red-400",
-    },
-  ];
+  const dispatch = useDispatch();
+  const orders = useSelector((state) => state?.orders);
 
-  const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : [...data.map((item) => item.id)]);
-  };
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
 
-  const handleSelectItem = (itemId) => {
-    const selectedIndex = selectedItems.indexOf(itemId);
-    if (selectedIndex === -1) {
-      setSelectedItems([...selectedItems, itemId]);
-    } else {
-      setSelectedItems([
-        ...selectedItems.slice(0, selectedIndex),
-        ...selectedItems.slice(selectedIndex + 1),
-      ]);
-    }
-  };
+  const allOrders = orders?.orders?.orders || [];
+  const latestOrders = allOrders.slice().reverse().slice(0, 10);
+
+  function formatDate(dateString) {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    if (isNaN(date)) return "N/A";
+
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return date.toLocaleDateString(undefined, options);
+  }
+
   return (
     <section className="mb-10">
       <div className="flex justify-between items-center">
@@ -88,68 +44,93 @@ export default function DashboardTable() {
         <div className="flex flex-col">
           <div className="overflow-x-auto shadow-md sm:rounded-lg">
             <div className="inline-block min-w-full align-middle">
-              <div className="overflow-hidden ">
-                <table className="min-w-full table-fixed dark:divide-gray-700">
+              <div className="overflow-hidden">
+                <table className="min-w-full table-auto dark:divide-gray-700 overflow-x-scroll">
                   {/* table head */}
                   <thead className="bg-gray-100 ">
                     <tr>
                       <th
                         scope="col"
-                        className="py-3 px-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                        onClick={() => handleSort("orderId")}
+                        className="py-3 px-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Order
+                        Order &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        className="py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                        onClick={() => handleSort("createdAt")}
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Order time
+                        Order time &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        className="py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Amount
                       </th>
                       <th
                         scope="col"
-                        className="py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                        onClick={() => handleSort("channel")}
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Origin
+                        Channel &#x21d5;
                       </th>
+
                       <th
                         scope="col"
-                        className="py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                        onClick={() => handleSort("orderStatus")}
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Status
+                        Status &#x21d5;
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white text-black">
-                    {data?.map((item) => (
+                    {latestOrders?.map((item, i) => (
                       <tr
-                        key={item.id}
+                        key={item._id}
                         className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          i % 2 !== 0 ? "" : "bg-gray-100"
                         } hover:bg-gray-100 duration-700`}
                       >
                         <td className="py-4 px-3 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                          {item.order}
+                          <Link href={`/dashboard/orders/${item._id}`}>
+                            {item.orderId}
+                          </Link>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.orderTime}
+                          {formatDate(item.createdAt)}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.amount}
+                          <span className="text-md">৳</span>
+                          {item.totalPrice}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.origin}
+                          {item.channel}
                         </td>
+
                         <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                           <span
-                            className={`${item.bg} ${item.text} px-2 py-1 rounded-full`}
+                            className={`${
+                              item.orderStatus === "Received"
+                                ? "bg-yellow-200 text-yellow-800"
+                                : item.orderStatus === "Confirmed"
+                                ? "bg-blue-200 text-blue-800"
+                                : item.orderStatus === "Delivered"
+                                ? "bg-green-200 text-green-800"
+                                : item.orderStatus === "On-Hold"
+                                ? "bg-red-200 text-red-800"
+                                : item.orderStatus === "Spammed"
+                                ? "bg-red-200 text-red-800"
+                                : item.orderStatus === "Cancelled"
+                                ? "bg-red-200 text-red-800"
+                                : item.orderStatus === "Dispatched"
+                                ? "bg-orange-200 text-orange-600"
+                                : ""
+                            } px-2 py-1 rounded-full`}
                           >
-                            {item.status}
+                            {item.orderStatus}
                           </span>
                         </td>
                       </tr>
