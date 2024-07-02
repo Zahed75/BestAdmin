@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { FaCaretDown, FaFilter } from "react-icons/fa";
 import { MdFilterAltOff } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
-import { set } from "date-fns";
 
 export default function OrderTable({ AllOrders }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -652,10 +651,11 @@ export default function OrderTable({ AllOrders }) {
           </div>
         </div>
       </section>
+      
       <div
         className={`${
-          showFilter ? "block" : "hidden"
-        } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50`}
+          showFilter ? "flex" : "hidden"
+        } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50 items-center justify-center`}
       >
         <div className="bg-white w-11/12 md:w-1/3 mx-auto my-10 rounded-lg shadow-lg p-5">
           <div className="flex justify-between items-center">

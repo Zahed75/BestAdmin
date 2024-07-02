@@ -36,10 +36,10 @@ export default function CustomAreaChart() {
     labels: salesData.map((data) => data.month),
     datasets: [
       {
-        label: "Revenue",
+        label: "Sales",
         data: salesData.map((data) => data.sales),
         borderColor: "#25CD25",
-        borderWidth: 3,
+        borderWidth: 2,
         pointBorderColor: "#78E078",
         pointBorderWidth: 3,
         tension: 0.5,

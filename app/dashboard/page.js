@@ -1,4 +1,5 @@
 "use client"; 
+import ReportingOverView from "@/components/dashboard/reporting/ReportingOverview";
 import DashboardTable from "@/components/dashboard/table/DashboardTable";
 import OverView from "@/components/global/overview/OverView";
 import PageHead from "@/components/global/pageHead/PageHead";
@@ -9,7 +10,7 @@ function DashboardPage() {
   return (
     <main className="w-full">
       <PageHead pageHead="Dashboard" />
-      <OverView />
+      <ReportingOverView />
       <DashboardTable />
     </main>
   );
