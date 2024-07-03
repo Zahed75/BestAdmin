@@ -65,7 +65,7 @@ export default function Analytics() {
             <span className="text-lg text-gray-500">Orders Placed Today</span>
             <div className="flex justify-between items-center">
               <span className="text-2xl font-semibold">
-                ৳{salesMatrix?.ordersPlacedToday}
+                {salesMatrix?.ordersPlacedToday}
               </span>
             </div>
           </div>
@@ -73,7 +73,7 @@ export default function Analytics() {
             <span className="text-lg text-gray-500">Items Purchased Today</span>
             <div className="flex justify-between items-center">
               <span className="text-2xl font-semibold">
-                ৳{salesMatrix?.itemsPurchasedToday}
+                {salesMatrix?.itemsPurchasedToday}
               </span>
             </div>
           </div>

@@ -30,6 +30,9 @@ export default function Product({ product }) {
   );
   const [titleInputValue, setTitleInputValue] = useState("");
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
+  const [productPicture, setProductPicture] = useState("");
+  const [isProductImageDeleted, setIsProductImageDeleted] = useState(false);
+  const [isProductGalleryDeleted, setIsProductGalleryDeleted] = useState(false);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
@@ -44,7 +47,16 @@ export default function Product({ product }) {
 
   useEffect(() => {
     if (window !== undefined) {
+      setProductPicture(product?.productImage);
+      setProductGallery(product?.productGallery || []);
       setProductStatus(product?.productStatus);
+      setTitleInputValue(product?.seo?.productTitle || "");
+      setDescriptionInputValue(product?.seo?.prodDescription || "");
+      localStorage.setItem("Description", product?.productDescription);
+      localStorage.setItem(
+        "ShortDescription",
+        product?.productShortDescription
+      );
     }
   }, [product]);
 
@@ -167,7 +179,6 @@ export default function Product({ product }) {
   const toggleProductStatus = () => {
     setProductStatus(productStatus === "Draft" ? "Published" : "Draft");
   };
-
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     const productDescription = localStorage.getItem("Description") || "";
@@ -177,16 +188,16 @@ export default function Product({ product }) {
     const productData = {
       productName: e.target.productName.value,
       categoryId: product?.categoryId || categoryId,
-      productImage: product?.productImage || imageUrl,
+      productImage: productPicture || imageUrl,
       isTrash: false,
-      productGallery: [...product?.productGallery, ...productGallery],
+      productGallery: productGallery,
       productVideos: [],
       productDescription: productDescription,
       productShortDescription: productShortDescription,
       productStatus: productStatus,
       seo: {
-        productTitle: product?.seo?.productTitle || titleInputValue,
-        prodDescription: product?.seo?.prodDescription || descriptionInputValue,
+        productTitle: titleInputValue,
+        prodDescription: descriptionInputValue,
         productTags: [...tagValueArray, ...product?.seo?.productTags],
         productNotes: e.target.productNotes.value,
       },
@@ -225,6 +236,8 @@ export default function Product({ product }) {
       );
 
       setIsLoading(false);
+      localStorage.removeItem("Description");
+      localStorage.removeItem("ShortDescription");
 
       if (response) {
         router.push("/dashboard/products");
@@ -237,7 +250,19 @@ export default function Product({ product }) {
       console.log("An error occurred:", err);
     }
   };
-
+  const handleRemoveProductPicture = async () => {
+    setIsLoading(true);
+    setProductPicture("");
+    setIsProductImageDeleted(true);
+    setIsLoading(false);
+  };
+  const handleRemoveProductGallery = async (image) => {
+    setIsLoading(true);
+    const newGallery = productGallery.filter((img) => img !== image);
+    setProductGallery(newGallery);
+    setIsProductGalleryDeleted(true);
+    setIsLoading(false);
+  };
   return (
     <main className="">
       {isLoading && <Loading />}
@@ -282,7 +307,7 @@ export default function Product({ product }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 justify-between items-start">
                   <div className="flex flex-col justify-between items-start space-y-3">
                     <h5 className="text-md font-bold mb-3">Featured Image</h5>
-                    {product?.productImage && (
+                    {product?.productImage && !isProductImageDeleted && (
                       <div className="flex flex-col w-full">
                         <Image
                           width={200}
@@ -291,9 +316,16 @@ export default function Product({ product }) {
                           alt="Uploaded"
                           className="w-full h-full rounded-md"
                         />
+                        <button
+                          type="button"
+                          onClick={handleRemoveProductPicture}
+                          className="text-sm text-red-500 flex justify-start py-2 underline underline-offset-2"
+                        >
+                          Remove product Image
+                        </button>
                       </div>
                     )}
-                    {!product?.productImage && (
+                    {isProductImageDeleted && (
                       <div className="flex flex-col w-full">
                         {imageUrl && (
                           <Image
@@ -356,25 +388,41 @@ export default function Product({ product }) {
                     <h5 className="text-md font-bold mb-3">Image Gallery</h5>
 
                     <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
-                      {product?.productGallery?.map((image, index) => (
-                        <Image
-                          width={100}
-                          height={100}
-                          key={index}
-                          src={image}
-                          alt="Uploaded"
-                          className="object-cover rounded-md w-full h-[90px]"
-                        />
-                      ))}
+                      {/* {productGallery?.map((image, index) => (
+                        <div className="relative" key={index}>
+                          <Image
+                            width={100}
+                            height={100}
+                            src={image}
+                            alt="Uploaded"
+                            className="object-cover rounded-md w-full h-[90px]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveProductGallery(image)}
+                            className="absolute -top-1 -right-1 bg-red-400 w-5 h-5 rounded-full font-bold text-sm text-white flex justify-center items-center pb-1 shadow-md"
+                          >
+                            x
+                          </button>
+                        </div>
+                      ))} */}
                       {productGallery.map((image, index) => (
-                        <Image
-                          width={100}
-                          height={100}
-                          key={index}
-                          src={image}
-                          alt="Uploaded"
-                          className="object-cover rounded-md w-full h-[90px]"
-                        />
+                        <div className="relative" key={index}>
+                          <Image
+                            width={100}
+                            height={100}
+                            src={image}
+                            alt="Uploaded"
+                            className="object-cover rounded-md w-full h-[90px]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveProductGallery(image)}
+                            className="absolute -top-1 -right-1 bg-red-400 w-5 h-5 rounded-full font-bold text-sm text-white flex justify-center items-center pb-1 shadow-md"
+                          >
+                            x
+                          </button>
+                        </div>
                       ))}
                       <div>
                         <input
