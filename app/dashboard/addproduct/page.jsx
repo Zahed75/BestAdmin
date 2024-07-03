@@ -28,12 +28,10 @@ export default function AddProductPage() {
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
   const [productBrand, setProductBrand] = useState("");
   const [brandName, setBrandName] = useState("");
-  const [isProductImageDeleted, setIsProductImageDeleted] = useState(false);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
   const user = useSelector((state) => state.user?.items || {});
-  console.log(user?.user);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -186,7 +184,7 @@ export default function AddProductPage() {
       productName: e.target.productName.value,
       categoryId: categoryId,
       productBrand: e.target.productBrand.value,
-      productImage: imageUrl || "https://i.ibb.co/bJXhK7w/3256026-200.png",
+      productImage: imageUrl,
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
@@ -202,8 +200,6 @@ export default function AddProductPage() {
       general: {
         regularPrice: parseFloat(e.target.regularPrice?.value) || 0,
         salePrice: parseFloat(e.target.salePrice?.value) || 0,
-        // salesStart: e.target.salesStart?.value || null,
-        // salesEnd: e.target.salesEnd?.value || null,
         taxStatus: e.target.taxStatus?.value || "",
         taxClass: e.target.taxClass?.value || "",
       },
@@ -267,7 +263,7 @@ export default function AddProductPage() {
     console.log("Brand Data:", brandData);
   };
   const handleRemoveProductPicture = () => {
-    setProductImage(null);
+    setIsProductImageDeleted(true);
     setImage(null);
   };
 
@@ -319,7 +315,7 @@ export default function AddProductPage() {
                   <h5 className="text-md font-bold mb-3">Featured Image</h5>
                   <div className="flex flex-col w-full">
                     {imageUrl && (
-                      <div className="flex flex-col w-full">
+                      <div className={` flex flex-col w-full`}>
                         <Image
                           width={200}
                           height={200}
@@ -337,8 +333,8 @@ export default function AddProductPage() {
                       </div>
                     )}
 
-                    {!image && !imageUrl ? (
-                      <div>
+                    {!imageUrl ? (
+                      <div className={` flex flex-col w-full`}>
                         <input
                           type="file"
                           id="featuredImageUpload"

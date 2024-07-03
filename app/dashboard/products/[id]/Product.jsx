@@ -18,7 +18,6 @@ export default function Product({ product }) {
   const [tagValueArray, setTagValueArray] = useState([]);
   const [tagInputValue, setTagInputValue] = useState("");
   const [image, setImage] = useState(null);
-  const [productImage, setProductImage] = useState(null);
   const [productGallery, setProductGallery] = useState([]);
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +47,7 @@ export default function Product({ product }) {
   useEffect(() => {
     if (window !== undefined) {
       setIsProductImageDeleted(product?.productImage ? false : true);
+      setProductPicture(product?.productImage);
       setProductGallery(product?.productGallery || []);
       setProductStatus(product?.productStatus);
       setTitleInputValue(product?.seo?.productTitle || "");
@@ -102,9 +102,8 @@ export default function Product({ product }) {
 
     try {
       const uploadedImageUrl = await handleUpload(file);
-      setProductImage(uploadedImageUrl);
+      
       setIsLoading(false);
-      console.log(uploadedImageUrl);
     } catch (error) {
       console.error("Error uploading image:", error);
       setIsLoading(false);
@@ -188,7 +187,7 @@ export default function Product({ product }) {
     const productData = {
       productName: e.target.productName.value,
       categoryId: product?.categoryId || categoryId,
-      productImage: productPicture || imageUrl,
+      productImage: productPicture ? productPicture : imageUrl,
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
@@ -204,8 +203,6 @@ export default function Product({ product }) {
       general: {
         regularPrice: parseFloat(e.target.regularPrice?.value) || 0,
         salePrice: parseFloat(e.target.salePrice?.value) || 0,
-        // salesStart: e.target.salesStart?.value || null,
-        // salesEnd: e.target.salesEnd?.value || null,
         taxStatus: e.target.taxStatus?.value || "",
         taxClass: e.target.taxClass?.value || "",
       },
@@ -307,7 +304,7 @@ export default function Product({ product }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 justify-between items-start">
                   <div className="flex flex-col justify-between items-start space-y-3">
                     <h5 className="text-md font-bold mb-3">Featured Image</h5>
-                    {product?.productImage && (
+                    {productPicture && (
                       <div
                         className={`flex flex-col w-full ${
                           isProductImageDeleted ? "hidden" : "block"
@@ -316,7 +313,7 @@ export default function Product({ product }) {
                         <Image
                           width={200}
                           height={200}
-                          src={product?.productImage}
+                          src={productPicture}
                           alt="Uploaded"
                           className="w-full h-full rounded-md"
                         />
