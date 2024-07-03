@@ -267,6 +267,12 @@ export default function AddProductPage() {
   const handleRemoveProductPicture = () => {
     setProductImage("");
   };
+  const handleRemoveProductGallery = async (image) => {
+    setIsLoading(true);
+    const newGallery = productGallery.filter((img) => img !== image);
+    setProductGallery(newGallery);
+    setIsLoading(false);
+  };
 
   return (
     <main className="">
@@ -391,14 +397,22 @@ export default function AddProductPage() {
                   <h5 className="text-md font-bold mb-3">Image Gallery</h5>
                   <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
                     {productGallery.map((image, index) => (
-                      <Image
-                        width={90}
-                        height={90}
-                        key={index}
-                        src={image}
-                        alt="Uploaded"
-                        className="object-cover rounded-md w-full h-[90px]"
-                      />
+                      <div className="relative" key={index}>
+                        <Image
+                          width={100}
+                          height={100}
+                          src={image}
+                          alt="Uploaded"
+                          className="object-cover rounded-md w-full h-[90px]"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveProductGallery(image)}
+                          className="absolute -top-1 -right-1 bg-red-400 w-5 h-5 rounded-full font-bold text-sm text-white flex justify-center items-center pb-1 shadow-md"
+                        >
+                          x
+                        </button>
+                      </div>
                     ))}
 
                     <div>
