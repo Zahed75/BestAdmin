@@ -47,7 +47,7 @@ export default function Product({ product }) {
 
   useEffect(() => {
     if (window !== undefined) {
-      setProductPicture(product?.productImage);
+      setIsProductImageDeleted(product?.productImage ? false : true);
       setProductGallery(product?.productGallery || []);
       setProductStatus(product?.productStatus);
       setTitleInputValue(product?.seo?.productTitle || "");
@@ -307,8 +307,12 @@ export default function Product({ product }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 justify-between items-start">
                   <div className="flex flex-col justify-between items-start space-y-3">
                     <h5 className="text-md font-bold mb-3">Featured Image</h5>
-                    {product?.productImage && !isProductImageDeleted && (
-                      <div className="flex flex-col w-full">
+                    {product?.productImage && (
+                      <div
+                        className={`flex flex-col w-full ${
+                          isProductImageDeleted ? "hidden" : "block"
+                        }`}
+                      >
                         <Image
                           width={200}
                           height={200}
