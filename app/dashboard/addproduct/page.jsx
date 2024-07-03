@@ -51,6 +51,10 @@ export default function AddProductPage() {
     fetchData();
   }, [dispatch]);
 
+  useEffect(() => {
+    setProductImage(imageUrl);
+  }, [imageUrl]);
+
   const router = useRouter();
 
   const AllCategories = categories?.categories?.categories;
@@ -97,9 +101,9 @@ export default function AddProductPage() {
 
     try {
       const uploadedImageUrl = await handleUpload(file);
-      setProductImage(uploadedImageUrl);
+
       setIsLoading(false);
-      console.log(uploadedImageUrl);
+      setProductImage(imageUrl);
     } catch (error) {
       console.error("Error uploading image:", error);
       setIsLoading(false);
@@ -184,7 +188,7 @@ export default function AddProductPage() {
       productName: e.target.productName.value,
       categoryId: categoryId,
       productBrand: e.target.productBrand.value,
-      productImage: imageUrl,
+      productImage: productImage,
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
@@ -220,8 +224,6 @@ export default function AddProductPage() {
       },
       date: new Date().toISOString(),
     };
-
-    console.log("Product Data:", productData);
 
     setIsLoading(true);
     try {
@@ -263,8 +265,7 @@ export default function AddProductPage() {
     console.log("Brand Data:", brandData);
   };
   const handleRemoveProductPicture = () => {
-    setIsProductImageDeleted(true);
-    setImage(null);
+    setProductImage("");
   };
 
   return (
@@ -314,12 +315,12 @@ export default function AddProductPage() {
                 <div className="flex flex-col justify-between items-start space-y-3">
                   <h5 className="text-md font-bold mb-3">Featured Image</h5>
                   <div className="flex flex-col w-full">
-                    {imageUrl && (
+                    {productImage && (
                       <div className={` flex flex-col w-full`}>
                         <Image
                           width={200}
                           height={200}
-                          src={imageUrl}
+                          src={productImage}
                           alt="Uploaded"
                           className="w-full h-full rounded-md"
                         />
@@ -333,7 +334,7 @@ export default function AddProductPage() {
                       </div>
                     )}
 
-                    {!imageUrl ? (
+                    {!productImage ? (
                       <div className={` flex flex-col w-full`}>
                         <input
                           type="file"
