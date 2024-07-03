@@ -1186,7 +1186,9 @@ export default function Product({ product }) {
                 </div>
                 <div
                   className={`
-                ${categoryTab === "all" ? "block" : "hidden"}
+                ${
+                  categoryTab === "all" ? "block" : "hidden"
+                } h-52 overflow-y-scroll
                 `}
                 >
                   {AllCategories?.map((category, index) => (

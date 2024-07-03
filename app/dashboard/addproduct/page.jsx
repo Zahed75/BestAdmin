@@ -28,6 +28,7 @@ export default function AddProductPage() {
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
   const [productBrand, setProductBrand] = useState("");
   const [brandName, setBrandName] = useState("");
+  const [isProductImageDeleted, setIsProductImageDeleted] = useState(false);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
@@ -265,6 +266,10 @@ export default function AddProductPage() {
     }
     console.log("Brand Data:", brandData);
   };
+  const handleRemoveProductPicture = () => {
+    setProductImage(null);
+    setImage(null);
+  };
 
   return (
     <main className="">
@@ -314,13 +319,22 @@ export default function AddProductPage() {
                   <h5 className="text-md font-bold mb-3">Featured Image</h5>
                   <div className="flex flex-col w-full">
                     {imageUrl && (
-                      <Image
-                        width={200}
-                        height={200}
-                        src={imageUrl}
-                        alt="Uploaded"
-                        className="w-full h-full rounded-md"
-                      />
+                      <div className="flex flex-col w-full">
+                        <Image
+                          width={200}
+                          height={200}
+                          src={imageUrl}
+                          alt="Uploaded"
+                          className="w-full h-full rounded-md"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleRemoveProductPicture}
+                          className="text-sm text-red-500 flex justify-start py-2 underline underline-offset-2"
+                        >
+                          Remove product Image
+                        </button>
+                      </div>
                     )}
 
                     {!image && !imageUrl ? (
@@ -1049,7 +1063,9 @@ export default function AddProductPage() {
               </div>
               <div
                 className={`
-                ${categoryTab === "all" ? "block" : "hidden"}
+                ${
+                  categoryTab === "all" ? "block" : "hidden"
+                } h-52 overflow-y-scroll
                 `}
               >
                 {AllCategories?.map((category, index) => (

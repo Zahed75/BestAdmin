@@ -52,6 +52,7 @@ export default function CategoriesTable({ AllCategories }) {
       
 
       setIsLoading(false);
+      setShowMenu(false);
 
       if (response) {
         setMessage("Category added successfully!");
