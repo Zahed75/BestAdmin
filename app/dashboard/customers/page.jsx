@@ -17,7 +17,7 @@ export default function CustomersPage() {
   const AllCustomers = customers?.customer?.customer;
   const data = AllCustomers || [];
 
-  console.log("AllCustomers", AllCustomers);
+  // console.log("AllCustomers", AllCustomers);
 
   return (
     <main>

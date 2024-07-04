@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 export default function SingleCustomer({ customer }) {
   const [districts, setDistricts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [customerImage, setCustomerImage] = useState("");
 
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
 
@@ -30,6 +31,7 @@ export default function SingleCustomer({ customer }) {
   };
 
   useEffect(() => {
+    setCustomerImage(customer?.profilePicture);
     const fetchDistricts = async () => {
       try {
         const res = await fetch("https://bdapis.com/api/v1.2/districts");
@@ -54,7 +56,7 @@ export default function SingleCustomer({ customer }) {
       email: form.get("email"),
       phoneNumber: form.get("phoneNumber"),
       city: form.get("city"),
-      profilePicture: customer?.profilePicture || imageUrl,
+      profilePicture: customerImage || imageUrl,
       billingInfo: {
         firstName: form.get("billingFirstName"),
         lastName: form.get("billingLastName"),
@@ -93,9 +95,29 @@ export default function SingleCustomer({ customer }) {
   };
 
   const copyBillingInfo = () => {
-    console.log("Copy Billing Info");
+    const form = document.forms[0]; // Assuming this is the first form on the page
+    const billingFirstName = form.billingFirstName.value;
+    const billingLastName = form.billingLastName.value;
+    const billingDistrict = form.billingDistrict.value;
+    const billingZipCode = form.billingZipCode.value;
+    const billingFullAddress = form.billingFullAddress.value;
+    const billingPhoneNumber = form.billingPhoneNumber.value;
+    const billingEmail = form.billingEmail.value;
+
+    form.shippingFirstName.value = billingFirstName;
+    form.shippingLastName.value = billingLastName;
+    form.shippingDistrict.value = billingDistrict;
+    form.shippingZipCode.value = billingZipCode;
+    form.shippingFullAddress.value = billingFullAddress;
+    form.shippingPhoneNumber.value = billingPhoneNumber;
+    form.shippingEmail.value = billingEmail;
   };
 
+  const handleRemoveProductPicture = () => {
+    setCustomerImage("");
+  };
+
+  console.log("single customer", customer);
   return (
     <main className="">
       <form onSubmit={handleUpdateCustomer} className="w-full">
@@ -114,14 +136,23 @@ export default function SingleCustomer({ customer }) {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">General</h5>
               <div className="grid grid-cols-1 md:grid-cols-4 justify-between items-start gap-5">
-                {customer?.profilePicture || imageUrl ? (
-                  <Image
-                    src={customer?.profilePicture || imageUrl}
-                    alt="customer-profile-picture"
-                    width={145}
-                    height={145}
-                    className="w-[145px] h-[145px] object-cover rounded-md"
-                  />
+                {customerImage || imageUrl ? (
+                  <div className="relative w-[145px] h-[145px] rounded-md">
+                    <Image
+                      src={customerImage || imageUrl}
+                      alt="customer-profile-picture"
+                      width={145}
+                      height={145}
+                      className="w-[145px] h-[145px] object-cover rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveProductPicture()}
+                      className="absolute -top-1 -right-1 bg-red-400 w-5 h-5 rounded-full font-bold text-sm text-white flex justify-center items-center pb-1 shadow-md"
+                    >
+                      x
+                    </button>
+                  </div>
                 ) : (
                   <div>
                     <input
@@ -404,7 +435,11 @@ export default function SingleCustomer({ customer }) {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <div className="flex justify-between items-center mb-5">
                 <h5 className="text-md font-bold ">Shipping Info</h5>
-                <div className="flex items-center gap-2 cursor-pointer">
+                <button
+                  type="button"
+                  onClick={copyBillingInfo}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <svg
                     width="24"
                     height="24"
@@ -427,8 +462,10 @@ export default function SingleCustomer({ customer }) {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <h5 className="text-md font-bold">Copy from Billing Info</h5>
-                </div>
+                  <span className="text-md font-bold">
+                    Copy from Billing Info
+                  </span>
+                </button>
               </div>
               <div className="grid grid-cols-2 justify-between items-center gap-5 pb-5">
                 <div className="flex flex-col space-y-1 w-full">
@@ -545,6 +582,7 @@ export default function SingleCustomer({ customer }) {
                     type="email"
                     id="shippingEmail"
                     name="shippingEmail"
+                    defaultValue={customer?.shippingInfo?.email}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
                 </div>
