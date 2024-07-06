@@ -46,16 +46,18 @@ export default function SingleOrderPage({ order }) {
 
   const handleUpdateOrderNote = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(e.target);
     const orderNote = formData.get("orderNote");
-    setIsLoading(true);
+
     try {
-      const data = await fetchApi(`/order/updateNote/${order?._id}`, "PUT", {
+      const res = await fetchApi(`/order/updateNote/${order?._id}`, "PUT", {
         orderNote,
       });
-      setIsLoading(false);
-      router.push("/dashboard/orders");
-      console.log(data);
+      if (res) {
+        setIsLoading(false);
+        router.push("/dashboard/orders");
+      }
     } catch (error) {
       console.error("Error updating order status:", error);
     }
@@ -337,9 +339,10 @@ export default function SingleOrderPage({ order }) {
                 </label>{" "}
                 <br />
                 <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                  
                   <select
                     name="orderStatus"
+                    id="orderStatus"
+                    defaultValue={order?.orderStatus}
                     className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                   >
                     <option value="Received">Received</option>
