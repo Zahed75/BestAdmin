@@ -47,6 +47,7 @@ export default function Product({ product }) {
   useEffect(() => {
     if (window !== undefined) {
       setIsProductImageDeleted(product?.productImage ? false : true);
+      setTagValueArray(product?.seo?.productTags || []);
       setProductPicture(product?.productImage);
       setProductGallery(product?.productGallery || []);
       setProductStatus(product?.productStatus);
@@ -102,7 +103,7 @@ export default function Product({ product }) {
 
     try {
       const uploadedImageUrl = await handleUpload(file);
-      
+
       setIsLoading(false);
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -197,7 +198,7 @@ export default function Product({ product }) {
       seo: {
         productTitle: titleInputValue,
         prodDescription: descriptionInputValue,
-        productTags: [...tagValueArray, ...product?.seo?.productTags],
+        productTags: [...tagValueArray],
         productNotes: e.target.productNotes.value,
       },
       general: {
@@ -1255,7 +1256,7 @@ export default function Product({ product }) {
                   <input
                     type="text"
                     id="productTag"
-                    value={tagInputValue}
+                    // defaultValue={tagInputValue}
                     // defaultValue={product?.seo?.productTags || tagInputValue}
                     onChange={(e) => setTagInputValue(e.target.value)}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none col-span-3"
@@ -1268,7 +1269,7 @@ export default function Product({ product }) {
                   </button>
                 </div>
                 <div className="my-3 flex flex-wrap justify-start items-center gap-2">
-                  {product?.seo?.productTags.map((tag, index) => (
+                  {tagValueArray?.map((tag, index) => (
                     <div
                       key={index}
                       className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center "
