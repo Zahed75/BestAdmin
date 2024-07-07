@@ -458,6 +458,11 @@ export default function SingleOrderPage({ order }) {
                     onChange={handleUpdateOutlet}
                     className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                   >
+                    {!outlet && (
+                      <option value="" disabled>
+                        Select outlet
+                      </option>
+                    )}
                     {AllOutlets.map((outlet) => (
                       <option
                         key={outlet?.outletName}
