@@ -5,12 +5,30 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Loading from "../../loading";
 import { useRouter } from "next/navigation";
+import { fetchOutlets } from "@/redux/slice/outletSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SingleOrderPage({ order }) {
   const [isLoading, setIsLoading] = useState(false);
   const [customerHistory, setCustomerHistory] = useState(null);
   const customerId = order?.customer?._id;
+  const [outlet, setOutlet] = useState("");
   const router = useRouter();
+
+  const dispatch = useDispatch();
+  const outlets = useSelector((state) => state?.outlets?.outlets?.outlet);
+
+  useEffect(() => {
+    dispatch(fetchOutlets());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (order) {
+      setOutlet(order?.outlet);
+    }
+  }, [order]);
+
+  const AllOutlets = outlets || [];
 
   function formatDate(dateString) {
     if (!dateString) return "N/A";
@@ -63,6 +81,27 @@ export default function SingleOrderPage({ order }) {
     }
   };
 
+  const handleUpdateOutlet = async (e) => {
+    setIsLoading(true);
+    const outlet = e.target.value;
+
+    try {
+      const res = await fetchApi(
+        `/order/changeOutletInfo/${order?._id}`,
+        "PUT",
+        {
+          outlet,
+        }
+      );
+      if (res) {
+        setIsLoading(false);
+        router.push("/dashboard/orders");
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchCustomerHistory = async () => {
       if (!customerId) return;
@@ -95,7 +134,6 @@ export default function SingleOrderPage({ order }) {
 
         <section className="grid grid-cols-1 md:grid-cols-3 justify-between md:items-start gap-5 w-full my-10">
           <div className="flex flex-col justify-start items-center w-full md:col-span-2 space-y-5">
-            {/* one */}
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">General</h5>
               <div className="grid grid-cols-2 gap-2">
@@ -131,7 +169,7 @@ export default function SingleOrderPage({ order }) {
                 </div>
               </div>
             </div>
-            {/* two */}
+
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 justify-between items-start">
                 <div className="flex flex-col justify-between items-start space-y-3">
@@ -204,7 +242,7 @@ export default function SingleOrderPage({ order }) {
                 </div>
               </div>
             </div>
-            {/* three */}
+
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Order Items</h5>
               <table className="min-w-full rounded-md table-auto">
@@ -324,7 +362,6 @@ export default function SingleOrderPage({ order }) {
           </div>
           {/* main two section */}
           <div className="flex flex-col justify-start items-center w-full space-y-5">
-            {/* one */}
             <form
               onSubmit={handleUpdateOrderStatus}
               className="p-5 border bg-white rounded-md shadow-md w-full"
@@ -362,7 +399,7 @@ export default function SingleOrderPage({ order }) {
                 Change Status
               </button>
             </form>
-            {/* two */}
+
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Order Attribution</h5>
               <div className="grid grid-cols-2 justify-between items-center gap-y-5">
@@ -403,7 +440,37 @@ export default function SingleOrderPage({ order }) {
                 </div>
               </div>
             </div>
-            {/* three */}
+
+            <div className="p-5 border bg-white rounded-md shadow-md w-full">
+              <div className="mt-5">
+                <label
+                  htmlFor="orderOutlet"
+                  className="text-sm font-semibold text-gray-600"
+                >
+                  Outlet
+                </label>{" "}
+                <br />
+                <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                  <select
+                    name="orderOutlet"
+                    id="orderOutlet"
+                    defaultValue={order?.outlet}
+                    onChange={handleUpdateOutlet}
+                    className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                  >
+                    {AllOutlets.map((outlet) => (
+                      <option
+                        key={outlet?.outletName}
+                        value={outlet?.outletName}
+                      >
+                        {outlet?.outletName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Customer History</h5>
               <div className="grid grid-cols-1 justify-between items-center gap-y-5">
@@ -432,7 +499,7 @@ export default function SingleOrderPage({ order }) {
                 </div>
               </div>
             </div>
-            {/* four */}
+
             <form
               onSubmit={handleUpdateOrderNote}
               className="p-5 border bg-white rounded-md shadow-md w-full"
