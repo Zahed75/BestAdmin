@@ -735,6 +735,53 @@ export default function TopBar() {
                     Settings
                   </span>
                 </Link>
+                <ul
+                  className={`ml-[53px] ${
+                    pathname == "/dashboard/settings" ||
+                    pathname == "/dashboard/settings/events"
+                      ? "block"
+                      : "hidden"
+                  }`}
+                >
+                  <li>
+                    <Link
+                      href="/dashboard/settings/events"
+                      className={`${
+                        pathname == "/dashboard/settings/events" ? "" : ""
+                      }  rounded-md py-1 flex justify-start`}
+                    >
+                      {pathname == "/dashboard/settings/events" ? (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 18 18"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle cx="9" cy="9" r="9" fill="black" />
+                          <circle cx="9" cy="9" r="6" fill="white" />
+                        </svg>
+                      ) : (
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 18 18"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle
+                            cx="9"
+                            cy="9"
+                            r="8.5"
+                            fill="#E5E7EB"
+                            stroke="#D1D5DB"
+                          />
+                        </svg>
+                      )}
+                      <span className="text-sm mx-3">Page Setup</span>
+                    </Link>
+                  </li>
+                </ul>
               </li>
               <li>
                 <div className="w-full border border-[#C3DDFD] my-5"></div>
