@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function EventsPage() {
-  const [items, setItems] = useState([
+  const initialItems = [
     {
       id: "1",
       title: "New Arrival: Hisense Inverter Ac",
@@ -36,7 +36,18 @@ export default function EventsPage() {
       description: "Only at Best Electronics",
       url: "#",
     },
-  ]);
+  ];
+
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const storedItems = localStorage.getItem("itemsOrder");
+    if (storedItems) {
+      setItems(JSON.parse(storedItems));
+    } else {
+      setItems(initialItems);
+    }
+  }, []);
 
   const [draggedItem, setDraggedItem] = useState(null);
 
@@ -55,6 +66,7 @@ export default function EventsPage() {
 
   const handleDragEnd = () => {
     setDraggedItem(null);
+    localStorage.setItem("itemsOrder", JSON.stringify(items));
   };
 
   return (
@@ -75,7 +87,7 @@ export default function EventsPage() {
                 onDragStart={() => handleDragStart(index)}
                 onDragEnter={() => handleDragEnter(index)}
                 onDragEnd={handleDragEnd}
-                className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-300 ease-in-out hover:bg-slate-100 ${
+                className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 ${
                   draggedItem === index ? "scale-[1.02]" : ""
                 }`}
                 style={{
