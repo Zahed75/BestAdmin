@@ -2,41 +2,8 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-export default function EventsPage() {
-  const initialItems = [
-    {
-      id: "1",
-      title: "New Arrival: Hisense Inverter Ac",
-      description:
-        "Do not miss our best selling products from Washing Machine category.",
-      url: "#",
-    },
-    {
-      id: "2",
-      title: "New collection of inverter ac",
-      description: "Efficient Cooling, Endless Comfort: Your Ultimate Solution",
-      url: "#",
-    },
-    {
-      id: "3",
-      title: "Top Selling Washers",
-      description:
-        "Do not miss our best selling products from Washing Machine category.",
-      url: "#",
-    },
-    {
-      id: "4",
-      title: "New arrival this week ",
-      description: "Fresh picks: Discover Our Latest Additions!",
-      url: "#",
-    },
-    {
-      id: "5",
-      title: "Full Range of whirlpool refrigerators",
-      description: "Only at Best Electronics",
-      url: "#",
-    },
-  ];
+export default function EventsPage({initialItems}) {
+  
 
   const [items, setItems] = useState([]);
 
