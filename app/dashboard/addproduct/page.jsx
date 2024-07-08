@@ -55,6 +55,11 @@ export default function AddProductPage() {
     setProductImage(imageUrl);
   }, [imageUrl]);
 
+  useEffect(() => {
+    localStorage.setItem("Description", '');
+    localStorage.setItem("ShortDescription", '');
+  }, []);
+
   const router = useRouter();
 
   const AllCategories = categories?.categories?.categories;
@@ -188,7 +193,7 @@ export default function AddProductPage() {
       productName: e.target.productName.value,
       categoryId: categoryId,
       productBrand: e.target.productBrand.value,
-      productImage: productImage,
+      productImage: productImage || "https://i.ibb.co/sqPhfrt/notimgpng.png",
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
