@@ -285,45 +285,87 @@ export default function CategoriesTable({ AllCategories }) {
                     </thead>
                     <tbody className="bg-white text-black">
                       {currentData?.map((item) => (
-                        <tr
-                          key={item?.id}
-                          className={`${
-                            item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
-                        >
-                          <td scope="col" className="p-4">
-                            <div className="flex items-center">
-                              <input
-                                id={`checkbox_${item?._id}`}
-                                type="checkbox"
-                                className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                                checked={selectedItems.includes(item?._id)}
-                                onChange={() => handleSelectItem(item?._id)}
-                              />
-                              <label
-                                htmlFor={`checkbox_${item?._id}`}
-                                className="sr-only"
+                        <>
+                          <tr
+                            key={item?.id}
+                            className={`${
+                              item.id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700`}
+                          >
+                            <td scope="col" className="p-4">
+                              <div className="flex items-center">
+                                <input
+                                  id={`checkbox_${item?._id}`}
+                                  type="checkbox"
+                                  className="w-4 h-4 bg-gray-100 rounded border-gray-300"
+                                  checked={selectedItems.includes(item?._id)}
+                                  onChange={() => handleSelectItem(item?._id)}
+                                />
+                                <label
+                                  htmlFor={`checkbox_${item?._id}`}
+                                  className="sr-only"
+                                >
+                                  checkbox
+                                </label>
+                              </div>
+                            </td>
+                            <td className="py-4 text-sm font-medium text-gray-900">
+                              <Link
+                                href={`/dashboard/products/categories/${item._id}`}
                               >
-                                checkbox
-                              </label>
-                            </div>
-                          </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 ">
-                            <Link
-                              href={`/dashboard/products/categories/${item._id}`}
+                                {item.categoryName}
+                              </Link>
+                            </td>
+                            <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                              {item.slug}
+                            </td>
+                            <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                              {item.productCount}
+                            </td>
+                          </tr>
+                          {item.subCategories?.map((subcategory) => (
+                            <tr
+                              key={subcategory?.id}
+                              className="bg-gray-50 hover:bg-gray-100 duration-700"
                             >
-                              {item.categoryName}
-                            </Link>
-                          </td>
-                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {item.slug}
-                          </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                            {item.productCount}
-                          </td>
-                        </tr>
+                              <td scope="col" className="p-4 pl-8">
+                                <div className="flex items-center">
+                                  <input
+                                    id={`checkbox_${subcategory?._id}`}
+                                    type="checkbox"
+                                    className="w-4 h-4 bg-gray-100 rounded border-gray-300"
+                                    checked={selectedItems.includes(
+                                      subcategory?._id
+                                    )}
+                                    onChange={() =>
+                                      handleSelectItem(subcategory?._id)
+                                    }
+                                  />
+                                  <label
+                                    htmlFor={`checkbox_${subcategory?._id}`}
+                                    className="sr-only"
+                                  >
+                                    checkbox
+                                  </label>
+                                </div>
+                              </td>
+                              <td className="py-4 text-sm font-medium text-gray-900 pl-8">
+                                <Link
+                                  href={`/dashboard/products/categories/${subcategory._id}`}
+                                >
+                                  {subcategory.categoryName}
+                                </Link>
+                              </td>
+                              <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                                {subcategory.slug}
+                              </td>
+                              <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                                {subcategory.productCount}
+                              </td>
+                            </tr>
+                          ))}
+                        </>
                       ))}
-                     
                     </tbody>
                   </table>
                 </div>
@@ -340,7 +382,7 @@ export default function CategoriesTable({ AllCategories }) {
             />
           </div>
         </div>
-        {/* modal */}
+
         <Modal closeModal={() => setShowMenu(false)}>
           <div
             id="menu"
@@ -423,17 +465,7 @@ export default function CategoriesTable({ AllCategories }) {
                     </label>
                     <br />
                     <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                      <svg
-                        className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 412 232"
-                      >
-                        <path
-                          d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                          fill="#648299"
-                          fill-rule="nonzero"
-                        />
-                      </svg>
+                      
                       <select
                         id="parentCategoryId"
                         name="parentCategoryId"

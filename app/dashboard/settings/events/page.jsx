@@ -10,12 +10,14 @@ export default function Page() {
       description:
         "Do not miss our best selling products from Washing Machine category.",
       url: "#",
+      order: 1,
     },
     {
       id: "2",
       title: "New collection of inverter ac",
       description: "Efficient Cooling, Endless Comfort: Your Ultimate Solution",
       url: "#",
+      order: 1,
     },
     {
       id: "3",
@@ -23,18 +25,21 @@ export default function Page() {
       description:
         "Do not miss our best selling products from Washing Machine category.",
       url: "#",
+      order: 1,
     },
     {
       id: "4",
       title: "New arrival this week ",
       description: "Fresh picks: Discover Our Latest Additions!",
       url: "#",
+      order: 1,
     },
     {
       id: "5",
       title: "Full Range of whirlpool refrigerators",
       description: "Only at Best Electronics",
       url: "#",
+      order: 1,
     },
   ];
   const data = initialItems || [];

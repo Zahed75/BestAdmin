@@ -1,11 +1,15 @@
 "use client";
+import Modal from "@/components/global/modal/Modal";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-export default function EventsPage({initialItems}) {
-  
-
+export default function EventsPage({ initialItems }) {
   const [items, setItems] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showUpdateMenu, setShowUpdateMenu] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const storedItems = localStorage.getItem("itemsOrder");
@@ -36,11 +40,14 @@ export default function EventsPage({initialItems}) {
     localStorage.setItem("itemsOrder", JSON.stringify(items));
   };
 
+  console.log(items);
+
   return (
     <main>
       <section className="w-full">
         <button
           type="button"
+          onClick={() => setShowMenu(true)}
           className="text-sm text-white bg-black rounded-md px-5 py-2 flex ml-auto"
         >
           Add New Event
@@ -62,7 +69,7 @@ export default function EventsPage({initialItems}) {
                 }}
               >
                 <div className="flex justify-between items-center gap-x-2 w-full px-5">
-                  <div>
+                  <div onClick={() => setShowUpdateMenu(true)}>
                     <h4 className="text-[#202435] text-md md:text-xl font-semibold uppercase">
                       {item.title}
                     </h4>
@@ -109,6 +116,277 @@ export default function EventsPage({initialItems}) {
           </div>
         </div>
       </section>
+      {/* modal */}
+      <Modal closeModal={() => setShowMenu(false)}>
+        <div
+          id="menu"
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+            showMenu ? "fixed" : "hidden"
+          } sticky-0`}
+        >
+          <div className="2xl:container h-screen 2xl:mx-auto py-48 px-4 md:px-28 flex justify-center items-center">
+            <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
+              <div className="flex justify-between items-center w-full">
+                <span className="text-3xl font-bold">Add Events</span>
+                <button
+                  onClick={() => setShowMenu(false)}
+                  className="text-gray-400  focus:outline-none"
+                  aria-label="close"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18 6L6 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M6 6L18 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <form
+                // onSubmit={handleSubmit}
+                className="w-full mt-10"
+              >
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col space-y-1 w-full">
+                    <label
+                      htmlFor="eventName"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Event Name
+                    </label>
+                    <input
+                      type="text"
+                      id="eventName"
+                      name="eventName"
+                      required
+                      className="border border-gray-300 rounded-md p-2 focus:outline-noneF"
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1 w-full">
+                    <label
+                      htmlFor="eventUrl"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Url
+                    </label>
+                    <input
+                      type="text"
+                      id="eventUrl"
+                      name="eventUrl"
+                      required
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                    />
+                  </div>
+                </div>
+                <div className="mt-5">
+                  <label
+                    htmlFor="eventCategory"
+                    className="text-sm font-semibold text-gray-600"
+                  >
+                    Event Categories
+                  </label>
+                  <br />
+                  <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                    <select
+                      id="eventCategory"
+                      name="eventCategory"
+                      required
+                      className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                    >
+                      <option value="">Select Event Category</option>
+                      {/* {AllCategories?.map((item) => (
+                        <option key={item._id} value={item._id}>
+                          {item.categoryName}
+                        </option>
+                      ))} */}
+                    </select>
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-1 w-full mt-5">
+                  <label
+                    htmlFor="eventDescription"
+                    className="text-sm font-semibold text-gray-600"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="eventDescription"
+                    name="eventDescription"
+                    cols={30}
+                    rows={3}
+                    required
+                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                  />
+                </div>
+
+                {error && (
+                  <div className="text-red-500 text-sm mt-2">{error}</div>
+                )}
+                {message && (
+                  <div className="text-green-500 text-sm mt-2">{message}</div>
+                )}
+
+                <button
+                  type="submit"
+                  className="py-2 px-4 mt-5 bg-black text-white rounded-md w-full"
+                >
+                  {isLoading ? "Loading..." : "Add Category"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </Modal>
+      {/* update modal */}
+      <Modal closeModal={() => setShowUpdateMenu(false)}>
+        <div
+          id="menu"
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+            showUpdateMenu ? "fixed" : "hidden"
+          } sticky-0`}
+        >
+          <div className="2xl:container h-screen 2xl:mx-auto py-48 px-4 md:px-28 flex justify-center items-center">
+            <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
+              <div className="flex justify-between items-center w-full">
+                <span className="text-3xl font-bold">Update Events</span>
+                <button
+                  onClick={() => setShowUpdateMenu(false)}
+                  className="text-gray-400  focus:outline-none"
+                  aria-label="close"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18 6L6 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M6 6L18 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <form
+                // onSubmit={handleSubmit}
+                className="w-full mt-10"
+              >
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col space-y-1 w-full">
+                    <label
+                      htmlFor="eventName"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Event Name
+                    </label>
+                    <input
+                      type="text"
+                      id="eventName"
+                      name="eventName"
+                      required
+                      className="border border-gray-300 rounded-md p-2 focus:outline-noneF"
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1 w-full">
+                    <label
+                      htmlFor="eventUrl"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Url
+                    </label>
+                    <input
+                      type="text"
+                      id="eventUrl"
+                      name="eventUrl"
+                      required
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                    />
+                  </div>
+                </div>
+                <div className="mt-5">
+                  <label
+                    htmlFor="eventCategory"
+                    className="text-sm font-semibold text-gray-600"
+                  >
+                    Event Categories
+                  </label>
+                  <br />
+                  <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                    <select
+                      id="eventCategory"
+                      name="eventCategory"
+                      required
+                      className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                    >
+                      <option value="">Select Event Category</option>
+                      {/* {AllCategories?.map((item) => (
+                        <option key={item._id} value={item._id}>
+                          {item.categoryName}
+                        </option>
+                      ))} */}
+                    </select>
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-1 w-full mt-5">
+                  <label
+                    htmlFor="eventDescription"
+                    className="text-sm font-semibold text-gray-600"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="eventDescription"
+                    name="eventDescription"
+                    cols={30}
+                    rows={3}
+                    required
+                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                  />
+                </div>
+
+                {error && (
+                  <div className="text-red-500 text-sm mt-2">{error}</div>
+                )}
+                {message && (
+                  <div className="text-green-500 text-sm mt-2">{message}</div>
+                )}
+                <button
+                  type="submit"
+                  className="py-2 px-4 mt-5 bg-black text-white rounded-md w-full"
+                >
+                  {isLoading ? "Loading..." : "Update Category"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </main>
   );
 }
