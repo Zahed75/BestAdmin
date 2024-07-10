@@ -1,7 +1,10 @@
 "use client";
 import Modal from "@/components/global/modal/Modal";
+import { fetchCategories } from "@/redux/slice/categorySlice";
+import { fetchApi } from "@/utils/FetchApi";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function EventsPage({ initialItems }) {
   const [items, setItems] = useState([]);
@@ -11,14 +14,25 @@ export default function EventsPage({ initialItems }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state?.categories);
+
   useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  const AllCategories = categories?.categories?.categories;
+
+  useEffect(() => {
+    // Fetch itemsOrder from localStorage or initialize with initialItems
     const storedItems = localStorage.getItem("itemsOrder");
     if (storedItems) {
       setItems(JSON.parse(storedItems));
     } else {
+      localStorage.setItem("itemsOrder", JSON.stringify(initialItems));
       setItems(initialItems);
     }
-  }, []);
+  }, [initialItems]);
 
   const [draggedItem, setDraggedItem] = useState(null);
 
@@ -27,20 +41,74 @@ export default function EventsPage({ initialItems }) {
   };
 
   const handleDragEnter = (index) => {
+    if (draggedItem === index) return;
+
     const newItems = Array.from(items);
     const [movedItem] = newItems.splice(draggedItem, 1);
     newItems.splice(index, 0, movedItem);
 
     setDraggedItem(index);
+    updateItemsOrder(newItems);
     setItems(newItems);
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = async () => {
     setDraggedItem(null);
     localStorage.setItem("itemsOrder", JSON.stringify(items));
+
+    try {
+      const updatePromises = items.map((item) => {
+        const data = {
+          eventId: item._id,
+          catEventId: item.eventCatId,
+        };
+        return fetchApi("/event/updateCatEventId", "PATCH", data);
+      });
+
+      await Promise.all(updatePromises);
+
+      setMessage("Items order updated successfully");
+    } catch (error) {
+      console.error("Failed to update events order in the database", error);
+      setError("Failed to update events order. Please try again.");
+    }
   };
 
-  console.log(items);
+  const updateItemsOrder = (items) => {
+    items.forEach((item, index) => {
+      item.eventCatId = index; // Update the eventCatId to reflect the new order
+    });
+  };
+
+  const handleAddEvent = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData(e.target);
+    const data = {
+      title: formData.get("eventName"),
+      description: formData.get("eventDescription"),
+      url: formData.get("eventUrl"),
+      categoriesId: formData.get("eventCategory"),
+    };
+
+    const { title, description, url, categoriesId } = data;
+
+    if (!title || !description || !url || !categoriesId) {
+      setError("All fields are required");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetchApi("/event/create-event", "POST", data);
+      setMessage("Event added successfully");
+      setIsLoading(false);
+    } catch (error) {
+      setError("Something went wrong. Please try again later.");
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main>
@@ -54,9 +122,9 @@ export default function EventsPage({ initialItems }) {
         </button>
         <div className="flex justify-center">
           <div className="flex flex-col gap-5 m-5 w-full">
-            {items.map((item, index) => (
+            {items?.map((item, index) => (
               <div
-                key={item.id}
+                key={item._id}
                 draggable
                 onDragStart={() => handleDragStart(index)}
                 onDragEnter={() => handleDragEnter(index)}
@@ -71,15 +139,15 @@ export default function EventsPage({ initialItems }) {
                 <div className="flex justify-between items-center gap-x-2 w-full px-5">
                   <div onClick={() => setShowUpdateMenu(true)}>
                     <h4 className="text-[#202435] text-md md:text-xl font-semibold uppercase">
-                      {item.title}
+                      {item?.title}
                     </h4>
                     <h4 className="text-[#9B9BB4] text-xs md:text-sm font-semibold">
-                      {item.description}
+                      {item?.description}
                     </h4>
                   </div>
                   <div className="flex justify-center ml-auto">
-                    <Link
-                      href="/dashboard/settings/events"
+                    <button
+                      href={item?.url}
                       className="border border-gray-400 text-gray-400 text-nowrap text-xs md:text-sm font-semibold py-2 px-4 rounded-full flex items-center justify-center"
                     >
                       View All
@@ -108,7 +176,7 @@ export default function EventsPage({ initialItems }) {
                           </clipPath>
                         </defs>
                       </svg>
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -116,7 +184,6 @@ export default function EventsPage({ initialItems }) {
           </div>
         </div>
       </section>
-      {/* modal */}
       <Modal closeModal={() => setShowMenu(false)}>
         <div
           id="menu"
@@ -157,10 +224,7 @@ export default function EventsPage({ initialItems }) {
                   </svg>
                 </button>
               </div>
-              <form
-                // onSubmit={handleSubmit}
-                className="w-full mt-10"
-              >
+              <form onSubmit={handleAddEvent} className="w-full mt-10">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col space-y-1 w-full">
                     <label
@@ -209,11 +273,11 @@ export default function EventsPage({ initialItems }) {
                       className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                     >
                       <option value="">Select Event Category</option>
-                      {/* {AllCategories?.map((item) => (
+                      {AllCategories?.map((item) => (
                         <option key={item._id} value={item._id}>
                           {item.categoryName}
                         </option>
-                      ))} */}
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -252,7 +316,7 @@ export default function EventsPage({ initialItems }) {
           </div>
         </div>
       </Modal>
-      {/* update modal */}
+
       <Modal closeModal={() => setShowUpdateMenu(false)}>
         <div
           id="menu"
@@ -293,10 +357,7 @@ export default function EventsPage({ initialItems }) {
                   </svg>
                 </button>
               </div>
-              <form
-                // onSubmit={handleSubmit}
-                className="w-full mt-10"
-              >
+              <form className="w-full mt-10">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col space-y-1 w-full">
                     <label
@@ -345,11 +406,11 @@ export default function EventsPage({ initialItems }) {
                       className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                     >
                       <option value="">Select Event Category</option>
-                      {/* {AllCategories?.map((item) => (
+                      {AllCategories?.map((item) => (
                         <option key={item._id} value={item._id}>
                           {item.categoryName}
                         </option>
-                      ))} */}
+                      ))}
                     </select>
                   </div>
                 </div>
