@@ -23,6 +23,8 @@ export default function CategoriesTable({ AllCategories }) {
 
   const data = AllCategories || [];
 
+  console.log("category", data);
+
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -49,7 +51,6 @@ export default function CategoriesTable({ AllCategories }) {
       };
       console.log(data);
       const response = await fetchApi("/category/addCategory", "POST", data);
-      
 
       setIsLoading(false);
       setShowMenu(false);
@@ -322,6 +323,7 @@ export default function CategoriesTable({ AllCategories }) {
                           </td>
                         </tr>
                       ))}
+                     
                     </tbody>
                   </table>
                 </div>
