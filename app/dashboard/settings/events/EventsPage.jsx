@@ -104,9 +104,12 @@ export default function EventsPage({ initialItems }) {
       const response = await fetchApi("/event/create-event", "POST", data);
       setMessage("Event added successfully");
       setIsLoading(false);
+      setShowMenu(false);
+      setItems((prevItems) => [...prevItems, response]);
     } catch (error) {
       setError("Something went wrong. Please try again later.");
       setIsLoading(false);
+      setShowMenu(false);
     }
   };
 

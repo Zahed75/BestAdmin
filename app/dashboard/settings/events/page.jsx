@@ -10,7 +10,7 @@ export default function Events() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetchApi(`/event/getAll-events`, "GET");
+        const res = await fetchApi(`/event/products`, "GET");
         setData(res);
       } catch (error) {
         console.error("Error fetching product data:", error);
@@ -20,7 +20,7 @@ export default function Events() {
     fetchData();
   }, []);
 
-  const initialItems = data?.events;
+  const initialItems = data?.productsAndEvents;
 
 console.log("initialItems", initialItems);
   return (
