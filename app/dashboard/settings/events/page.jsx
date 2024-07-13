@@ -12,6 +12,7 @@ export default function Events() {
       try {
         const res = await fetchApi(`/event/products`, "GET");
         setData(res);
+        localStorage.setItem("itemsOrder", JSON.stringify(res?.productsAndEvents));
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
@@ -21,8 +22,6 @@ export default function Events() {
   }, []);
 
   const initialItems = data?.productsAndEvents;
-
-console.log("initialItems", initialItems);
   return (
     <main>
       {initialItems?.length >= 0 ? (

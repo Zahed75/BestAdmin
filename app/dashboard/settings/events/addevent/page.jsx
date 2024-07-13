@@ -46,6 +46,7 @@ export default function AddEvent() {
       const response = await fetchApi("/event/create-event", "POST", data);
       setMessage("Event added successfully");
       setIsLoading(false);
+      localStorage.removeItem("itemsOrder");
       router.push("/dashboard/settings/events");
     } catch (error) {
       setError("Something went wrong. Please try again later.");

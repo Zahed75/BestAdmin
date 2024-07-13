@@ -23,7 +23,7 @@ export default function EventsPage({ initialItems }) {
   const AllCategories = categories?.categories?.categories;
 
   useEffect(() => {
-    // Fetch itemsOrder from localStorage or initialize with initialItems
+    localStorage.setItem("itemsOrder", JSON.stringify(initialItems));
     const storedItems = localStorage.getItem("itemsOrder");
     if (storedItems) {
       setItems(JSON.parse(storedItems));
@@ -53,7 +53,6 @@ export default function EventsPage({ initialItems }) {
 
   const handleDragEnd = async () => {
     setDraggedItem(null);
-    localStorage.setItem("itemsOrder", JSON.stringify(items));
 
     try {
       const updatePromises = items.map((item) => {
@@ -65,6 +64,7 @@ export default function EventsPage({ initialItems }) {
       });
 
       await Promise.all(updatePromises);
+      localStorage.setItem("itemsOrder", JSON.stringify(items));
 
       setMessage("Items order updated successfully");
     } catch (error) {
@@ -79,6 +79,9 @@ export default function EventsPage({ initialItems }) {
     });
   };
 
+  // Sort items based on eventCatId
+  const sortedItems = [...items].sort((a, b) => a.eventCatId - b.eventCatId);
+
   return (
     <main>
       <section className="w-full">
@@ -90,7 +93,7 @@ export default function EventsPage({ initialItems }) {
         </Link>
         <div className="flex justify-center">
           <div className="flex flex-col gap-5 m-5 w-full">
-            {items?.map((item, index) => (
+            {sortedItems?.map((item, index) => (
               <div
                 key={item._id}
                 draggable
