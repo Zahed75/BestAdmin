@@ -12,7 +12,6 @@ export default function EventsPage({ initialItems }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
 
@@ -23,13 +22,16 @@ export default function EventsPage({ initialItems }) {
   const AllCategories = categories?.categories?.categories;
 
   useEffect(() => {
-    localStorage.setItem("itemsOrder", JSON.stringify(initialItems));
     const storedItems = localStorage.getItem("itemsOrder");
     if (storedItems) {
       setItems(JSON.parse(storedItems));
     } else {
-      localStorage.setItem("itemsOrder", JSON.stringify(initialItems));
-      setItems(initialItems);
+      const initialOrderedItems = initialItems.map((item, index) => ({
+        ...item,
+        eventCatId: index,
+      }));
+      localStorage.setItem("itemsOrder", JSON.stringify(initialOrderedItems));
+      setItems(initialOrderedItems);
     }
   }, [initialItems]);
 
@@ -40,14 +42,14 @@ export default function EventsPage({ initialItems }) {
   };
 
   const handleDragEnter = (index) => {
-    if (draggedItem === index) return;
+    if (draggedItem === null) return;
 
     const newItems = Array.from(items);
     const [movedItem] = newItems.splice(draggedItem, 1);
     newItems.splice(index, 0, movedItem);
 
-    setDraggedItem(index);
     updateItemsOrder(newItems);
+    setDraggedItem(index);
     setItems(newItems);
   };
 
@@ -65,7 +67,6 @@ export default function EventsPage({ initialItems }) {
 
       await Promise.all(updatePromises);
       localStorage.setItem("itemsOrder", JSON.stringify(items));
-
       setMessage("Items order updated successfully");
     } catch (error) {
       console.error("Failed to update events order in the database", error);
@@ -75,12 +76,13 @@ export default function EventsPage({ initialItems }) {
 
   const updateItemsOrder = (items) => {
     items.forEach((item, index) => {
-      item.eventCatId = index; // Update the eventCatId to reflect the new order
+      item.eventCatId = index; // Update eventCatId to reflect the new order
     });
   };
 
   // Sort items based on eventCatId
   const sortedItems = [...items].sort((a, b) => a.eventCatId - b.eventCatId);
+
 
   return (
     <main>
