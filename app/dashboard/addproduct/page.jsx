@@ -22,7 +22,7 @@ export default function AddProductPage() {
   const [activeTab, setActiveTab] = useState("general");
   const [categoryTab, setCategoryTab] = useState("all");
   const [brandTab, setBrandTab] = useState("brand");
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState([]);
   const [productStatus, setProductStatus] = useState("Draft");
   const [titleInputValue, setTitleInputValue] = useState("");
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
@@ -230,6 +230,8 @@ export default function AddProductPage() {
       date: new Date().toISOString(),
     };
 
+    console.log("Product Data:", productData);
+
     setIsLoading(true);
     try {
       const response = await fetchApi(
@@ -288,7 +290,6 @@ export default function AddProductPage() {
           <AddProductDynamicHead title={"Add New Product"} />
           <button
             type="submit"
-            disabled={categoryId === "" && imageUrl ? true : false}
             className={`text-sm text-white bg-black rounded-md px-3 py-2 ${
               categoryId === "" ? "cursor-not-allowed" : "cursor-pointer"
             }`}
@@ -1091,7 +1092,7 @@ export default function AddProductPage() {
                         <input
                           id={`checkbox-${index}`}
                           type="checkbox"
-                          onClick={() => setCategoryId(category?._id)}
+                          onClick={() => categoryId.push(category?._id)}
                           className="w-4 h-4 bg-gray-500 rounded"
                         />
                       </div>
@@ -1111,7 +1112,7 @@ export default function AddProductPage() {
                                     id={`checkbox-${index}-${subIndex}`}
                                     type="checkbox"
                                     onClick={() =>
-                                      setCategoryId(subcategory?._id)
+                                      categoryId.push(subcategory?._id)
                                     }
                                     className="w-4 h-4 bg-gray-500 rounded"
                                   />

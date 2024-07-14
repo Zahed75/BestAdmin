@@ -23,7 +23,7 @@ export default function Product({ product }) {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
   const [categoryTab, setCategoryTab] = useState("all");
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState([]);
   const [productStatus, setProductStatus] = useState(
     product?.productStatus || "Draft"
   );
@@ -51,6 +51,7 @@ export default function Product({ product }) {
       setProductPicture(product?.productImage);
       setProductGallery(product?.productGallery || []);
       setProductStatus(product?.productStatus);
+      setCategoryId(product?.categoryId);
       setTitleInputValue(product?.seo?.productTitle || "");
       setDescriptionInputValue(product?.seo?.prodDescription || "");
       localStorage.setItem("Description", product?.productDescription);
@@ -187,7 +188,7 @@ export default function Product({ product }) {
 
     const productData = {
       productName: e.target.productName.value,
-      categoryId: product?.categoryId || categoryId,
+      categoryId: categoryId,
       productImage: productPicture ? productPicture : imageUrl,
       isTrash: false,
       productGallery: productGallery,
@@ -260,6 +261,29 @@ export default function Product({ product }) {
     setProductGallery(newGallery);
     setIsProductGalleryDeleted(true);
     setIsLoading(false);
+  };
+
+  const handleCatCheckboxClick = (categoryId) => {
+    setCategoryId((prevCategoryId) => {
+      if (prevCategoryId.includes(categoryId)) {
+        // If the ID is already in the array, remove it
+        return prevCategoryId.filter((id) => id !== categoryId);
+      } else {
+        // If the ID is not in the array, add it
+        return [...prevCategoryId, categoryId];
+      }
+    });
+  };
+  const handleSubCatCheckboxClick = (subcategoryId) => {
+    setCategoryId((prevCategoryId) => {
+      if (prevCategoryId.includes(subcategoryId)) {
+        // If the ID is already in the array, remove it
+        return prevCategoryId.filter((id) => id !== subcategoryId);
+      } else {
+        // If the ID is not in the array, add it
+        return [...prevCategoryId, subcategoryId];
+      }
+    });
   };
   return (
     <main className="">
@@ -1200,10 +1224,10 @@ export default function Product({ product }) {
                           <input
                             id={`checkbox-${index}`}
                             type="checkbox"
-                            defaultChecked={
-                              category?._id === product?.categoryId
-                            }
-                            onClick={() => setCategoryId(category?._id)}
+                            defaultChecked={product?.categoryId?.includes(
+                              category?._id
+                            )}
+                            onClick={() => handleCatCheckboxClick(category?._id)}
                             className="w-4 h-4 bg-gray-500 rounded"
                           />
                         </div>
@@ -1222,12 +1246,12 @@ export default function Product({ product }) {
                                     <input
                                       id={`checkbox-${index}-${subIndex}`}
                                       type="checkbox"
-                                      defaultChecked={
-                                        subcategory?._id === product?.categoryId
-                                      }
-                                      onClick={() =>
-                                        setCategoryId(subcategory?._id)
-                                      }
+                                      defaultChecked={product?.categoryId?.includes(
+                                        subcategory?._id
+                                      )}
+                                      onClick={() => handleCatCheckboxClick(
+                                        subcategory?._id
+                                      )}
                                       className="w-4 h-4 bg-gray-500 rounded"
                                     />
                                   </div>
