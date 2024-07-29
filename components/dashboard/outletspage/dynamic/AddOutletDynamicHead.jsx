@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-export default function AddOrderDynamicHead({ title }) {
+export default function AddOutletDynamicHead({ title }) {
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex justify-start items-center">
-        <Link href="/dashboard/usermanagement">
+        <Link href="/dashboard/outlets">
           <svg
             width="19"
             height="32"

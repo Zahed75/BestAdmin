@@ -4,11 +4,11 @@ import dum from "@/public/image/dum.png";
 import { useEffect, useState } from "react";
 import useImgBBUpload from "@/utils/useImgBBUpload";
 import Loading from "../../loading";
-import AddUserDynamicHead from "@/components/dashboard/userpage/dynamic/AddUserDynamicHead";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "@/redux/slice/usersSlice";
 import { fetchApi } from "@/utils/FetchApi";
 import { useRouter } from "next/navigation";
+import AddOutletDynamicHead from "@/components/dashboard/outletspage/dynamic/AddOutletDynamicHead";
 
 export default function AddOutlet() {
   const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +88,7 @@ export default function AddOutlet() {
     <main className="">
       <form onSubmit={handleUploadOutlet} action="" className="w-full">
         <section className="mt-10 flex justify-between items-center">
-          <AddUserDynamicHead title={"Add New Outlet"} />
+          <AddOutletDynamicHead title={"Add New Outlet"} />
           <button
             type="submit"
             className="text-sm text-white bg-black rounded-md px-3 py-2 text-nowrap"
