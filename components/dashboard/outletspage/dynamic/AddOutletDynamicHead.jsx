@@ -4,7 +4,7 @@ export default function AddOutletDynamicHead({ title }) {
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex justify-start items-center">
-        <Link href="/dashboard/outlets">
+        <Link href="/dashboard/outletsj">
           <svg
             width="19"
             height="32"

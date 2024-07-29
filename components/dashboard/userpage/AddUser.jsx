@@ -165,6 +165,7 @@ export default function AddUser() {
                       <select
                         id="outletName"
                         name="outletName"
+                        disabled
                         required
                         className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                       >
