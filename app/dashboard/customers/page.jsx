@@ -14,14 +14,14 @@ export default function CustomersPage() {
     dispatch(fetchCustomers());
   }, [dispatch]);
 
-  const AllCustomers = customers?.customer?.customer;
+  const AllCustomers = customers?.customer;
   const data = AllCustomers || [];
 
-  // console.log("AllCustomers", AllCustomers);
+  console.log("AllCustomers", data);
 
   return (
     <main>
-      {data.length === 0 ? (
+      {data?.length === 0 ? (
         <Skeleton />
       ) : (
         <div>

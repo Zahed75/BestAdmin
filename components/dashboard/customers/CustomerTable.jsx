@@ -159,7 +159,7 @@ export default function CustomersTable({ AllCustomers }) {
                 </ul>
               </div>
             </div>
-            <div className="w-10 h-10 bg-[#F9FAFB] shadow-md rounded-full">
+            {/* <div className="w-10 h-10 bg-[#F9FAFB] shadow-md rounded-full">
               <FaFilter
                 className={`${
                   !showFilter ? "block" : "hidden"
@@ -172,7 +172,7 @@ export default function CustomersTable({ AllCustomers }) {
                 } text-primary cursor-pointer w-8 h-8 flex justify-center items-center mx-auto my-1 p-1`}
                 onClick={() => setShowFilter(!showFilter)}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
