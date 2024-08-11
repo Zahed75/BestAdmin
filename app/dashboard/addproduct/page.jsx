@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import ExcelUploader from "@/components/fileUpload/ExcelUploader";
 
 export default function AddProductPage() {
   const [tagValueArray, setTagValueArray] = useState([]);
