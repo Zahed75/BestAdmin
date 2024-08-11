@@ -1,4 +1,5 @@
 "use client";
+import * as XLSX from "xlsx";
 import AddProductDynamicHead from "@/components/dashboard/addproduct/DynamicHead";
 import AddProductRichText from "@/components/dashboard/addproduct/ProductRichText";
 import AddProductShortDesRichText from "@/components/dashboard/addproduct/ProductShortDesRichText";
@@ -10,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import ExcelUploader from "@/components/fileUpload/ExcelUploader";
 
 export default function AddProductPage() {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -28,6 +30,7 @@ export default function AddProductPage() {
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
   const [productBrand, setProductBrand] = useState("");
   const [brandName, setBrandName] = useState("");
+  const [specData, setSpecData] = useState({});
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
@@ -197,6 +200,7 @@ export default function AddProductPage() {
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
+      productSpecification: specData,
       productDescription: productDescription,
       productShortDescription: productShortDescription,
       productStatus: productStatus,
@@ -255,6 +259,29 @@ export default function AddProductPage() {
       console.log("An error occurred:", err);
     }
   };
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        // Convert the data to key-value pairs
+        const result = {};
+        json.forEach((row) => {
+          if (row[0] && row[1]) {
+            result[row[0]] = row[1];
+          }
+        });
+        setSpecData(result);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  };
   const handleCreateBrand = async (e) => {
     e.preventDefault();
     const brandData = {
@@ -280,6 +307,8 @@ export default function AddProductPage() {
     setProductGallery(newGallery);
     setIsLoading(false);
   };
+
+  console.log("specification data:", specData);
 
   return (
     <main className="">
@@ -690,7 +719,7 @@ export default function AddProductPage() {
 
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Product Description</h5>
-              <AddProductRichText />
+              <AddProductRichText preValue="" />
             </div>
 
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
@@ -806,17 +835,6 @@ export default function AddProductPage() {
                         Tax Status
                       </label>
                       <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                        <svg
-                          className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 412 232"
-                        >
-                          <path
-                            d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                            fill="#648299"
-                            fill-rule="nonzero"
-                          />
-                        </svg>
                         <select
                           id="taxStatus"
                           name="taxStatus"
@@ -835,17 +853,6 @@ export default function AddProductPage() {
                         Tax Class
                       </label>
                       <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                        <svg
-                          className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 412 232"
-                        >
-                          <path
-                            d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                            fill="#648299"
-                            fill-rule="nonzero"
-                          />
-                        </svg>
                         <select
                           id="taxClass"
                           name="taxClass"
@@ -863,17 +870,6 @@ export default function AddProductPage() {
                         Inventory Status
                       </label>
                       <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                        <svg
-                          className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 412 232"
-                        >
-                          <path
-                            d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                            fill="#648299"
-                            fill-rule="nonzero"
-                          />
-                        </svg>
                         <select
                           id="inventoryStatus"
                           name="inventoryStatus"
@@ -943,7 +939,7 @@ export default function AddProductPage() {
                           value="Out of Stock"
                           className="w-4 h-4 bg-gray-100 rounded border-gray-300 dark:border-gray-600"
                         />
-                        <label htmlFor="Out Of Stock" className="font-semibold">
+                        <label htmlFor="Out of Stock" className="font-semibold">
                           Out of Stock
                         </label>
                       </div>
@@ -1028,6 +1024,43 @@ export default function AddProductPage() {
                 Product Short Description
               </h5>
               <AddProductShortDesRichText />
+            </div>
+
+            <div className="p-5 border bg-white rounded-md shadow-md w-full">
+              <h5 className="text-md font-bold mb-3">Product Specification</h5>
+              <div>
+                <input
+                  type="file"
+                  accept=".xlsx, .xls"
+                  onChange={handleFileUpload}
+                />
+                <div>
+                  {Object.keys(specData).length > 0 && (
+                    <table className="w-full text-md my-10">
+                      <tbody>
+                        {Object.entries(specData).map(([key, value], index) => (
+                          <tr key={index}>
+                            <td className="border px-5 py-2">
+                              <input
+                                type="text"
+                                defaultValue={key + ":"}
+                                className="w-full px-2 py-1 focus:outline-0"
+                              />
+                            </td>
+                            <td className="border px-5 py-2">
+                              <input
+                                type="text"
+                                defaultValue={value}
+                                className="w-full px-2 py-1 focus:outline-0"
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
           {/* main two section */}

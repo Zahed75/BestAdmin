@@ -48,7 +48,7 @@ export default function AddProductRichText({ preValue }) {
         <div className="h-full w-full">
           <QuillEditor
             // value={content}
-            defaultValue={preValue + content}
+            defaultValue={preValue + content || ""}
             onChange={handleEditorChange}
             modules={quillModules}
             formats={quillFormats}
