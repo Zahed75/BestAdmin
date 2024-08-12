@@ -6,7 +6,7 @@ export default function useImgBBUpload() {
   const [imageUrl, setImageUrl] = useState(null);
 
   const uploadImageToImgBB = async (file) => {
-    const apiKey = "7a0f43e157252e0ca3031dea1d8dcccd";
+    const apiKey = "d464f4858699b16f7c28d4d61e08932f";
     const formData = new FormData();
     formData.append("image", file);
 

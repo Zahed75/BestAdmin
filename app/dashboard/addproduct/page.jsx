@@ -23,11 +23,11 @@ export default function AddProductPage() {
   const [activeTab, setActiveTab] = useState("general");
   const [categoryTab, setCategoryTab] = useState("all");
   const [brandTab, setBrandTab] = useState("brand");
+  const [productBrand, setProductBrand] = useState("");
   const [categoryId, setCategoryId] = useState([]);
   const [productStatus, setProductStatus] = useState("Draft");
   const [titleInputValue, setTitleInputValue] = useState("");
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
-  const [productBrand, setProductBrand] = useState("");
   const [brandName, setBrandName] = useState("");
   const [specData, setSpecData] = useState({});
 
@@ -199,8 +199,8 @@ export default function AddProductPage() {
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
-      productSpecification: specData,
-      productDescription: productDescription,
+      // productSpecification: specData,
+      productDescription: productDescription,  
       productShortDescription: productShortDescription,
       productStatus: productStatus,
       seo: {
@@ -307,7 +307,7 @@ export default function AddProductPage() {
     setIsLoading(false);
   };
 
-  console.log("specification data:", specData);
+  // console.log("specification data:", specData);
 
   return (
     <main className="">

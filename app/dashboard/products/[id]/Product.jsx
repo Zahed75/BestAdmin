@@ -30,6 +30,9 @@ export default function Product({ product }) {
   const [titleInputValue, setTitleInputValue] = useState("");
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
   const [productPicture, setProductPicture] = useState("");
+  const [brandTab, setBrandTab] = useState("brand");
+  const [productBrand, setProductBrand] = useState("");
+  const [brandName, setBrandName] = useState("");
   const [isProductImageDeleted, setIsProductImageDeleted] = useState(false);
   const [isProductGalleryDeleted, setIsProductGalleryDeleted] = useState(false);
 
@@ -61,6 +64,20 @@ export default function Product({ product }) {
       );
     }
   }, [product]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetchApi("/brand/getAll", "GET");
+
+        setProductBrand(response.brands);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   const calculateTitleProgress = (value) => {
     let progress = (value.length / 100) * 100;
@@ -189,6 +206,7 @@ export default function Product({ product }) {
     const productData = {
       productName: e.target.productName.value,
       categoryId: categoryId,
+      productBrand: e.target.productBrand.value,
       productImage: productPicture ? productPicture : imageUrl,
       isTrash: false,
       productGallery: productGallery,
@@ -262,7 +280,22 @@ export default function Product({ product }) {
     setIsProductGalleryDeleted(true);
     setIsLoading(false);
   };
-
+  const handleCreateBrand = async (e) => {
+    e.preventDefault();
+    const brandData = {
+      name: brandName,
+      title: "Best Electronics",
+      description:
+        "Best Electronics is a leading electronics store in Bangladesh.",
+    };
+    try {
+      const response = await fetchApi("/brand/create", "POST", brandData);
+      setBrandName("");
+    } catch (error) {
+      console.error("Error creating brand:", error);
+    }
+    console.log("Brand Data:", brandData);
+  };
   const handleCatCheckboxClick = (categoryId) => {
     setCategoryId((prevCategoryId) => {
       if (prevCategoryId.includes(categoryId)) {
@@ -903,17 +936,6 @@ export default function Product({ product }) {
                           Tax Status
                         </label>
                         <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                          <svg
-                            className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 412 232"
-                          >
-                            <path
-                              d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                              fill="#648299"
-                              fill-rule="nonzero"
-                            />
-                          </svg>
                           <select
                             id="taxStatus"
                             name="taxStatus"
@@ -932,17 +954,6 @@ export default function Product({ product }) {
                           Tax Class
                         </label>
                         <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                          <svg
-                            className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 412 232"
-                          >
-                            <path
-                              d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                              fill="#648299"
-                              fill-rule="nonzero"
-                            />
-                          </svg>
                           <select
                             id="taxClass"
                             name="taxClass"
@@ -1227,7 +1238,9 @@ export default function Product({ product }) {
                             defaultChecked={product?.categoryId?.includes(
                               category?._id
                             )}
-                            onClick={() => handleCatCheckboxClick(category?._id)}
+                            onClick={() =>
+                              handleCatCheckboxClick(category?._id)
+                            }
                             className="w-4 h-4 bg-gray-500 rounded"
                           />
                         </div>
@@ -1249,9 +1262,9 @@ export default function Product({ product }) {
                                       defaultChecked={product?.categoryId?.includes(
                                         subcategory?._id
                                       )}
-                                      onClick={() => handleCatCheckboxClick(
-                                        subcategory?._id
-                                      )}
+                                      onClick={() =>
+                                        handleCatCheckboxClick(subcategory?._id)
+                                      }
                                       className="w-4 h-4 bg-gray-500 rounded"
                                     />
                                   </div>
@@ -1308,6 +1321,78 @@ export default function Product({ product }) {
                       </button>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              <div className="p-5 border bg-white rounded-md shadow-md w-full">
+                <h5 className="text-md font-bold mb-3">Product Brand</h5>
+                <div className="flex justify-between items-center gap-5 mb-5">
+                  <button
+                    type="button"
+                    className={`${
+                      brandTab === "brand"
+                        ? "border-gray-500 text-black"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    onClick={() => setBrandTab("brand")}
+                  >
+                    Brand
+                  </button>
+                  <button
+                    type="button"
+                    className={`${
+                      brandTab === "new"
+                        ? "border-gray-500 text-black"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    onClick={() => setBrandTab("new")}
+                  >
+                    Add New Brand
+                  </button>
+                </div>
+                <div
+                  className={`
+                ${brandTab === "brand" ? "block" : "hidden"}
+                `}
+                >
+                  <div className="relative flex border border-gray-300 px-2 mt-1 w-full rounded-md bg-white hover:border-gray-400">
+                    {productBrand?.length > 0 && (
+                      <select
+                        id="productBrand"
+                        name="productBrand"
+                        defaultValue={product?.productBrand}
+                        required
+                        className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                      >
+                        {productBrand?.map((brand, index) => (
+                          <option key={index} value={brand.name}>
+                            {brand.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </div>
+                <div
+                  className={`
+                ${brandTab === "new" ? "block" : "hidden"}
+                `}
+                >
+                  <input
+                    type="text"
+                    id="brandName"
+                    name="brandName"
+                    onChange={(e) => setBrandName(e.target.value)}
+                    placeholder="Brand Name"
+                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCreateBrand}
+                    className="text-white text-sm bg-black px-3 py-2 rounded-md mt-5 w-full uppercase font-semibold hover:bg-gray-800 focus:outline-none"
+                  >
+                    Add Brand
+                  </button>
                 </div>
               </div>
 
