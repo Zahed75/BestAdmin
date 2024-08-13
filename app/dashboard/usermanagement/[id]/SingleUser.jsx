@@ -7,11 +7,14 @@ import Image from "next/image";
 import { useState } from "react";
 import Loading from "../../loading";
 import useImgBBUpload from "@/utils/useImgBBUpload";
+import { useRouter } from "next/navigation";
 
 export default function SingleUser({ user }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
+
+  const router = useRouter();
 
   const handleUserImgFileChange = async (event) => {
     const file = event.target.files[0];
@@ -50,7 +53,7 @@ export default function SingleUser({ user }) {
 
       if (response) {
         setIsLoading(false);
-        console.log(response);
+        router.push("/dashboard/usermanagement")
       }
     } catch (error) {
       console.log(error);
