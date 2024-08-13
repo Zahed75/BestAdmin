@@ -577,6 +577,7 @@ export default function AddProductPage() {
                   </label>
                   <textarea
                     id="seoDescription"
+                    name="seoDescription"
                     value={descriptionInputValue}
                     onChange={handleDescriptionInputChange}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none"
