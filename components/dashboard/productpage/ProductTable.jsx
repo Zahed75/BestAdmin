@@ -25,7 +25,7 @@ export default function ProductTable({ AllProducts }) {
   const titleData = ["All", "Published", "Draft"];
   const data = AllProducts || [];
 
-  const noPicture = "https://i.ibb.co/bJXhK7w/3256026-200.png";
+  const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
 
   const handleTitleButtonClick = (title) => {
     setFilter(title);

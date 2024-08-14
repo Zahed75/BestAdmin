@@ -199,8 +199,8 @@ export default function AddProductPage() {
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
-      // productSpecification: specData,
-      productDescription: productDescription,  
+      productSpecification: specData,
+      productDescription: productDescription,
       productShortDescription: productShortDescription,
       productStatus: productStatus,
       seo: {
@@ -269,18 +269,17 @@ export default function AddProductPage() {
         const worksheet = workbook.Sheets[sheetName];
         const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-        // Convert the data to key-value pairs
-        const result = {};
-        json.forEach((row) => {
-          if (row[0] && row[1]) {
-            result[row[0]] = row[1];
-          }
-        });
-        setSpecData(result);
+        // Convert the data to an array of objects with key-value pairs
+        const result = json
+          .filter((row) => row[0] && row[1]) // Filter out rows without both key and value
+          .map((row) => ({ key: row[0], value: row[1] })); // Create key-value pairs
+
+        setSpecData( result );
       };
       reader.readAsArrayBuffer(file);
     }
   };
+
   const handleCreateBrand = async (e) => {
     e.preventDefault();
     const brandData = {
@@ -532,7 +531,7 @@ export default function AddProductPage() {
                           height={200}
                           src={
                             imageUrl ||
-                            "https://i.ibb.co/bJXhK7w/3256026-200.png"
+                            "https://i.ibb.co/sqPhfrt/notimgpng.png"
                           }
                           alt="Deep-Blue-300x300"
                           className="w-full object-cover"
@@ -1035,30 +1034,33 @@ export default function AddProductPage() {
                   onChange={handleFileUpload}
                 />
                 <div>
-                  {Object.keys(specData).length > 0 && (
-                    <table className="w-full text-md my-10">
-                      <tbody>
-                        {Object.entries(specData).map(([key, value], index) => (
-                          <tr key={index}>
-                            <td className="border px-5 py-2">
-                              <input
-                                type="text"
-                                defaultValue={key + ":"}
-                                className="w-full px-2 py-1 focus:outline-0"
-                              />
-                            </td>
-                            <td className="border px-5 py-2">
-                              <input
-                                type="text"
-                                defaultValue={value}
-                                className="w-full px-2 py-1 focus:outline-0"
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
+                  {specData &&
+                    specData.length > 0 && (
+                      <table className="w-full text-md my-10">
+                        <tbody>
+                          {specData.map((item, index) => (
+                            <tr key={index}>
+                              <td className="border px-5 py-2">
+                                {/* <input
+                  type="text"
+                  defaultValue={item.key + ":"}
+                  className="w-full px-2 py-1 focus:outline-0"
+                /> */}
+                                {item.key + ":"}
+                              </td>
+                              <td className="border px-5 py-2">
+                                {/* <input
+                  type="text"
+                  defaultValue={item.value}
+                  className="w-full px-2 py-1 focus:outline-0"
+                /> */}
+                                {item.value}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
                 </div>
               </div>
             </div>
