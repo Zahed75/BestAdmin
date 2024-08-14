@@ -210,26 +210,6 @@ export default function OrderTable({ AllOrders }) {
     return date.toLocaleDateString(undefined, options);
   }
 
-  // const advanceFilterHandler = async (e) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await fetchApi(
-  //       `/order/filterOrders?orderStatus=${e.target.filterOrderStatus.value}&paymentMethod=${e.target.filterPaymentMethod.value}&outlet=${e.target.filterOutlet.value}&channel=${e.target.filterChannel.value}&startDate=${e.target.filterStartDate.value}&endDate=${e.target.filterEndDate.value}`,
-  //       "GET"
-  //     );
-  //     if (response.status === 200) {
-  //       const data = await response.json();
-  //       console.log(data);
-  //     } else {
-  //       console.log("Failed to fetch data.");
-  //     }
-  //   } catch (error) {
-  //     console.log("An error occurred while fetching data.", error);
-  //   }
-  //   setIsLoading(false);
-  // };
-
   const advanceFilterHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
