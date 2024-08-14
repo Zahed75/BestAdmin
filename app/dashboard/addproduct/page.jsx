@@ -211,7 +211,7 @@ export default function AddProductPage() {
       },
       general: {
         regularPrice: parseFloat(e.target.regularPrice?.value) || 0,
-        salePrice: parseFloat(e.target.salePrice?.value) || 0,
+        salePrice: parseFloat(e.target.salePrice?.value) || parseFloat(e.target.regularPrice?.value),
         taxStatus: e.target.taxStatus?.value || "",
         taxClass: e.target.taxClass?.value || "",
       },
