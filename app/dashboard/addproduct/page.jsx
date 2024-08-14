@@ -211,7 +211,9 @@ export default function AddProductPage() {
       },
       general: {
         regularPrice: parseFloat(e.target.regularPrice?.value) || 0,
-        salePrice: parseFloat(e.target.salePrice?.value) || parseFloat(e.target.regularPrice?.value),
+        salePrice:
+          parseFloat(e.target.salePrice?.value) ||
+          parseFloat(e.target.regularPrice?.value),
         taxStatus: e.target.taxStatus?.value || "",
         taxClass: e.target.taxClass?.value || "",
       },
@@ -274,7 +276,7 @@ export default function AddProductPage() {
           .filter((row) => row[0] && row[1]) // Filter out rows without both key and value
           .map((row) => ({ key: row[0], value: row[1] })); // Create key-value pairs
 
-        setSpecData( result );
+        setSpecData(result);
       };
       reader.readAsArrayBuffer(file);
     }
@@ -530,8 +532,7 @@ export default function AddProductPage() {
                           width={200}
                           height={200}
                           src={
-                            imageUrl ||
-                            "https://i.ibb.co/sqPhfrt/notimgpng.png"
+                            imageUrl || "https://i.ibb.co/sqPhfrt/notimgpng.png"
                           }
                           alt="Deep-Blue-300x300"
                           className="w-full object-cover"
@@ -1034,33 +1035,32 @@ export default function AddProductPage() {
                   onChange={handleFileUpload}
                 />
                 <div>
-                  {specData &&
-                    specData.length > 0 && (
-                      <table className="w-full text-md my-10">
-                        <tbody>
-                          {specData.map((item, index) => (
-                            <tr key={index}>
-                              <td className="border px-5 py-2">
-                                {/* <input
+                  {specData && specData.length > 0 && (
+                    <table className="w-full text-md my-10">
+                      <tbody>
+                        {specData.map((item, index) => (
+                          <tr key={index}>
+                            <td className="border px-5 py-2">
+                              {/* <input
                   type="text"
                   defaultValue={item.key + ":"}
                   className="w-full px-2 py-1 focus:outline-0"
                 /> */}
-                                {item.key + ":"}
-                              </td>
-                              <td className="border px-5 py-2">
-                                {/* <input
+                              {item.key + ":"}
+                            </td>
+                            <td className="border px-5 py-2">
+                              {/* <input
                   type="text"
                   defaultValue={item.value}
                   className="w-full px-2 py-1 focus:outline-0"
                 /> */}
-                                {item.value}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
+                              {item.value}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
                 </div>
               </div>
             </div>
@@ -1245,6 +1245,7 @@ export default function AddProductPage() {
                       required
                       className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                     >
+                      <option value="">Select a brand </option>
                       {productBrand?.map((brand, index) => (
                         <option key={index} value={brand.name}>
                           {brand.name}
