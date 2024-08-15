@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
 import { FaCaretDown } from "react-icons/fa";
 import Pagination from "@/components/global/pagination/Pagination";
@@ -19,13 +19,18 @@ export default function ProductTable({ AllProducts }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAction, setShowAction] = useState(false);
   const [filter, setFilter] = useState("All");
+  const [products, setProducts] = useState(AllProducts || []);
 
   const router = useRouter();
 
   const titleData = ["All", "Published", "Draft"];
-  const data = AllProducts || [];
+  const data = products;
 
   const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
+
+  useEffect(() => {
+    setProducts(AllProducts || []);
+  }, [AllProducts]);
 
   const handleTitleButtonClick = (title) => {
     setFilter(title);
@@ -109,6 +114,26 @@ export default function ProductTable({ AllProducts }) {
     }
   };
 
+  // const handleDeleteProduct = async () => {
+  //   try {
+  //     for (const itemId of selectedItems) {
+  //       const response = await fetchApi(
+  //         `/product/deleteProduct/${itemId}`,
+  //         "DELETE"
+  //       );
+  //       if (response.status === 200) {
+  //         const newData = data.filter((item) => item._id !== itemId);
+  //       } else {
+  //         console.log(`Failed to delete category with ID ${itemId}.`);
+  //       }
+  //     }
+  //     setSelectedItems([]);
+  //     console.log("Selected categories deleted successfully!");
+  //   } catch (err) {
+  //     console.log("An error occurred while deleting selected categories.", err);
+  //   }
+  // };
+
   const handleDeleteProduct = async () => {
     try {
       for (const itemId of selectedItems) {
@@ -117,16 +142,17 @@ export default function ProductTable({ AllProducts }) {
           "DELETE"
         );
         if (response.status === 200) {
-          const newData = data.filter((item) => item._id !== itemId);
-          setData(newData);
+          setProducts((prevProducts) =>
+            prevProducts.filter((item) => item._id !== itemId)
+          );
         } else {
-          console.log(`Failed to delete category with ID ${itemId}.`);
+          console.log(`Failed to delete product with ID ${itemId}.`);
         }
       }
       setSelectedItems([]);
-      console.log("Selected categories deleted successfully!");
+      console.log("Selected products deleted successfully!");
     } catch (err) {
-      console.log("An error occurred while deleting selected categories.", err);
+      console.log("An error occurred while deleting selected products.", err);
     }
   };
 
@@ -160,7 +186,6 @@ export default function ProductTable({ AllProducts }) {
           </button>
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
-        
           <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
             <div className="grid place-items-center h-full w-12 text-gray-300">
               <svg
