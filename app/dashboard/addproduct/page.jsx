@@ -204,7 +204,9 @@ export default function AddProductPage() {
       productShortDescription: productShortDescription,
       productStatus: productStatus,
       seo: {
-        productTitle: titleInputValue,
+        productTitle:
+          titleInputValue ||
+          e.target.productName.value + " at Best Electronics",
         prodDescription: descriptionInputValue,
         productTags: tagValueArray,
         productNotes: e.target.productNotes.value,
@@ -1039,16 +1041,16 @@ export default function AddProductPage() {
                     <table className="w-full text-md my-10">
                       <tbody>
                         {specData.map((item, index) => (
-                          <tr key={index}>
-                            <td className="border px-5 py-2">
+                          <tr className="" key={index}>
+                            <td className="border px-5 py-2 w-1/2">
                               {/* <input
                   type="text"
                   defaultValue={item.key + ":"}
                   className="w-full px-2 py-1 focus:outline-0"
                 /> */}
-                              {item.key + ":"}
+                              {item.key}
                             </td>
-                            <td className="border px-5 py-2">
+                            <td className="border px-5 py-2 w-1/2">
                               {/* <input
                   type="text"
                   defaultValue={item.value}
