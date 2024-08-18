@@ -1,5 +1,5 @@
 "use client";
-
+import * as XLSX from "xlsx";
 import AddProductDynamicHead from "@/components/dashboard/addproduct/DynamicHead";
 import AddProductRichText from "@/components/dashboard/addproduct/ProductRichText";
 import AddProductShortDesRichText from "@/components/dashboard/addproduct/ProductShortDesRichText";
@@ -35,6 +35,8 @@ export default function Product({ product }) {
   const [brandName, setBrandName] = useState("");
   const [isProductImageDeleted, setIsProductImageDeleted] = useState(false);
   const [isProductGalleryDeleted, setIsProductGalleryDeleted] = useState(false);
+  const [specData, setSpecData] = useState({});
+  const [showBtn, setShowBtn] = useState(false);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
@@ -49,6 +51,7 @@ export default function Product({ product }) {
 
   useEffect(() => {
     if (window !== undefined) {
+      setSpecData(product?.productSpecification);
       setIsProductImageDeleted(product?.productImage ? false : true);
       setTagValueArray(product?.seo?.productTags || []);
       setProductPicture(product?.productImage);
@@ -84,11 +87,13 @@ export default function Product({ product }) {
     progress = Math.min(progress, 100);
     return progress;
   };
+
   const calculateDescriptionProgress = (value) => {
     let progress = (value.length / 200) * 100;
     progress = Math.min(progress, 100);
     return progress;
   };
+
   const getTitleProgressBarColor = () => {
     const progress = calculateTitleProgress(titleInputValue);
     if (progress < 30) {
@@ -99,6 +104,7 @@ export default function Product({ product }) {
       return "bg-[#F26522]";
     }
   };
+
   const getDescriptionProgressBarColor = () => {
     const progress = calculateDescriptionProgress(descriptionInputValue);
     if (progress < 30) {
@@ -109,12 +115,15 @@ export default function Product({ product }) {
       return "bg-[#F26522]";
     }
   };
+
   const handleTitleInputChange = (event) => {
     setTitleInputValue(event.target.value);
   };
+
   const handleDescriptionInputChange = (event) => {
     setDescriptionInputValue(event.target.value);
   };
+
   const handleProductImgFileChange = async (event) => {
     const file = event.target.files[0];
     setIsLoading(true);
@@ -128,6 +137,7 @@ export default function Product({ product }) {
       setIsLoading(false);
     }
   };
+
   const handleGalleryUpload = async (file) => {
     const apiKey = "7a0f43e157252e0ca3031dea1d8dcccd";
     const formData = new FormData();
@@ -158,6 +168,7 @@ export default function Product({ product }) {
       throw error;
     }
   };
+
   const handleGalleryImgFileChange = async (event) => {
     const files = event.target.files;
     const maxImages = 9;
@@ -182,21 +193,25 @@ export default function Product({ product }) {
       setIsLoading(false);
     }
   };
+
   const handleTagValue = (e) => {
     e.preventDefault();
     const newTagValueArray = [...tagValueArray, tagInputValue];
     setTagValueArray(newTagValueArray);
     setTagInputValue(""); // Clear input value after adding
   };
+
   const handleRemoveTag = (indexToRemove) => {
     const newTagValueArray = tagValueArray.filter(
       (_, index) => index !== indexToRemove
     );
     setTagValueArray(newTagValueArray);
   };
+
   const toggleProductStatus = () => {
     setProductStatus(productStatus === "Draft" ? "Published" : "Draft");
   };
+
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     const productDescription = localStorage.getItem("Description") || "";
@@ -267,12 +282,14 @@ export default function Product({ product }) {
       console.log("An error occurred:", err);
     }
   };
+
   const handleRemoveProductPicture = async () => {
     setIsLoading(true);
     setProductPicture("");
     setIsProductImageDeleted(true);
     setIsLoading(false);
   };
+
   const handleRemoveProductGallery = async (image) => {
     setIsLoading(true);
     const newGallery = productGallery.filter((img) => img !== image);
@@ -280,6 +297,7 @@ export default function Product({ product }) {
     setIsProductGalleryDeleted(true);
     setIsLoading(false);
   };
+
   const handleCreateBrand = async (e) => {
     e.preventDefault();
     const brandData = {
@@ -296,6 +314,7 @@ export default function Product({ product }) {
     }
     console.log("Brand Data:", brandData);
   };
+
   const handleCatCheckboxClick = (categoryId) => {
     setCategoryId((prevCategoryId) => {
       if (prevCategoryId.includes(categoryId)) {
@@ -307,6 +326,7 @@ export default function Product({ product }) {
       }
     });
   };
+
   const handleSubCatCheckboxClick = (subcategoryId) => {
     setCategoryId((prevCategoryId) => {
       if (prevCategoryId.includes(subcategoryId)) {
@@ -318,6 +338,56 @@ export default function Product({ product }) {
       }
     });
   };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setShowBtn(true);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        // Convert the data to an array of objects with key-value pairs
+        const result = json
+          .filter((row) => row[0] && row[1]) // Filter out rows without both key and value
+          .map((row) => ({ key: row[0], value: row[1] })); // Create key-value pairs
+
+        setSpecData(result);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  };
+
+  const handleExcelFileDownload = () => {
+    const cleanedData = specData.map(({ _id, ...rest }) => Object.values(rest));
+    const ws = XLSX.utils.aoa_to_sheet(cleanedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    XLSX.writeFile(wb, "product_spec.xlsx");
+  };
+
+  const handleUpdateProductSpec = (e) => {
+    e.preventDefault();
+    const productData = {
+      productSpecification: specData,
+    };
+    try {
+      const response = fetchApi(
+        `/product/${product?._id}/addSpecifications`,
+        "POST",
+        productData
+      );
+      console.log(response);
+    } catch (error) {
+      console.error("Error updating product spec:", error);
+    }
+  };
+
   return (
     <main className="">
       {isLoading && <Loading />}
@@ -1164,6 +1234,7 @@ export default function Product({ product }) {
                   </div>
                 </div>
               </div>
+
               <div className="p-5 border bg-white rounded-md shadow-md w-full">
                 <h5 className="text-md font-bold mb-3">
                   Product Short Description
@@ -1171,6 +1242,69 @@ export default function Product({ product }) {
                 <AddProductShortDesRichText
                   preValue={product?.productShortDescription}
                 />
+              </div>
+
+              <div className="p-5 border bg-white rounded-md shadow-md w-full">
+                <h5 className="text-md font-bold mb-3">
+                  Product Specification
+                </h5>
+                <div>
+                  <div className="flex justify-between items-center">
+                    <input
+                      type="file"
+                      accept=".xlsx, .xls"
+                      onChange={handleFileUpload}
+                    />
+                    <div>
+                      {showBtn ? (
+                        <button
+                          type="button"
+                          onClick={handleUpdateProductSpec}
+                          className="text-white text-sm bg-black px-3 py-2 rounded-md w-full uppercase font-semibold hover:bg-gray-800 focus:outline-none"
+                        >
+                          Update
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleExcelFileDownload}
+                          className="text-white text-sm bg-black px-3 py-2 rounded-md w-full uppercase font-semibold hover:bg-gray-800 focus:outline-none"
+                        >
+                          Download Sample
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    {specData && specData.length > 0 && (
+                      <table className="w-full text-md my-10">
+                        <tbody>
+                          {specData.map((item, index) => (
+                            <tr className="" key={index}>
+                              <td className="border px-5 py-2 w-1/2">
+                                {/* <input
+                  type="text"
+                  defaultValue={item.key + ":"}
+                  className="w-full px-2 py-1 focus:outline-0"
+                /> */}
+                                {item.key}
+                              </td>
+                              <td className="border px-5 py-2 w-1/2">
+                                {/* <input
+                  type="text"
+                  defaultValue={item.value}
+                  className="w-full px-2 py-1 focus:outline-0"
+                /> */}
+                                {item.value}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
             {/* main two section */}

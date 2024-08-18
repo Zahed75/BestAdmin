@@ -283,7 +283,6 @@ export default function AddProductPage() {
       reader.readAsArrayBuffer(file);
     }
   };
-
   const handleCreateBrand = async (e) => {
     e.preventDefault();
     const brandData = {
