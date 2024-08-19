@@ -14,6 +14,7 @@ export default function EventsPage({ initialItems }) {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -83,16 +84,404 @@ export default function EventsPage({ initialItems }) {
   // Sort items based on eventCatId
   const sortedItems = [...items].sort((a, b) => a.eventCatId - b.eventCatId);
 
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+  }
+
 
   return (
     <main>
       <section className="w-full">
-        <Link
-          href="/dashboard/settings/events/addevent"
-          className="text-sm text-white bg-black rounded-md px-5 py-2 w-36 flex ml-auto"
-        >
-          Add New Event
-        </Link>
+        <div className="flex flex-row justify-between item center mt-4">
+          <h3 className="text-lg text-black font-extrabold px-5 py-2">All Product Grids</h3>
+          <Link
+            href="/dashboard/settings/events/addevent"
+            className="text-sm text-white bg-black rounded-md px-5 py-2 w-36 flex ml-auto mt-2"
+          >
+            Add New Event
+          </Link>
+        </div>
+        <div className="flex justify-center">
+          <div className="flex flex-col gap-5 m-5 w-full">
+            {/* {sortedItems?.map((item, index) => ( */}
+            <div
+              // key={item._id}
+              // draggable
+              // onDragStart={() => handleDragStart(index)}
+              // onDragEnter={() => handleDragEnter(index)}
+              // onDragEnd={handleDragEnd}
+              // className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 ${draggedItem === index ? "scale-[1.02]" : ""
+              // }`}
+              className={`w-full h-auto bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 "scale-[1.02]" : ""
+                  `}
+              style={{
+                transition: "transform 0.3s ease-in-out",
+              }}
+            ><div className="flex flex-col w-full gap-5">
+                <div className="flex justify-between items-center gap-x-2 w-full px-5 mt-5">
+                  <div className="text-sm text-white bg-black rounded-full px-2">2 x 3</div>
+                  <div className="flex flex-row gap-x-2">
+                    <svg onClick={() => setShowUpdateMenu(true)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M16.2141 4.98239L17.6158 3.58063C18.39 2.80646 19.6452 2.80646 20.4194 3.58063C21.1935 4.3548 21.1935 5.60998 20.4194 6.38415L19.0176 7.78591M16.2141 4.98239L10.9802 10.2163C9.93493 11.2616 9.41226 11.7842 9.05637 12.4211C8.70047 13.058 8.3424 14.5619 8 16C9.43809 15.6576 10.942 15.2995 11.5789 14.9436C12.2158 14.5877 12.7384 14.0651 13.7837 13.0198L19.0176 7.78591M16.2141 4.98239L19.0176 7.78591" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3" stroke="black" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+
+                    <svg onClick={() => setShowUpdateMenu(true)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
+                      <path d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
+                      <path d="M9.5 16.5V10.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
+                      <path d="M14.5 16.5V10.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-x-2 w-full px-5 mb-2">
+                  <div className="flex flex-row justify-between items-center">
+                    <div>
+                      <h4 className="text-[#202435] text-md md:text-xl font-semibold uppercase">
+                        NEW COLLECTION OF INVERTER AC
+                      </h4>
+                      <h4 className="text-[#9B9BB4] text-xs md:text-sm font-semibold">
+                        Efficient Cooling, Endless Comfort: Your Ultimate Solution for Year-Round Temperature Control
+                      </h4>
+                    </div>
+
+                    <div className="flex justify-center ml-auto" onClick={toggleCollapse}>
+                      <svg width="26" height="14" viewBox="0 0 26 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                        <path d="M1 0.5L13 12.5L25 0.5" stroke="black" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    className={`mt-2 overflow-hidden transition-max-height duration-500 ease-in-out ${isOpen ? 'h-auto' : 'h-0'
+                      }`}
+                  >
+                    <div className="p-4 bg-slate-50 hover:bg-white rounded-lg">
+
+                      <div className="flex flex-row justify-center">
+
+                        <div
+                          className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
+                        >
+                          <div className="relative group duration-700">
+                            {/* {product?.general?.salePrice ? ( */}
+                            <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
+                              <p className="text-sm px-3 py-1">
+                                {/* {(
+                                  ((product?.general?.regularPrice -
+                                    product?.general?.salePrice) /
+                                    product?.general?.regularPrice) *
+                                  100
+                                ).toFixed(1)} */}
+                                5%
+                              </p>
+                            </div>
+                            {/* ) : ( */}
+                            <></>
+                            {/* )} */}
+                            <Link href="">
+                              <div className="object-cover min-h-[200px] flex justify-center overflow-hidden">
+                                {/* <Image
+                                src=""
+                                width={200}
+                                height={200}
+                                alt="product"
+                                className="hover:scale-105 duration-700"
+                              /> */}
+                              </div>
+                            </Link>
+                            <div className="mt-5 flex justify-start items-center">
+                              <p class="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">In Stock</p>
+                              <span class="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">Online &amp; Offline</span>
+                            </div>
+                            <div className="mt-3">
+                              <Link href="">
+                                <h4 className="text-[#202435] hover:text-[#F16521] duration-700 text-md font-semibold h-14">
+                                  {/* {product?.productName} */}
+                                  Hitachi
+                                </h4>
+                              </Link>
+                              <div className="mt-5 text-slate-500 text-md">
+                                <div className=" ">
+                                  Offer Price:{" "}
+                                  <span className="font-semibold ml-1">
+                                    ৳450
+                                  </span>{" "}
+                                </div>
+                                <div className="">
+                                  M.R.P:
+                                  <del className="ml-1">৳450</del>
+                                </div>
+                                <div className="flex justify-start items-center">
+                                  Your Save:
+                                  <div className="ml-1 flex justify-start items-center">
+                                    {/* {product?.general?.salePrice ? ( */}
+                                    <p className="font-semibold">
+                                      {/* {(
+                                            ((product?.general?.regularPrice -
+                                              product?.general?.salePrice) /
+                                              product?.general?.regularPrice) *
+                                            100
+                                          ).toFixed(1)} */}
+                                      450 %
+                                    </p>
+                                    {/* ) : ( */}
+                                    <></>
+                                    {/* )} */}
+                                    <p>
+                                      {/* ( */}
+
+                                      {/* {product?.general?.regularPrice - product?.general?.salePrice} */}
+                                      {/* ) */}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mt-5 flex justify-start items-center">
+                                <p
+                                // className={`${
+                                //   product?.inventory?.stockStatus === "In Stock"
+                                //     ? "text-[#70BE38]"
+                                //     : "text-red-400"
+                                // } text-xs font-semibold ${
+                                //   product?.inventory?.stockStatus === "In Stock"
+                                //     ? "border border-[#70BE38]"
+                                //     : "border border-red-400 bg-red-100"
+                                // } rounded-md px-3 py-1`}
+                                >
+                                  {/* {product?.inventory?.stockStatus} */}
+                                </p>
+                                {/* <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
+                                          {product?.inventory?.inventoryStatus}
+                                        </span> */}
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div
+                          className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
+                        >
+                          <div className="relative group duration-700">
+                            {/* {product?.general?.salePrice ? ( */}
+                            <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
+                              <p className="text-sm px-3 py-1">
+                                {/* {(
+                                  ((product?.general?.regularPrice -
+                                    product?.general?.salePrice) /
+                                    product?.general?.regularPrice) *
+                                  100
+                                ).toFixed(1)} */}
+                                5%
+                              </p>
+                            </div>
+                            {/* ) : ( */}
+                            <></>
+                            {/* )} */}
+                            <Link href="">
+                              <div className="object-cover min-h-[200px] flex justify-center overflow-hidden">
+                                {/* <Image
+                                src=""
+                                width={200}
+                                height={200}
+                                alt="product"
+                                className="hover:scale-105 duration-700"
+                              /> */}
+                              </div>
+                            </Link>
+                            <div className="mt-5 flex justify-start items-center">
+                              <p class="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">In Stock</p>
+                              <span class="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">Online &amp; Offline</span>
+                            </div>
+                            <div className="mt-3">
+                              <Link href="">
+                                <h4 className="text-[#202435] hover:text-[#F16521] duration-700 text-md font-semibold h-14">
+                                  {/* {product?.productName} */}
+                                  Hitachi
+                                </h4>
+                              </Link>
+                              <div className="mt-5 text-slate-500 text-md">
+                                <div className=" ">
+                                  Offer Price:{" "}
+                                  <span className="font-semibold ml-1">
+                                    ৳450
+                                  </span>{" "}
+                                </div>
+                                <div className="">
+                                  M.R.P:
+                                  <del className="ml-1">৳450</del>
+                                </div>
+                                <div className="flex justify-start items-center">
+                                  Your Save:
+                                  <div className="ml-1 flex justify-start items-center">
+                                    {/* {product?.general?.salePrice ? ( */}
+                                    <p className="font-semibold">
+                                      {/* {(
+                                            ((product?.general?.regularPrice -
+                                              product?.general?.salePrice) /
+                                              product?.general?.regularPrice) *
+                                            100
+                                          ).toFixed(1)} */}
+                                      450 %
+                                    </p>
+                                    {/* ) : ( */}
+                                    <></>
+                                    {/* )} */}
+                                    <p>
+                                      {/* ( */}
+
+                                      {/* {product?.general?.regularPrice - product?.general?.salePrice} */}
+                                      {/* ) */}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mt-5 flex justify-start items-center">
+                                <p
+                                // className={`${
+                                //   product?.inventory?.stockStatus === "In Stock"
+                                //     ? "text-[#70BE38]"
+                                //     : "text-red-400"
+                                // } text-xs font-semibold ${
+                                //   product?.inventory?.stockStatus === "In Stock"
+                                //     ? "border border-[#70BE38]"
+                                //     : "border border-red-400 bg-red-100"
+                                // } rounded-md px-3 py-1`}
+                                >
+                                  {/* {product?.inventory?.stockStatus} */}
+                                </p>
+                                {/* <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
+                                          {product?.inventory?.inventoryStatus}
+                                        </span> */}
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div
+                          className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
+                        >
+                          <div className="relative group duration-700">
+                            {/* {product?.general?.salePrice ? ( */}
+                            <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
+                              <p className="text-sm px-3 py-1">
+                                {/* {(
+                                  ((product?.general?.regularPrice -
+                                    product?.general?.salePrice) /
+                                    product?.general?.regularPrice) *
+                                  100
+                                ).toFixed(1)} */}
+                                5%
+                              </p>
+                            </div>
+                            {/* ) : ( */}
+                            <></>
+                            {/* )} */}
+                            <Link href="">
+                              <div className="object-cover min-h-[200px] flex justify-center overflow-hidden">
+                                {/* <Image
+                                src=""
+                                width={200}
+                                height={200}
+                                alt="product"
+                                className="hover:scale-105 duration-700"
+                              /> */}
+                              </div>
+                            </Link>
+                            <div className="mt-5 flex justify-start items-center">
+                              <p class="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">In Stock</p>
+                              <span class="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">Online &amp; Offline</span>
+                            </div>
+                            <div className="mt-3">
+                              <Link href="">
+                                <h4 className="text-[#202435] hover:text-[#F16521] duration-700 text-md font-semibold h-14">
+                                  {/* {product?.productName} */}
+                                  Hitachi
+                                </h4>
+                              </Link>
+                              <div className="mt-5 text-slate-500 text-md">
+                                <div className=" ">
+                                  Offer Price:{" "}
+                                  <span className="font-semibold ml-1">
+                                    ৳450
+                                  </span>{" "}
+                                </div>
+                                <div className="">
+                                  M.R.P:
+                                  <del className="ml-1">৳450</del>
+                                </div>
+                                <div className="flex justify-start items-center">
+                                  Your Save:
+                                  <div className="ml-1 flex justify-start items-center">
+                                    {/* {product?.general?.salePrice ? ( */}
+                                    <p className="font-semibold">
+                                      {/* {(
+                                            ((product?.general?.regularPrice -
+                                              product?.general?.salePrice) /
+                                              product?.general?.regularPrice) *
+                                            100
+                                          ).toFixed(1)} */}
+                                      450 %
+                                    </p>
+                                    {/* ) : ( */}
+                                    <></>
+                                    {/* )} */}
+                                    <p>
+                                      {/* ( */}
+
+                                      {/* {product?.general?.regularPrice - product?.general?.salePrice} */}
+                                      {/* ) */}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mt-5 flex justify-start items-center">
+                                <p
+                                // className={`${
+                                //   product?.inventory?.stockStatus === "In Stock"
+                                //     ? "text-[#70BE38]"
+                                //     : "text-red-400"
+                                // } text-xs font-semibold ${
+                                //   product?.inventory?.stockStatus === "In Stock"
+                                //     ? "border border-[#70BE38]"
+                                //     : "border border-red-400 bg-red-100"
+                                // } rounded-md px-3 py-1`}
+                                >
+                                  {/* {product?.inventory?.stockStatus} */}
+                                </p>
+                                {/* <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
+                                          {product?.inventory?.inventoryStatus}
+                                        </span> */}
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+
+
+                      </div>
+
+
+
+
+
+                      {/* <p>
+                        This is the content that will be collapsed or expanded. You can add
+                        anything you want here, like text, images, or other components.
+                      </p> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* ))} */}
+          </div>
+        </div>
+
         <div className="flex justify-center">
           <div className="flex flex-col gap-5 m-5 w-full">
             {sortedItems?.map((item, index) => (
@@ -102,9 +491,8 @@ export default function EventsPage({ initialItems }) {
                 onDragStart={() => handleDragStart(index)}
                 onDragEnter={() => handleDragEnter(index)}
                 onDragEnd={handleDragEnd}
-                className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 ${
-                  draggedItem === index ? "scale-[1.02]" : ""
-                }`}
+                className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 ${draggedItem === index ? "scale-[1.02]" : ""
+                  }`}
                 style={{
                   transition: "transform 0.3s ease-in-out",
                 }}
@@ -161,14 +549,13 @@ export default function EventsPage({ initialItems }) {
       <Modal closeModal={() => setShowUpdateMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            showUpdateMenu ? "fixed" : "hidden"
-          } sticky-0`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showUpdateMenu ? "fixed" : "hidden"
+            } sticky-0`}
         >
           <div className="2xl:container h-screen 2xl:mx-auto py-48 px-4 md:px-28 flex justify-center items-center">
             <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
               <div className="flex justify-between items-center w-full">
-                <span className="text-3xl font-bold">Update Events</span>
+                <span className="text-3xl font-bold">Edit Product Grids</span>
                 <button
                   onClick={() => setShowUpdateMenu(false)}
                   className="text-gray-400  focus:outline-none"
@@ -199,78 +586,149 @@ export default function EventsPage({ initialItems }) {
                 </button>
               </div>
               <form className="w-full mt-10">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols gap-3">
                   <div className="flex flex-col space-y-1 w-full">
                     <label
-                      htmlFor="eventName"
+                      htmlFor="Product"
                       className="text-sm font-semibold text-gray-600"
                     >
-                      Event Name
+                      Product
                     </label>
                     <input
                       type="text"
-                      id="eventName"
-                      name="eventName"
+                      id="Product"
+                      name="Product"
                       required
                       className="border border-gray-300 rounded-md p-2 focus:outline-noneF"
                     />
                   </div>
                   <div className="flex flex-col space-y-1 w-full">
                     <label
-                      htmlFor="eventUrl"
+                      htmlFor="productGridDescription"
                       className="text-sm font-semibold text-gray-600"
                     >
-                      Url
+                      Product Grid Description
                     </label>
                     <input
                       type="text"
-                      id="eventUrl"
-                      name="eventUrl"
+                      id="productGridDescription"
+                      name="productGridDescription"
                       required
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
                     />
                   </div>
-                </div>
-                <div className="mt-5">
-                  <label
-                    htmlFor="eventCategory"
-                    className="text-sm font-semibold text-gray-600"
-                  >
-                    Event Categories
-                  </label>
-                  <br />
-                  <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                    <select
-                      id="eventCategory"
-                      name="eventCategory"
-                      required
-                      className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                  <div className="flex flex-col-2 gap-3">
+                    <div className="flex flex-col space-y-1 w-full">
+                      <label
+                        htmlFor="row"
+                        className="text-sm font-semibold text-gray-600"
+                      >
+                        Row
+                      </label>
+                      <input
+                        type="number"
+                        id="row"
+                        name="row"
+                        required
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                      />
+                    </div>
+                    <div className="flex flex-col space-y-1 w-full">
+                      <label
+                        htmlFor="column"
+                        className="text-sm font-semibold text-gray-600"
+                      >
+                        Column
+                      </label>
+                      <input
+                        type="number"
+                        id="column"
+                        name="column"
+                        required
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1 w-full">
+                    <label
+                      htmlFor="filterCategory"
+                      className="text-sm font-semibold text-gray-600"
                     >
-                      <option value="">Select Event Category</option>
-                      {AllCategories?.map((item) => (
-                        <option key={item._id} value={item._id}>
-                          {item.categoryName}
-                        </option>
-                      ))}
-                    </select>
+                      Filter Category
+                    </label>
+                    <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                      <select
+                        id="orderBy"
+                        name="orderBy"
+                        required
+                        className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                      >
+                        <option value="">Select Event Category</option>
+                        {AllCategories?.map((item) => (
+                          <option key={item._id} value={item._id}>
+                            {item.categoryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1 w-full">
+                    <label
+                      htmlFor="selectProduct"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Select Product
+                    </label>
+                    <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                      <select
+                        id="orderBy"
+                        name="orderBy"
+                        required
+                        className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                      >
+                        <option value="">Select Event Category</option>
+                        {AllCategories?.map((item) => (
+                          <option key={item._id} value={item._id}>
+                            {item.categoryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="mt-0.5">
+                    <label
+                      htmlFor="orderBy"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Order By
+                    </label>
+                    <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                      <select
+                        id="orderBy"
+                        name="orderBy"
+                        required
+                        className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                      >
+                        <option value="">Select Event Category</option>
+                        {AllCategories?.map((item) => (
+                          <option key={item._id} value={item._id}>
+                            {item.categoryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1 w-full">
+                    <label className="inline-flex items-center cursor-pointer gap-2">
+                      Hide Out of Stock
+                      <input type="checkbox" class="sr-only peer" />
+                      <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+
+                    </label>
                   </div>
                 </div>
-                <div className="flex flex-col space-y-1 w-full mt-5">
-                  <label
-                    htmlFor="eventDescription"
-                    className="text-sm font-semibold text-gray-600"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    id="eventDescription"
-                    name="eventDescription"
-                    cols={30}
-                    rows={3}
-                    required
-                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
-                  />
-                </div>
+
+
 
                 {error && (
                   <div className="text-red-500 text-sm mt-2">{error}</div>
@@ -282,7 +740,7 @@ export default function EventsPage({ initialItems }) {
                   type="submit"
                   className="py-2 px-4 mt-5 bg-black text-white rounded-md w-full"
                 >
-                  {isLoading ? "Loading..." : "Update Category"}
+                  {isLoading ? "Loading..." : "Save Changes"}
                 </button>
               </form>
             </div>

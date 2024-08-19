@@ -26,7 +26,7 @@ export default function Events() {
     <main>
       {initialItems?.length >= 0 ? (
         <div>
-          <PageHead pageHead="Home Page Events" />
+          <PageHead pageHead="Products Grid" />
           <EventsPage initialItems={initialItems} />
         </div>
       ) : (
