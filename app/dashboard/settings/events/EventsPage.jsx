@@ -1,13 +1,13 @@
 "use client";
 import Modal from "@/components/global/modal/Modal";
 import { fetchCategories } from "@/redux/slice/categorySlice";
+import { fetchProducts } from "@/redux/slice/productsSlice";
 import { fetchApi } from "@/utils/FetchApi";
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function EventsPage({ initialItems }) {
-  const [items, setItems] = useState([]);
   const [showUpdateMenu, setShowUpdateMenu] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,94 +16,85 @@ export default function EventsPage({ initialItems }) {
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [gridProducts, setGridProducts] = useState([]);
 
   useEffect(() => {
     dispatch(fetchCategories());
+    dispatch(fetchProducts());
   }, [dispatch]);
+  // Only run when AllProducts changes
 
   const AllCategories = categories?.categories?.categories;
+  const product = useSelector((state) => state?.products);
+  const AllProducts = product?.products?.products || [];
 
   useEffect(() => {
-    const storedItems = localStorage.getItem("itemsOrder");
-    if (storedItems) {
-      setItems(JSON.parse(storedItems));
-    } else {
-      // const initialOrderedItems = initialItems.map((item, index) => ({
-      //   ...item,
-      //   eventCatId: index,
-      // }));
-      // localStorage.setItem("itemsOrder", JSON.stringify(initialOrderedItems));
-      // setItems(initialOrderedItems);
+    if (AllProducts?.length > 0) {
+      setSelectedProducts(AllProducts);
     }
-    // }, [initialItems]);
-  }, []);
+  }, [AllProducts]);
 
-  const [draggedItem, setDraggedItem] = useState(null);
-
-  const handleDragStart = (index) => {
-    setDraggedItem(index);
-  };
-
-  const handleDragEnter = (index) => {
-    if (draggedItem === null) return;
-
-    const newItems = Array.from(items);
-    const [movedItem] = newItems.splice(draggedItem, 1);
-    newItems.splice(index, 0, movedItem);
-
-    updateItemsOrder(newItems);
-    setDraggedItem(index);
-    setItems(newItems);
-  };
-
-  const handleDragEnd = async () => {
-    setDraggedItem(null);
+  const handleViewProducts = async (e) => {
+    const id = e.target.value;
 
     try {
-      const updatePromises = items.map((item) => {
-        const data = {
-          eventId: item._id,
-          catEventId: item.eventCatId,
-        };
-        return fetchApi("/event/updateCatEventId", "PATCH", data);
-      });
-
-      await Promise.all(updatePromises);
-      localStorage.setItem("itemsOrder", JSON.stringify(items));
-      setMessage("Items order updated successfully");
+      setIsLoading(true);
+      const response = await fetchApi(
+        `/product/getProductByCategoryId/${id}`,
+        "GET"
+      );
+      if (response) {
+        const data = await response?.products;
+        setSelectedProducts(data);
+      }
+      setIsLoading(false);
     } catch (error) {
-      console.error("Failed to update events order in the database", error);
-      setError("Failed to update events order. Please try again.");
+      console.log(error);
+      setIsLoading(false);
+      setError("Something went wrong");
     }
   };
-
-  const updateItemsOrder = (items) => {
-    items.forEach((item, index) => {
-      item.eventCatId = index; // Update eventCatId to reflect the new order
-    });
-  };
-
-  // Sort items based on eventCatId
-  const sortedItems = [...items].sort((a, b) => a.eventCatId - b.eventCatId);
 
   const toggleCollapse = () => {
     setIsOpen(!isOpen);
-  }
+  };
 
+  const handleGridProduct = (e) => {
+    const productId = e.target.value;
+    const newGridProducts = [...gridProducts];
+
+    const index = newGridProducts.findIndex((item) => item._id === productId);
+
+    if (index === -1) {
+      const productToAdd = selectedProducts.find(
+        (item) => item._id === productId
+      );
+      if (productToAdd) {
+        newGridProducts.push(productToAdd);
+      }
+    } else {
+      newGridProducts.splice(index, 1);
+    }
+
+    setGridProducts(newGridProducts);
+  };
+
+  console.log("Grid Products", gridProducts);
 
   return (
     <main>
       <section className="w-full">
         <div className="flex flex-row justify-between item center mt-4">
-          <h3 className="text-sm md:text-lg text-black font-extrabold  py-2">All Product Grids</h3>
-          <Link
-            // href="/dashboard/settings/events/addevent"
-            href=""
+          <h3 className="text-sm md:text-lg text-black font-extrabold  py-2">
+            All Product Grids
+          </h3>
+          <button
             onClick={() => setShowAddMenu(true)}
             className="text-sm text-white bg-black rounded-md px-5 py-2  w-auto flex md:ml-auto mt-2"
           >
             + Add Grid
-          </Link>
+          </button>
         </div>
         <div className="flex justify-center">
           <div className="flex flex-col gap-5 my-5 w-full">
@@ -121,20 +112,69 @@ export default function EventsPage({ initialItems }) {
               style={{
                 transition: "transform 0.3s ease-in-out",
               }}
-            ><div className="flex flex-col w-full gap-5">
+            >
+              <div className="flex flex-col w-full gap-5">
                 <div className="flex justify-between items-center gap-x-2 w-full px-5 mt-5">
-                  <div className="text-sm text-white bg-black rounded-full px-2">2 x 3</div>
+                  <div className="text-sm text-white bg-black rounded-full px-2">
+                    2 x 3
+                  </div>
                   <div className="flex flex-row gap-x-2">
-                    <svg className="cursor-pointer" onClick={() => setShowUpdateMenu(true)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M16.2141 4.98239L17.6158 3.58063C18.39 2.80646 19.6452 2.80646 20.4194 3.58063C21.1935 4.3548 21.1935 5.60998 20.4194 6.38415L19.0176 7.78591M16.2141 4.98239L10.9802 10.2163C9.93493 11.2616 9.41226 11.7842 9.05637 12.4211C8.70047 13.058 8.3424 14.5619 8 16C9.43809 15.6576 10.942 15.2995 11.5789 14.9436C12.2158 14.5877 12.7384 14.0651 13.7837 13.0198L19.0176 7.78591M16.2141 4.98239L19.0176 7.78591" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
+                    <svg
+                      className="cursor-pointer"
+                      onClick={() => setShowUpdateMenu(true)}
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M16.2141 4.98239L17.6158 3.58063C18.39 2.80646 19.6452 2.80646 20.4194 3.58063C21.1935 4.3548 21.1935 5.60998 20.4194 6.38415L19.0176 7.78591M16.2141 4.98239L10.9802 10.2163C9.93493 11.2616 9.41226 11.7842 9.05637 12.4211C8.70047 13.058 8.3424 14.5619 8 16C9.43809 15.6576 10.942 15.2995 11.5789 14.9436C12.2158 14.5877 12.7384 14.0651 13.7837 13.0198L19.0176 7.78591M16.2141 4.98239L19.0176 7.78591"
+                        stroke="black"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3"
+                        stroke="black"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
                     </svg>
 
-                    <svg className="cursor-pointer" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
-                      <path d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
-                      <path d="M9.5 16.5V10.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
-                      <path d="M14.5 16.5V10.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
+                    <svg
+                      className="cursor-pointer"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5"
+                        stroke="#FF3B30"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5"
+                        stroke="#FF3B30"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M9.5 16.5V10.5"
+                        stroke="#FF3B30"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M14.5 16.5V10.5"
+                        stroke="#FF3B30"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -145,26 +185,36 @@ export default function EventsPage({ initialItems }) {
                         NEW COLLECTION OF INVERTER AC
                       </h4>
                       <h4 className="text-[#9B9BB4] text-xs md:text-sm font-semibold">
-                        Efficient Cooling, Endless Comfort: Your Ultimate Solution for Year-Round Temperature Control
+                        Efficient Cooling, Endless Comfort: Your Ultimate
+                        Solution for Year-Round Temperature Control
                       </h4>
                     </div>
 
-                    <div className="flex justify-center ml-auto" onClick={toggleCollapse}>
+                    <div
+                      className="flex justify-center ml-auto"
+                      onClick={toggleCollapse}
+                    >
                       <svg
-                        width="26" height="14" viewBox="0 0 26 14" fill="none" xmlns="http://www.w3.org/2000/svg"
-                        className={`cursor-pointer transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                        width="26"
+                        height="14"
+                        viewBox="0 0 26 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`cursor-pointer transition-transform duration-300 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      >
                         <path d="M1 0.5L13 12.5L25 0.5" stroke="black" />
                       </svg>
                     </div>
                   </div>
                   <div
-                    className={`mt-2 overflow-hidden transition-max-height duration-500 ease-in-out ${isOpen ? 'h-auto' : 'h-0'
-                      }`}
+                    className={`mt-2 overflow-hidden transition-max-height duration-500 ease-in-out ${
+                      isOpen ? "h-auto" : "h-0"
+                    }`}
                   >
                     <div className="p-4 bg-slate-50 hover:bg-white rounded-lg">
-
                       <div className="flex flex-col sm:flex-row justify-center">
-
                         <div
                           className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
                         >
@@ -196,8 +246,12 @@ export default function EventsPage({ initialItems }) {
                               </div>
                             </Link>
                             <div className="mt-5 flex justify-start items-center">
-                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">In Stock</p>
-                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">Online &amp; Offline</span>
+                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">
+                                In Stock
+                              </p>
+                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
+                                Online &amp; Offline
+                              </span>
                             </div>
                             <div className="mt-3">
                               <Link href="">
@@ -260,11 +314,9 @@ export default function EventsPage({ initialItems }) {
                                           {product?.inventory?.inventoryStatus}
                                         </span> */}
                               </div>
-
                             </div>
                           </div>
                         </div>
-
 
                         <div
                           className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
@@ -297,8 +349,12 @@ export default function EventsPage({ initialItems }) {
                               </div>
                             </Link>
                             <div className="mt-5 flex justify-start items-center">
-                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">In Stock</p>
-                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">Online &amp; Offline</span>
+                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">
+                                In Stock
+                              </p>
+                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
+                                Online &amp; Offline
+                              </span>
                             </div>
                             <div className="mt-3">
                               <Link href="">
@@ -361,11 +417,9 @@ export default function EventsPage({ initialItems }) {
                                           {product?.inventory?.inventoryStatus}
                                         </span> */}
                               </div>
-
                             </div>
                           </div>
                         </div>
-
 
                         <div
                           className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
@@ -398,8 +452,12 @@ export default function EventsPage({ initialItems }) {
                               </div>
                             </Link>
                             <div className="mt-5 flex justify-start items-center">
-                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">In Stock</p>
-                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">Online &amp; Offline</span>
+                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">
+                                In Stock
+                              </p>
+                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
+                                Online &amp; Offline
+                              </span>
                             </div>
                             <div className="mt-3">
                               <Link href="">
@@ -462,18 +520,10 @@ export default function EventsPage({ initialItems }) {
                                           {product?.inventory?.inventoryStatus}
                                         </span> */}
                               </div>
-
                             </div>
                           </div>
                         </div>
-
-
-
                       </div>
-
-
-
-
 
                       {/* <p>
                         This is the content that will be collapsed or expanded. You can add
@@ -555,8 +605,9 @@ export default function EventsPage({ initialItems }) {
       <Modal closeModal={() => setShowUpdateMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showUpdateMenu ? "fixed" : "hidden"
-            } sticky-0`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+            showUpdateMenu ? "fixed" : "hidden"
+          } sticky-0`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
@@ -729,7 +780,6 @@ export default function EventsPage({ initialItems }) {
                       Hide Out of Stock
                       <input type="checkbox" className="sr-only peer" />
                       <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-
                     </label>
                   </div>
                 </div>
@@ -751,11 +801,13 @@ export default function EventsPage({ initialItems }) {
           </div>
         </div>
       </Modal>
+
       <Modal addModal={() => setShowAddMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
-            } sticky-0`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+            showAddMenu ? "fixed" : "hidden"
+          } sticky-0`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
@@ -794,15 +846,15 @@ export default function EventsPage({ initialItems }) {
                 <div className="grid grid-cols-1 gap-4">
                   <div className="flex flex-col space-y-1">
                     <label
-                      htmlFor="Product"
+                      htmlFor="gridName"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Product Grid Name
                     </label>
                     <input
                       type="text"
-                      id="Product"
-                      name="Product"
+                      id="gridName"
+                      name="gridName"
                       required
                       className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
@@ -863,12 +915,13 @@ export default function EventsPage({ initialItems }) {
                     </label>
                     <div className="relative border border-gray-300 rounded-md">
                       <select
+                        onClick={handleViewProducts}
                         id="filterCategory"
                         name="filterCategory"
                         required
                         className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                       >
-                        <option value="">Select Event Category</option>
+                        <option value="">Select Category</option>
                         {AllCategories?.map((item) => (
                           <option key={item._id} value={item._id}>
                             {item.categoryName}
@@ -886,15 +939,16 @@ export default function EventsPage({ initialItems }) {
                     </label>
                     <div className="relative border border-gray-300 rounded-md">
                       <select
+                        onClick={handleGridProduct}
                         id="selectProduct"
                         name="selectProduct"
                         required
                         className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                       >
-                        <option value="">Select Event Category</option>
-                        {AllCategories?.map((item) => (
+                        <option value="">Select Product</option>
+                        {selectedProducts?.map((item) => (
                           <option key={item._id} value={item._id}>
-                            {item.categoryName}
+                            {item.productName}
                           </option>
                         ))}
                       </select>
@@ -914,12 +968,10 @@ export default function EventsPage({ initialItems }) {
                         required
                         className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                       >
-                        <option value="">Select Event Category</option>
-                        {AllCategories?.map((item) => (
-                          <option key={item._id} value={item._id}>
-                            {item.categoryName}
-                          </option>
-                        ))}
+                        <option value="">Select Order</option>
+                        <option value="price">Price</option>
+                        <option value="name">Name</option>
+                        <option value="popularity">Popularity</option>
                       </select>
                     </div>
                   </div>
@@ -928,7 +980,6 @@ export default function EventsPage({ initialItems }) {
                       Hide Out of Stock
                       <input type="checkbox" class="sr-only peer" />
                       <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-
                     </label>
                   </div>
                 </div>

@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import Loading from "../../loading";
 import Skeleton from "@/components/global/skeleton/Skeleton";
 import Image from "next/image";
-import { set } from "date-fns";
+import { fetchProducts } from "@/redux/slice/productsSlice";
 
 export default function Product({ product }) {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -41,9 +41,11 @@ export default function Product({ product }) {
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
+  const products = useSelector((state) => state?.products);
 
   useEffect(() => {
     dispatch(fetchCategories());
+    dispatch(fetchProducts());
   }, [dispatch]);
 
   const router = useRouter();
