@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 export default function EventsPage({ initialItems }) {
   const [items, setItems] = useState([]);
   const [showUpdateMenu, setShowUpdateMenu] = useState(false);
+  const [showAddMenu, setShowAddMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -96,10 +97,12 @@ export default function EventsPage({ initialItems }) {
         <div className="flex flex-row justify-between item center mt-4">
           <h3 className="text-lg text-black font-extrabold px-5 py-2">All Product Grids</h3>
           <Link
-            href="/dashboard/settings/events/addevent"
+            // href="/dashboard/settings/events/addevent"
+            href=""
+            onClick={() => setShowAddMenu(true)}
             className="text-sm text-white bg-black rounded-md px-5 py-2 w-36 flex ml-auto mt-2"
           >
-            Add New Event
+            + Add Grid
           </Link>
         </div>
         <div className="flex justify-center">
@@ -160,7 +163,7 @@ export default function EventsPage({ initialItems }) {
                   >
                     <div className="p-4 bg-slate-50 hover:bg-white rounded-lg">
 
-                      <div className="flex flex-row justify-center">
+                      <div className="flex flex-col sm:flex-row justify-center">
 
                         <div
                           className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
@@ -595,7 +598,7 @@ export default function EventsPage({ initialItems }) {
                       htmlFor="Product"
                       className="text-sm font-semibold text-gray-600"
                     >
-                      Product
+                      Product Grid Name
                     </label>
                     <input
                       type="text"
@@ -742,6 +745,205 @@ export default function EventsPage({ initialItems }) {
                   className="py-2 px-4 mt-5 bg-black text-white rounded-md w-full"
                 >
                   {isLoading ? "Loading..." : "Save Changes"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </Modal>
+      <Modal addModal={() => setShowAddMenu(false)}>
+        <div
+          id="menu"
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
+            } sticky-0`}
+        >
+          <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
+            <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
+              <div className="flex justify-between items-center w-full">
+                <span className="text-2xl font-bold">Add Product Grid</span>
+                <button
+                  onClick={() => setShowAddMenu(false)}
+                  className="text-gray-400 focus:outline-none"
+                  aria-label="close"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18 6L6 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M6 6L18 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <form className="w-full mt-6">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="flex flex-col space-y-1">
+                    <label
+                      htmlFor="Product"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Product Grid Name
+                    </label>
+                    <input
+                      type="text"
+                      id="Product"
+                      name="Product"
+                      required
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <label
+                      htmlFor="productGridDescription"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Product Grid Description
+                    </label>
+                    <input
+                      type="text"
+                      id="productGridDescription"
+                      name="productGridDescription"
+                      required
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col space-y-1">
+                      <label
+                        htmlFor="row"
+                        className="text-sm font-semibold text-gray-600"
+                      >
+                        Row
+                      </label>
+                      <input
+                        type="number"
+                        id="row"
+                        name="row"
+                        required
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none"
+                      />
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <label
+                        htmlFor="column"
+                        className="text-sm font-semibold text-gray-600"
+                      >
+                        Column
+                      </label>
+                      <input
+                        type="number"
+                        id="column"
+                        name="column"
+                        required
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <label
+                      htmlFor="filterCategory"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Filter Category
+                    </label>
+                    <div className="relative border border-gray-300 rounded-md">
+                      <select
+                        id="filterCategory"
+                        name="filterCategory"
+                        required
+                        className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
+                      >
+                        <option value="">Select Event Category</option>
+                        {AllCategories?.map((item) => (
+                          <option key={item._id} value={item._id}>
+                            {item.categoryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <label
+                      htmlFor="selectProduct"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Select Product
+                    </label>
+                    <div className="relative border border-gray-300 rounded-md">
+                      <select
+                        id="selectProduct"
+                        name="selectProduct"
+                        required
+                        className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
+                      >
+                        <option value="">Select Event Category</option>
+                        {AllCategories?.map((item) => (
+                          <option key={item._id} value={item._id}>
+                            {item.categoryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <label
+                      htmlFor="orderBy"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Order By
+                    </label>
+                    <div className="relative border border-gray-300 rounded-md">
+                      <select
+                        id="orderBy"
+                        name="orderBy"
+                        required
+                        className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
+                      >
+                        <option value="">Select Event Category</option>
+                        {AllCategories?.map((item) => (
+                          <option key={item._id} value={item._id}>
+                            {item.categoryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1 w-full">
+                    <label className="inline-flex items-center cursor-pointer gap-2">
+                      Hide Out of Stock
+                      <input type="checkbox" class="sr-only peer" />
+                      <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+
+                    </label>
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="text-red-500 text-sm mt-2">{error}</div>
+                )}
+                {message && (
+                  <div className="text-green-500 text-sm mt-2">{message}</div>
+                )}
+                <button
+                  type="submit"
+                  className="py-2 px-4 mt-5 bg-black text-white rounded-md w-full"
+                >
+                  {isLoading ? "Loading..." : "Submit"}
                 </button>
               </form>
             </div>
