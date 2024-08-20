@@ -485,7 +485,7 @@ export default function EventsPage({ initialItems }) {
           </div>
         </div>
 
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <div className="flex flex-col gap-5 m-5 w-full">
             {sortedItems?.map((item, index) => (
               <div
@@ -546,16 +546,16 @@ export default function EventsPage({ initialItems }) {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </section>
 
       <Modal closeModal={() => setShowUpdateMenu(false)}>
         <div
           id="menu"
           className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showUpdateMenu ? "fixed" : "hidden"
-            } justify-center items-center`}
+            } sticky-0`}
         >
-          <div className="flex justify-center items-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
               <div className="flex justify-between items-center w-full">
                 <span className="text-2xl font-bold">Edit Product Grids</span>
