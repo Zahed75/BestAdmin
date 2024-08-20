@@ -24,14 +24,15 @@ export default function Events() {
   const initialItems = data?.productsAndEvents;
   return (
     <main>
-      {initialItems?.length >= 0 ? (
-        <div>
-          <PageHead pageHead="Products Grid" />
-          <EventsPage initialItems={initialItems} />
-        </div>
-      ) : (
+      {/* {initialItems?.length >= 0 ? ( */}
+      <div>
+        <PageHead pageHead="Products Grid" />
+        {/* <EventsPage initialItems={initialItems} /> */}
+        <EventsPage />
+      </div>
+      {/* ) : (
         <Skeleton />
-      )}
+      )} */}
     </main>
   );
 }
