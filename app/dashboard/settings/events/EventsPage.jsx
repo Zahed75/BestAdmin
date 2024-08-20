@@ -121,12 +121,12 @@ export default function EventsPage({ initialItems }) {
                 <div className="flex justify-between items-center gap-x-2 w-full px-5 mt-5">
                   <div className="text-sm text-white bg-black rounded-full px-2">2 x 3</div>
                   <div className="flex flex-row gap-x-2">
-                    <svg onClick={() => setShowUpdateMenu(true)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="cursor-pointer" onClick={() => setShowUpdateMenu(true)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M16.2141 4.98239L17.6158 3.58063C18.39 2.80646 19.6452 2.80646 20.4194 3.58063C21.1935 4.3548 21.1935 5.60998 20.4194 6.38415L19.0176 7.78591M16.2141 4.98239L10.9802 10.2163C9.93493 11.2616 9.41226 11.7842 9.05637 12.4211C8.70047 13.058 8.3424 14.5619 8 16C9.43809 15.6576 10.942 15.2995 11.5789 14.9436C12.2158 14.5877 12.7384 14.0651 13.7837 13.0198L19.0176 7.78591M16.2141 4.98239L19.0176 7.78591" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                       <path d="M21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3" stroke="black" stroke-width="1.5" stroke-linecap="round" />
                     </svg>
 
-                    <svg onClick={() => setShowUpdateMenu(true)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="cursor-pointer" onClick={() => setShowUpdateMenu(true)} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
                       <path d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
                       <path d="M9.5 16.5V10.5" stroke="#FF3B30" stroke-width="1.5" stroke-linecap="round" />
@@ -146,7 +146,9 @@ export default function EventsPage({ initialItems }) {
                     </div>
 
                     <div className="flex justify-center ml-auto" onClick={toggleCollapse}>
-                      <svg width="26" height="14" viewBox="0 0 26 14" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                      <svg
+                        width="26" height="14" viewBox="0 0 26 14" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        className={`cursor-pointer transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
                         <path d="M1 0.5L13 12.5L25 0.5" stroke="black" />
                       </svg>
                     </div>
@@ -549,16 +551,15 @@ export default function EventsPage({ initialItems }) {
       <Modal closeModal={() => setShowUpdateMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showUpdateMenu ? "fixed" : "hidden"
-            } sticky-0`}
+          className={`fixed inset-0 bg-gray-900 bg-opacity-80 z-50 ${showUpdateMenu ? "block" : "hidden"}`}
         >
-          <div className="2xl:container h-screen 2xl:mx-auto py-48 px-4 md:px-28 flex justify-center items-center">
-            <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
+          <div className="flex justify-center items-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
               <div className="flex justify-between items-center w-full">
-                <span className="text-3xl font-bold">Edit Product Grids</span>
+                <span className="text-2xl font-bold">Edit Product Grids</span>
                 <button
                   onClick={() => setShowUpdateMenu(false)}
-                  className="text-gray-400  focus:outline-none"
+                  className="text-gray-400 focus:outline-none"
                   aria-label="close"
                 >
                   <svg
@@ -585,9 +586,9 @@ export default function EventsPage({ initialItems }) {
                   </svg>
                 </button>
               </div>
-              <form className="w-full mt-10">
-                <div className="grid grid-cols gap-3">
-                  <div className="flex flex-col space-y-1 w-full">
+              <form className="w-full mt-6">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="flex flex-col space-y-1">
                     <label
                       htmlFor="Product"
                       className="text-sm font-semibold text-gray-600"
@@ -599,10 +600,10 @@ export default function EventsPage({ initialItems }) {
                       id="Product"
                       name="Product"
                       required
-                      className="border border-gray-300 rounded-md p-2 focus:outline-noneF"
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
                   </div>
-                  <div className="flex flex-col space-y-1 w-full">
+                  <div className="flex flex-col space-y-1">
                     <label
                       htmlFor="productGridDescription"
                       className="text-sm font-semibold text-gray-600"
@@ -614,11 +615,11 @@ export default function EventsPage({ initialItems }) {
                       id="productGridDescription"
                       name="productGridDescription"
                       required
-                      className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
                   </div>
-                  <div className="flex flex-col-2 gap-3">
-                    <div className="flex flex-col space-y-1 w-full">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col space-y-1">
                       <label
                         htmlFor="row"
                         className="text-sm font-semibold text-gray-600"
@@ -630,10 +631,10 @@ export default function EventsPage({ initialItems }) {
                         id="row"
                         name="row"
                         required
-                        className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none"
                       />
                     </div>
-                    <div className="flex flex-col space-y-1 w-full">
+                    <div className="flex flex-col space-y-1">
                       <label
                         htmlFor="column"
                         className="text-sm font-semibold text-gray-600"
@@ -645,23 +646,23 @@ export default function EventsPage({ initialItems }) {
                         id="column"
                         name="column"
                         required
-                        className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none"
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col space-y-1 w-full">
+                  <div className="flex flex-col space-y-1">
                     <label
                       htmlFor="filterCategory"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Filter Category
                     </label>
-                    <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                    <div className="relative border border-gray-300 rounded-md">
                       <select
-                        id="orderBy"
-                        name="orderBy"
+                        id="filterCategory"
+                        name="filterCategory"
                         required
-                        className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                        className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                       >
                         <option value="">Select Event Category</option>
                         {AllCategories?.map((item) => (
@@ -672,19 +673,19 @@ export default function EventsPage({ initialItems }) {
                       </select>
                     </div>
                   </div>
-                  <div className="flex flex-col space-y-1 w-full">
+                  <div className="flex flex-col space-y-1">
                     <label
                       htmlFor="selectProduct"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Select Product
                     </label>
-                    <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                    <div className="relative border border-gray-300 rounded-md">
                       <select
-                        id="orderBy"
-                        name="orderBy"
+                        id="selectProduct"
+                        name="selectProduct"
                         required
-                        className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                        className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                       >
                         <option value="">Select Event Category</option>
                         {AllCategories?.map((item) => (
@@ -695,19 +696,19 @@ export default function EventsPage({ initialItems }) {
                       </select>
                     </div>
                   </div>
-                  <div className="mt-0.5">
+                  <div className="flex flex-col space-y-1">
                     <label
                       htmlFor="orderBy"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Order By
                     </label>
-                    <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                    <div className="relative border border-gray-300 rounded-md">
                       <select
                         id="orderBy"
                         name="orderBy"
                         required
-                        className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                        className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                       >
                         <option value="">Select Event Category</option>
                         {AllCategories?.map((item) => (
@@ -727,8 +728,6 @@ export default function EventsPage({ initialItems }) {
                     </label>
                   </div>
                 </div>
-
-
 
                 {error && (
                   <div className="text-red-500 text-sm mt-2">{error}</div>
