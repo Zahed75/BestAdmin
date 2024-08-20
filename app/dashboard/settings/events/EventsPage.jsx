@@ -27,14 +27,15 @@ export default function EventsPage({ initialItems }) {
     if (storedItems) {
       setItems(JSON.parse(storedItems));
     } else {
-      const initialOrderedItems = initialItems.map((item, index) => ({
-        ...item,
-        eventCatId: index,
-      }));
-      localStorage.setItem("itemsOrder", JSON.stringify(initialOrderedItems));
-      setItems(initialOrderedItems);
+      // const initialOrderedItems = initialItems.map((item, index) => ({
+      //   ...item,
+      //   eventCatId: index,
+      // }));
+      // localStorage.setItem("itemsOrder", JSON.stringify(initialOrderedItems));
+      // setItems(initialOrderedItems);
     }
-  }, [initialItems]);
+    // }, [initialItems]);
+  });
 
   const [draggedItem, setDraggedItem] = useState(null);
 
@@ -551,7 +552,8 @@ export default function EventsPage({ initialItems }) {
       <Modal closeModal={() => setShowUpdateMenu(false)}>
         <div
           id="menu"
-          className={`fixed inset-0 bg-gray-900 bg-opacity-80 z-50 ${showUpdateMenu ? "block" : "hidden"}`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showUpdateMenu ? "fixed" : "hidden"
+            } justify-center items-center`}
         >
           <div className="flex justify-center items-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
