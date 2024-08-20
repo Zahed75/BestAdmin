@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import Loading from "../../loading";
 import Skeleton from "@/components/global/skeleton/Skeleton";
 import Image from "next/image";
+import { set } from "date-fns";
 
 export default function Product({ product }) {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -371,18 +372,20 @@ export default function Product({ product }) {
     XLSX.writeFile(wb, "product_spec.xlsx");
   };
 
-  const handleUpdateProductSpec = (e) => {
+  const handleUpdateProductSpec = async (e) => {
     e.preventDefault();
+    setShowBtn(false);
     const productData = {
       productSpecification: specData,
     };
     try {
-      const response = fetchApi(
+      const response = await fetchApi(
         `/product/${product?._id}/addSpecifications`,
         "POST",
         productData
       );
-      console.log(response);
+      setShowBtn(false);
+      setSpecData(response?.product?.productSpecification);
     } catch (error) {
       console.error("Error updating product spec:", error);
     }
@@ -1276,9 +1279,9 @@ export default function Product({ product }) {
                     </div>
                   </div>
 
-                  <div>
-                    {specData && specData.length > 0 && (
-                      <table className="w-full text-md my-10">
+                  <div className={`${specData?.length === 0 ? "hidden" : ""}`}>
+                    {specData && specData?.length > 0 && (
+                      <table className={`w-full text-md my-10`}>
                         <tbody>
                           {specData.map((item, index) => (
                             <tr className="" key={index}>
