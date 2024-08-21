@@ -106,6 +106,26 @@ export default function EventsPage({ initialItems }) {
     }
   };
 
+  const handleDeleteGrid = async (gridId) => {
+    try {
+      const response = await fetchApi(`/grid/deleteGrids/${gridId}`, "DELETE");
+      if (response) {
+        setMessage("Grid deleted successfully");
+        console.log("response", response);
+        const newGrids = initialItems.filter((item) => item._id !== gridId);
+        setGridProducts([]);
+        setInitialItems(newGrids);
+      } else {
+        setError("Error deleting grid");
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Error deleting grid");
+    }
+  };
+
+  console.log("initialItems", initialItems);
+
   return (
     <main>
       <section className="w-full">
@@ -122,443 +142,234 @@ export default function EventsPage({ initialItems }) {
         </div>
         <div className="flex justify-center">
           <div className="flex flex-col gap-5 my-5 w-full">
-            {/* {sortedItems?.map((item, index) => ( */}
-            <div
-              // key={item._id}
-              // draggable
-              // onDragStart={() => handleDragStart(index)}
-              // onDragEnter={() => handleDragEnter(index)}
-              // onDragEnd={handleDragEnd}
-              // className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 ${draggedItem === index ? "scale-[1.02]" : ""
-              // }`}
-              className={`w-full h-auto bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 "scale-[1.02]" : ""
+            {initialItems?.map((item, index) => (
+              <div
+                key={item._id}
+                // draggable
+                // onDragStart={() => handleDragStart(index)}
+                // onDragEnter={() => handleDragEnter(index)}
+                // onDragEnd={handleDragEnd}
+                // className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 ${draggedItem === index ? "scale-[1.02]" : ""
+                // }`}
+                className={`w-full h-auto bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 "scale-[1.02]" : ""
                   `}
-              style={{
-                transition: "transform 0.3s ease-in-out",
-              }}
-            >
-              <div className="flex flex-col w-full gap-5">
-                <div className="flex justify-between items-center gap-x-2 w-full px-5 mt-5">
-                  <div className="text-sm text-white bg-black rounded-full px-2">
-                    2 x 3
-                  </div>
-                  <div className="flex flex-row gap-x-2">
-                    <svg
-                      className="cursor-pointer"
-                      onClick={() => setShowUpdateMenu(true)}
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M16.2141 4.98239L17.6158 3.58063C18.39 2.80646 19.6452 2.80646 20.4194 3.58063C21.1935 4.3548 21.1935 5.60998 20.4194 6.38415L19.0176 7.78591M16.2141 4.98239L10.9802 10.2163C9.93493 11.2616 9.41226 11.7842 9.05637 12.4211C8.70047 13.058 8.3424 14.5619 8 16C9.43809 15.6576 10.942 15.2995 11.5789 14.9436C12.2158 14.5877 12.7384 14.0651 13.7837 13.0198L19.0176 7.78591M16.2141 4.98239L19.0176 7.78591"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-
-                    <svg
-                      className="cursor-pointer"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5"
-                        stroke="#FF3B30"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5"
-                        stroke="#FF3B30"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M9.5 16.5V10.5"
-                        stroke="#FF3B30"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      />
-                      <path
-                        d="M14.5 16.5V10.5"
-                        stroke="#FF3B30"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex flex-col w-full gap-x-2 px-5 mb-2">
-                  <div className="flex flex-row justify-between items-center">
-                    <div>
-                      <h4 className="text-[#202435] text-md md:text-xl font-semibold uppercase">
-                        NEW COLLECTION OF INVERTER AC
-                      </h4>
-                      <h4 className="text-[#9B9BB4] text-xs md:text-sm font-semibold">
-                        Efficient Cooling, Endless Comfort: Your Ultimate
-                        Solution for Year-Round Temperature Control
-                      </h4>
+                style={{
+                  transition: "transform 0.3s ease-in-out",
+                }}
+              >
+                <div className="flex flex-col w-full gap-5">
+                  <div className="flex justify-between items-center gap-x-2 w-full px-5 mt-5">
+                    <div className="text-sm text-white bg-black rounded-full px-2">
+                      {item.productColumn} x {item.productRow}
                     </div>
-
-                    <div
-                      className="flex justify-center ml-auto"
-                      onClick={toggleCollapse}
-                    >
+                    <div className="flex flex-row gap-x-2">
                       <svg
-                        width="26"
-                        height="14"
-                        viewBox="0 0 26 14"
+                        className="cursor-pointer"
+                        onClick={() => setShowUpdateMenu(true)}
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className={`cursor-pointer transition-transform duration-300 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
                       >
-                        <path d="M1 0.5L13 12.5L25 0.5" stroke="black" />
+                        <path
+                          d="M16.2141 4.98239L17.6158 3.58063C18.39 2.80646 19.6452 2.80646 20.4194 3.58063C21.1935 4.3548 21.1935 5.60998 20.4194 6.38415L19.0176 7.78591M16.2141 4.98239L10.9802 10.2163C9.93493 11.2616 9.41226 11.7842 9.05637 12.4211C8.70047 13.058 8.3424 14.5619 8 16C9.43809 15.6576 10.942 15.2995 11.5789 14.9436C12.2158 14.5877 12.7384 14.0651 13.7837 13.0198L19.0176 7.78591M16.2141 4.98239L19.0176 7.78591"
+                          stroke="black"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M21 12C21 16.2426 21 18.364 19.682 19.682C18.364 21 16.2426 21 12 21C7.75736 21 5.63604 21 4.31802 19.682C3 18.364 3 16.2426 3 12C3 7.75736 3 5.63604 4.31802 4.31802C5.63604 3 7.75736 3 12 3"
+                          stroke="black"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+
+                      <svg
+                        className="cursor-pointer"
+                        onClick={() => handleDeleteGrid(item._id)}
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5"
+                          stroke="#FF3B30"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5"
+                          stroke="#FF3B30"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M9.5 16.5V10.5"
+                          stroke="#FF3B30"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M14.5 16.5V10.5"
+                          stroke="#FF3B30"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                        />
                       </svg>
                     </div>
                   </div>
-                  <div
-                    className={`mt-2 overflow-hidden transition-max-height duration-500 ease-in-out ${
-                      isOpen ? "h-auto" : "h-0"
-                    }`}
-                  >
-                    <div className="p-4 bg-slate-50 hover:bg-white rounded-lg">
-                      <div className="flex flex-col sm:flex-row justify-center">
-                        <div
-                          className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
-                        >
-                          <div className="relative group duration-700">
-                            {/* {product?.general?.salePrice ? ( */}
-                            <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
-                              <p className="text-sm px-3 py-1">
-                                {/* {(
-                                  ((product?.general?.regularPrice -
-                                    product?.general?.salePrice) /
-                                    product?.general?.regularPrice) *
-                                  100
-                                ).toFixed(1)} */}
-                                5%
-                              </p>
-                            </div>
-                            {/* ) : ( */}
-                            <></>
-                            {/* )} */}
-                            <Link href="">
-                              <div className="object-cover min-h-[200px] flex justify-center overflow-hidden">
-                                {/* <Image
-                                src=""
-                                width={200}
-                                height={200}
-                                alt="product"
-                                className="hover:scale-105 duration-700"
-                              /> */}
-                              </div>
-                            </Link>
-                            <div className="mt-5 flex justify-start items-center">
-                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">
-                                In Stock
-                              </p>
-                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
-                                Online &amp; Offline
-                              </span>
-                            </div>
-                            <div className="mt-3">
-                              <Link href="">
-                                <h4 className="text-[#202435] hover:text-[#F16521] duration-700 text-md font-semibold h-14">
-                                  {/* {product?.productName} */}
-                                  Hitachi
-                                </h4>
-                              </Link>
-                              <div className="mt-5 text-slate-500 text-md">
-                                <div className=" ">
-                                  Offer Price:{" "}
-                                  <span className="font-semibold ml-1">
-                                    ৳450
-                                  </span>{" "}
-                                </div>
-                                <div className="">
-                                  M.R.P:
-                                  <del className="ml-1">৳450</del>
-                                </div>
-                                <div className="flex justify-start items-center">
-                                  Your Save:
-                                  <div className="ml-1 flex justify-start items-center">
-                                    {/* {product?.general?.salePrice ? ( */}
-                                    <p className="font-semibold">
-                                      {/* {(
-                                            ((product?.general?.regularPrice -
-                                              product?.general?.salePrice) /
-                                              product?.general?.regularPrice) *
-                                            100
-                                          ).toFixed(1)} */}
-                                      450 %
-                                    </p>
-                                    {/* ) : ( */}
-                                    <></>
-                                    {/* )} */}
-                                    <p>
-                                      {/* ( */}
-
-                                      {/* {product?.general?.regularPrice - product?.general?.salePrice} */}
-                                      {/* ) */}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="mt-5 flex justify-start items-center">
-                                <p
-                                // className={`${
-                                //   product?.inventory?.stockStatus === "In Stock"
-                                //     ? "text-[#70BE38]"
-                                //     : "text-red-400"
-                                // } text-xs font-semibold ${
-                                //   product?.inventory?.stockStatus === "In Stock"
-                                //     ? "border border-[#70BE38]"
-                                //     : "border border-red-400 bg-red-100"
-                                // } rounded-md px-3 py-1`}
-                                >
-                                  {/* {product?.inventory?.stockStatus} */}
-                                </p>
-                                {/* <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
-                                          {product?.inventory?.inventoryStatus}
-                                        </span> */}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
-                        >
-                          <div className="relative group duration-700">
-                            {/* {product?.general?.salePrice ? ( */}
-                            <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
-                              <p className="text-sm px-3 py-1">
-                                {/* {(
-                                  ((product?.general?.regularPrice -
-                                    product?.general?.salePrice) /
-                                    product?.general?.regularPrice) *
-                                  100
-                                ).toFixed(1)} */}
-                                5%
-                              </p>
-                            </div>
-                            {/* ) : ( */}
-                            <></>
-                            {/* )} */}
-                            <Link href="">
-                              <div className="object-cover min-h-[200px] flex justify-center overflow-hidden">
-                                {/* <Image
-                                src=""
-                                width={200}
-                                height={200}
-                                alt="product"
-                                className="hover:scale-105 duration-700"
-                              /> */}
-                              </div>
-                            </Link>
-                            <div className="mt-5 flex justify-start items-center">
-                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">
-                                In Stock
-                              </p>
-                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
-                                Online &amp; Offline
-                              </span>
-                            </div>
-                            <div className="mt-3">
-                              <Link href="">
-                                <h4 className="text-[#202435] hover:text-[#F16521] duration-700 text-md font-semibold h-14">
-                                  {/* {product?.productName} */}
-                                  Hitachi
-                                </h4>
-                              </Link>
-                              <div className="mt-5 text-slate-500 text-md">
-                                <div className=" ">
-                                  Offer Price:{" "}
-                                  <span className="font-semibold ml-1">
-                                    ৳450
-                                  </span>{" "}
-                                </div>
-                                <div className="">
-                                  M.R.P:
-                                  <del className="ml-1">৳450</del>
-                                </div>
-                                <div className="flex justify-start items-center">
-                                  Your Save:
-                                  <div className="ml-1 flex justify-start items-center">
-                                    {/* {product?.general?.salePrice ? ( */}
-                                    <p className="font-semibold">
-                                      {/* {(
-                                            ((product?.general?.regularPrice -
-                                              product?.general?.salePrice) /
-                                              product?.general?.regularPrice) *
-                                            100
-                                          ).toFixed(1)} */}
-                                      450 %
-                                    </p>
-                                    {/* ) : ( */}
-                                    <></>
-                                    {/* )} */}
-                                    <p>
-                                      {/* ( */}
-
-                                      {/* {product?.general?.regularPrice - product?.general?.salePrice} */}
-                                      {/* ) */}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="mt-5 flex justify-start items-center">
-                                <p
-                                // className={`${
-                                //   product?.inventory?.stockStatus === "In Stock"
-                                //     ? "text-[#70BE38]"
-                                //     : "text-red-400"
-                                // } text-xs font-semibold ${
-                                //   product?.inventory?.stockStatus === "In Stock"
-                                //     ? "border border-[#70BE38]"
-                                //     : "border border-red-400 bg-red-100"
-                                // } rounded-md px-3 py-1`}
-                                >
-                                  {/* {product?.inventory?.stockStatus} */}
-                                </p>
-                                {/* <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
-                                          {product?.inventory?.inventoryStatus}
-                                        </span> */}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
-                        >
-                          <div className="relative group duration-700">
-                            {/* {product?.general?.salePrice ? ( */}
-                            <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
-                              <p className="text-sm px-3 py-1">
-                                {/* {(
-                                  ((product?.general?.regularPrice -
-                                    product?.general?.salePrice) /
-                                    product?.general?.regularPrice) *
-                                  100
-                                ).toFixed(1)} */}
-                                5%
-                              </p>
-                            </div>
-                            {/* ) : ( */}
-                            <></>
-                            {/* )} */}
-                            <Link href="">
-                              <div className="object-cover min-h-[200px] flex justify-center overflow-hidden">
-                                {/* <Image
-                                src=""
-                                width={200}
-                                height={200}
-                                alt="product"
-                                className="hover:scale-105 duration-700"
-                              /> */}
-                              </div>
-                            </Link>
-                            <div className="mt-5 flex justify-start items-center">
-                              <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">
-                                In Stock
-                              </p>
-                              <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
-                                Online &amp; Offline
-                              </span>
-                            </div>
-                            <div className="mt-3">
-                              <Link href="">
-                                <h4 className="text-[#202435] hover:text-[#F16521] duration-700 text-md font-semibold h-14">
-                                  {/* {product?.productName} */}
-                                  Hitachi
-                                </h4>
-                              </Link>
-                              <div className="mt-5 text-slate-500 text-md">
-                                <div className=" ">
-                                  Offer Price:{" "}
-                                  <span className="font-semibold ml-1">
-                                    ৳450
-                                  </span>{" "}
-                                </div>
-                                <div className="">
-                                  M.R.P:
-                                  <del className="ml-1">৳450</del>
-                                </div>
-                                <div className="flex justify-start items-center">
-                                  Your Save:
-                                  <div className="ml-1 flex justify-start items-center">
-                                    {/* {product?.general?.salePrice ? ( */}
-                                    <p className="font-semibold">
-                                      {/* {(
-                                            ((product?.general?.regularPrice -
-                                              product?.general?.salePrice) /
-                                              product?.general?.regularPrice) *
-                                            100
-                                          ).toFixed(1)} */}
-                                      450 %
-                                    </p>
-                                    {/* ) : ( */}
-                                    <></>
-                                    {/* )} */}
-                                    <p>
-                                      {/* ( */}
-
-                                      {/* {product?.general?.regularPrice - product?.general?.salePrice} */}
-                                      {/* ) */}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="mt-5 flex justify-start items-center">
-                                <p
-                                // className={`${
-                                //   product?.inventory?.stockStatus === "In Stock"
-                                //     ? "text-[#70BE38]"
-                                //     : "text-red-400"
-                                // } text-xs font-semibold ${
-                                //   product?.inventory?.stockStatus === "In Stock"
-                                //     ? "border border-[#70BE38]"
-                                //     : "border border-red-400 bg-red-100"
-                                // } rounded-md px-3 py-1`}
-                                >
-                                  {/* {product?.inventory?.stockStatus} */}
-                                </p>
-                                {/* <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
-                                          {product?.inventory?.inventoryStatus}
-                                        </span> */}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                  <div className="flex flex-col w-full gap-x-2 px-5 mb-2">
+                    <div className="flex flex-row justify-between items-center">
+                      <div>
+                        <h4 className="text-[#202435] text-md md:text-xl font-semibold uppercase">
+                          {item?.gridName}
+                        </h4>
+                        <h4 className="text-[#9B9BB4] text-xs md:text-sm font-semibold">
+                          {item?.gridDescription}
+                        </h4>
                       </div>
 
-                      {/* <p>
-                        This is the content that will be collapsed or expanded. You can add
-                        anything you want here, like text, images, or other components.
-                      </p> */}
+                      <div
+                        className="flex justify-center ml-auto"
+                        onClick={toggleCollapse}
+                      >
+                        <svg
+                          width="26"
+                          height="14"
+                          viewBox="0 0 26 14"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className={`cursor-pointer transition-transform duration-300 ${
+                            isOpen ? "rotate-180" : ""
+                          }`}
+                        >
+                          <path d="M1 0.5L13 12.5L25 0.5" stroke="black" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div
+                      className={`mt-2 overflow-hidden transition-max-height duration-500 ease-in-out ${
+                        isOpen ? "h-auto" : "h-0"
+                      }`}
+                    >
+                      <div className="p-4 bg-slate-50 hover:bg-white rounded-lg">
+                        <div className="flex flex-col sm:flex-row justify-center">
+                          {item?.selectProducts?.map((product) => (
+                            <div
+                              key={product._id}
+                              className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
+                            >
+                              <div className="relative group duration-700">
+                                {/* {product?.general?.salePrice ? ( */}
+                                <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
+                                  <p className="text-sm px-3 py-1">
+                                    {/* {(
+                                  ((product?.general?.regularPrice -
+                                    product?.general?.salePrice) /
+                                    product?.general?.regularPrice) *
+                                  100
+                                ).toFixed(1)} */}
+                                    5%
+                                  </p>
+                                </div>
+                                {/* ) : ( */}
+                                <></>
+                                {/* )} */}
+                                <Link href="">
+                                  <div className="object-cover min-h-[200px] flex justify-center overflow-hidden">
+                                    {/* <Image
+                                src=""
+                                width={200}
+                                height={200}
+                                alt="product"
+                                className="hover:scale-105 duration-700"
+                              /> */}
+                                  </div>
+                                </Link>
+                                <div className="mt-5 flex justify-start items-center">
+                                  <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">
+                                    In Stock
+                                  </p>
+                                  <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
+                                    Online &amp; Offline
+                                  </span>
+                                </div>
+                                <div className="mt-3">
+                                  <Link href="">
+                                    <h4 className="text-[#202435] hover:text-[#F16521] duration-700 text-md font-semibold h-14">
+                                      {product?.productName}
+                                    </h4>
+                                  </Link>
+                                  <div className="mt-5 text-slate-500 text-md">
+                                    <div className=" ">
+                                      Offer Price:{" "}
+                                      <span className="font-semibold ml-1">
+                                        ৳450
+                                      </span>{" "}
+                                    </div>
+                                    <div className="">
+                                      M.R.P:
+                                      <del className="ml-1">৳450</del>
+                                    </div>
+                                    <div className="flex justify-start items-center">
+                                      Your Save:
+                                      <div className="ml-1 flex justify-start items-center">
+                                        {/* {product?.general?.salePrice ? ( */}
+                                        <p className="font-semibold">
+                                          {/* {(
+                                            ((product?.general?.regularPrice -
+                                              product?.general?.salePrice) /
+                                              product?.general?.regularPrice) *
+                                            100
+                                          ).toFixed(1)} */}
+                                          450 %
+                                        </p>
+                                        {/* ) : ( */}
+                                        <></>
+                                        {/* )} */}
+                                        <p>
+                                          {/* ( */}
+
+                                          {/* {product?.general?.regularPrice - product?.general?.salePrice} */}
+                                          {/* ) */}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="mt-5 flex justify-start items-center">
+                                    <p
+                                    // className={`${
+                                    //   product?.inventory?.stockStatus === "In Stock"
+                                    //     ? "text-[#70BE38]"
+                                    //     : "text-red-400"
+                                    // } text-xs font-semibold ${
+                                    //   product?.inventory?.stockStatus === "In Stock"
+                                    //     ? "border border-[#70BE38]"
+                                    //     : "border border-red-400 bg-red-100"
+                                    // } rounded-md px-3 py-1`}
+                                    >
+                                      {/* {product?.inventory?.stockStatus} */}
+                                    </p>
+                                    {/* <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
+                                          {product?.inventory?.inventoryStatus}
+                                        </span> */}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {/* ))} */}
+            ))}
           </div>
         </div>
       </section>

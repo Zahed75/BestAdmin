@@ -21,18 +21,17 @@ export default function Events() {
     fetchData();
   }, []);
 
-  const initialItems = data?.productsAndEvents;
+  const initialItems = data?.grids;
   return (
     <main>
-      {/* {initialItems?.length >= 0 ? ( */}
-      <div>
-        <PageHead pageHead="Products Grid" />
-        {/* <EventsPage initialItems={initialItems} /> */}
-        <EventsPage />
-      </div>
-      {/* ) : (
+      {initialItems?.length >= 0 ? (
+        <div>
+          <PageHead pageHead="Products Grid" />
+          <EventsPage initialItems={initialItems} />
+        </div>
+      ) : (
         <Skeleton />
-      )} */}
+      )}
     </main>
   );
 }
