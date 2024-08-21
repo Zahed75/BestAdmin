@@ -1,7 +1,6 @@
 "use client";
 import Modal from "@/components/global/modal/Modal";
 import { fetchCategories } from "@/redux/slice/categorySlice";
-import { fetchProducts } from "@/redux/slice/productsSlice";
 import { fetchApi } from "@/utils/FetchApi";
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
@@ -16,43 +15,31 @@ export default function EventsPage({ initialItems }) {
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedCat, setSelectedCat] = useState([]);
   const [gridProducts, setGridProducts] = useState([]);
 
   useEffect(() => {
     dispatch(fetchCategories());
-    dispatch(fetchProducts());
   }, [dispatch]);
-  // Only run when AllProducts changes
 
   const AllCategories = categories?.categories?.categories;
-  const product = useSelector((state) => state?.products);
-  const AllProducts = product?.products?.products || [];
-
-  useEffect(() => {
-    if (AllProducts?.length > 0) {
-      setSelectedProducts(AllProducts);
-    }
-  }, [AllProducts]);
 
   const handleViewProducts = async (e) => {
     const id = e.target.value;
 
     try {
-      setIsLoading(true);
       const response = await fetchApi(
         `/product/getProductByCategoryId/${id}`,
         "GET"
       );
       if (response) {
         const data = await response?.products;
-        setSelectedProducts(data);
+        setSelectedCat(data || []);
+      } else {
+        setSelectedCat([]);
       }
-      setIsLoading(false);
     } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-      setError("Something went wrong");
+      console.error(error);
     }
   };
 
@@ -62,25 +49,34 @@ export default function EventsPage({ initialItems }) {
 
   const handleGridProduct = (e) => {
     const productId = e.target.value;
-    const newGridProducts = [...gridProducts];
 
-    const index = newGridProducts.findIndex((item) => item._id === productId);
+    const productExists = gridProducts.some((item) => item._id === productId);
 
-    if (index === -1) {
-      const productToAdd = selectedProducts.find(
+    if (!productExists) {
+      const productToAdd = selectedCat.find(
         (item) => item._id === productId
       );
       if (productToAdd) {
-        newGridProducts.push(productToAdd);
+        setGridProducts([...gridProducts, productToAdd]);
       }
     } else {
-      newGridProducts.splice(index, 1);
+      const newGridProducts = gridProducts.filter(
+        (item) => item._id !== productId
+      );
+      setGridProducts(newGridProducts);
     }
+  };
 
+  const handleRemoveProduct = (productId) => {
+    const newGridProducts = gridProducts.filter(
+      (item) => item._id !== productId
+    );
     setGridProducts(newGridProducts);
   };
 
-  console.log("Grid Products", gridProducts);
+
+  console.log("gridProducts",gridProducts);
+  
 
   return (
     <main>
@@ -537,69 +533,6 @@ export default function EventsPage({ initialItems }) {
             {/* ))} */}
           </div>
         </div>
-
-        {/* <div className="flex justify-center">
-          <div className="flex flex-col gap-5 m-5 w-full">
-            {sortedItems?.map((item, index) => (
-              <div
-                key={item._id}
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragEnter={() => handleDragEnter(index)}
-                onDragEnd={handleDragEnd}
-                className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 ${draggedItem === index ? "scale-[1.02]" : ""
-                  }`}
-                style={{
-                  transition: "transform 0.3s ease-in-out",
-                }}
-              >
-                <div className="flex justify-between items-center gap-x-2 w-full px-5">
-                  <div onClick={() => setShowUpdateMenu(true)}>
-                    <h4 className="text-[#202435] text-md md:text-xl font-semibold uppercase">
-                      {item?.title}
-                    </h4>
-                    <h4 className="text-[#9B9BB4] text-xs md:text-sm font-semibold">
-                      {item?.description}
-                    </h4>
-                  </div>
-                  <div className="flex justify-center ml-auto">
-                    <button
-                      href={item?.url}
-                      className="border border-gray-400 text-gray-400 text-nowrap text-xs md:text-sm font-semibold py-2 px-4 rounded-full flex items-center justify-center"
-                    >
-                      View All
-                      <svg
-                        width="15"
-                        height="16"
-                        viewBox="0 0 15 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="ml-2"
-                      >
-                        <g clipPath="url(#clip0_705_5009)">
-                          <path
-                            d="M14.8858 7.57988L11.8108 4.53488C11.7008 4.42488 11.5633 4.36988 11.3983 4.36988C11.2333 4.36988 11.0958 4.42738 10.9858 4.54238C10.8758 4.65738 10.8208 4.79488 10.8208 4.95488C10.8208 5.11488 10.8758 5.25488 10.9858 5.37488L13.0408 7.41488H0.635781C0.475781 7.41488 0.338281 7.47238 0.223281 7.58738C0.108281 7.70238 0.0507812 7.83988 0.0507812 7.99988C0.0507812 8.15988 0.108281 8.29738 0.223281 8.41238C0.338281 8.52738 0.475781 8.58488 0.635781 8.58488H13.0408L10.9858 10.6249C10.8758 10.7449 10.8208 10.8849 10.8208 11.0449C10.8208 11.2049 10.8758 11.3424 10.9858 11.4574C11.0958 11.5724 11.2333 11.6299 11.3983 11.6299C11.5633 11.6299 11.7008 11.5749 11.8108 11.4649L14.8858 8.41988C14.9958 8.29988 15.0508 8.15988 15.0508 7.99988C15.0508 7.83988 14.9958 7.69988 14.8858 7.57988Z"
-                            fill="gray"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_705_5009">
-                            <rect
-                              width="15"
-                              height="15"
-                              fill="gray"
-                              transform="matrix(1 0 0 -1 0 15.5)"
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div> */}
       </section>
 
       <Modal closeModal={() => setShowUpdateMenu(false)}>
@@ -906,28 +839,51 @@ export default function EventsPage({ initialItems }) {
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col space-y-1">
-                    <label
-                      htmlFor="filterCategory"
-                      className="text-sm font-semibold text-gray-600"
-                    >
-                      Filter Category
-                    </label>
-                    <div className="relative border border-gray-300 rounded-md">
-                      <select
-                        onClick={handleViewProducts}
-                        id="filterCategory"
-                        name="filterCategory"
-                        required
-                        className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
+                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col space-y-1">
+                      <label
+                        htmlFor="filterCategory"
+                        className="text-sm font-semibold text-gray-600"
                       >
-                        <option value="">Select Category</option>
-                        {AllCategories?.map((item) => (
-                          <option key={item._id} value={item._id}>
-                            {item.categoryName}
-                          </option>
-                        ))}
-                      </select>
+                        Filter Category
+                      </label>
+                      <div className="relative border border-gray-300 rounded-md">
+                        <select
+                          onChange={handleViewProducts}
+                          id="filterCategory"
+                          name="filterCategory"
+                          required
+                          className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
+                        >
+                          <option value="">Select Category</option>
+                          {AllCategories?.map((item) => (
+                            <option key={item._id} value={item._id}>
+                              {item.categoryName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      <label
+                        htmlFor="orderBy"
+                        className="text-sm font-semibold text-gray-600"
+                      >
+                        Order By
+                      </label>
+                      <div className="relative border border-gray-300 rounded-md">
+                        <select
+                          id="orderBy"
+                          name="orderBy"
+                          required
+                          className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
+                        >
+                          <option value="">Select Order</option>
+                          <option value="price">Price</option>
+                          <option value="name">Name</option>
+                          <option value="popularity">Popularity</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                   <div className="flex flex-col space-y-1">
@@ -938,15 +894,32 @@ export default function EventsPage({ initialItems }) {
                       Select Product
                     </label>
                     <div className="relative border border-gray-300 rounded-md">
+                      <div className="mx-3 flex-grow mt-1">
+                        {gridProducts?.map((item) => (
+                          <div
+                            className="bg-gray-100 rounded-md px-1 inline-block text-[12px] text-gray-600 mx-1"
+                            key={item._id}
+                          >
+                            <span className="">{item._id}</span>
+                            <button
+                              onClick={() => handleRemoveProduct(item._id)}
+                              className="hover:shadow-sm ml-2 font-semibold"
+                            >
+                              X
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                       <select
-                        onClick={handleGridProduct}
+                        onChange={handleGridProduct}
                         id="selectProduct"
                         name="selectProduct"
+                        disabled={!selectedCat || selectedCat.length === 0}
                         required
                         className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                       >
                         <option value="">Select Product</option>
-                        {selectedProducts?.map((item) => (
+                        {selectedCat?.map((item) => (
                           <option key={item._id} value={item._id}>
                             {item.productName}
                           </option>
@@ -954,27 +927,7 @@ export default function EventsPage({ initialItems }) {
                       </select>
                     </div>
                   </div>
-                  <div className="flex flex-col space-y-1">
-                    <label
-                      htmlFor="orderBy"
-                      className="text-sm font-semibold text-gray-600"
-                    >
-                      Order By
-                    </label>
-                    <div className="relative border border-gray-300 rounded-md">
-                      <select
-                        id="orderBy"
-                        name="orderBy"
-                        required
-                        className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
-                      >
-                        <option value="">Select Order</option>
-                        <option value="price">Price</option>
-                        <option value="name">Name</option>
-                        <option value="popularity">Popularity</option>
-                      </select>
-                    </div>
-                  </div>
+
                   <div className="flex flex-col space-y-1 w-full">
                     <label className="inline-flex items-center cursor-pointer gap-2">
                       Hide Out of Stock
