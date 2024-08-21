@@ -21,7 +21,7 @@ export default function CouponTable({ AllCoupons }) {
     item.general?.couponName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  
+
   const sortData = (filteredData, sortBy, sortDirection) => {
     if (!sortBy) return filteredData;
 
@@ -223,10 +223,10 @@ export default function CouponTable({ AllCoupons }) {
         <div className="flex flex-col">
           <div className="overflow-x-auto shadow-md sm:rounded-lg">
             <div className="inline-block min-w-full align-middle">
-              <div className="overflow-hidden ">
+              <div className="overflow-hidden">
                 <table className="min-w-full dark:divide-gray-700">
                   {/* table head */}
-                  <thead className="bg-gray-100 ">
+                  <thead className="bg-gray-100">
                     <tr>
                       <th scope="col" className="p-4 w-6">
                         <div className="flex items-center">
@@ -251,14 +251,14 @@ export default function CouponTable({ AllCoupons }) {
                       <th
                         scope="col"
                         onClick={() => handleSort("general.discountType")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Coupon Type &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("general.couponAmount")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Amount &#x21d5;
                       </th>
@@ -267,14 +267,14 @@ export default function CouponTable({ AllCoupons }) {
                         onClick={() =>
                           handleSort("usageLimit.usageLimitPerCoupon")
                         }
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         limit &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("general.couponExpiry")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         expire date &#x21d5;
                       </th>
@@ -284,16 +284,15 @@ export default function CouponTable({ AllCoupons }) {
                     {currentData?.map((item, i) => (
                       <tr
                         key={item._id}
-                        className={`${
-                          i % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${i % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
                             <input
                               id={`checkbox_${item._id}`}
                               type="checkbox"
-                              className="w-4 h-4  bg-gray-100 rounded border-gray-300"
+                              className="w-4 h-4  bg-gray-100 rounded border-gray-300 justify-center"
                               checked={selectedItems.includes(item._id)}
                               onChange={() => handleSelectItem(item._id)}
                             />
@@ -306,27 +305,41 @@ export default function CouponTable({ AllCoupons }) {
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <Link href={`/dashboard/coupon/${item._id}`}>
-                            <span className=" ">
-                              {item?.general?.couponName}
-                            </span>
-                          </Link>
+                          <div className="flex items-center">
+                            <Link href={`/dashboard/coupon/${item._id}`}>
+                              <span className="">
+                                {item?.general?.couponName}
+                              </span>
+                            </Link>
+                          </div>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <div className="flex justify-start items-center">
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                          <div className="flex justify-center items-center">
                             <span className="">
                               {item?.general?.discountType}
                             </span>
                           </div>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item?.general?.couponAmount}
+                        <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                          <div className="flex justify-center items-center">
+                            <span className="">
+                              {item?.general?.couponAmount}
+                            </span>
+                          </div>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item?.usageLimit?.usageLimitPerCoupon || "&#8734;"}
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                          <div className="flex justify-center items-center">
+                            <span className="">
+                              {item?.usageLimit?.usageLimitPerCoupon || "&#8734;"}
+                            </span>
+                          </div>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {formatDate(item?.general?.couponExpiry)}
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                          <div className="flex justify-center items-center">
+                            <span className="">
+                              {formatDate(item?.general?.couponExpiry)}
+                            </span>
+                          </div>
                         </td>
                       </tr>
                     ))}
