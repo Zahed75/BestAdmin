@@ -10,7 +10,7 @@ export default function Events() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetchApi(`/event/products`, "GET");
+        const res = await fetchApi(`/grid/allProductGrids`, "GET");
         setData(res);
         // localStorage.setItem("itemsOrder", JSON.stringify(res?.productsAndEvents));
       } catch (error) {

@@ -53,9 +53,7 @@ export default function EventsPage({ initialItems }) {
     const productExists = gridProducts.some((item) => item._id === productId);
 
     if (!productExists) {
-      const productToAdd = selectedCat.find(
-        (item) => item._id === productId
-      );
+      const productToAdd = selectedCat.find((item) => item._id === productId);
       if (productToAdd) {
         setGridProducts([...gridProducts, productToAdd]);
       }
@@ -74,9 +72,39 @@ export default function EventsPage({ initialItems }) {
     setGridProducts(newGridProducts);
   };
 
+  const handleAddProductGrid = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  console.log("gridProducts",gridProducts);
-  
+    const formData = new FormData(e.target);
+    const data = {
+      gridName: formData.get("gridName"),
+      gridDescription: formData.get("productGridDescription"),
+      productRow: formData.get("productRow"),
+      productColumn: formData.get("productColumn"),
+      filterCategories: [],
+      selectProducts: [...gridProducts],
+      ordersBy: formData.get("ordersBy"),
+    };
+    console.log("gridProducts", data);
+    try {
+      const response = await fetchApi("/grid/createGrid", "POST", data);
+      if (response) {
+        setMessage("Grid created successfully");
+        console.log("response", response);
+
+        setShowAddMenu(false);
+        setIsLoading(false);
+      } else {
+        setError("Error creating grid");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Error creating grid");
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main>
@@ -534,7 +562,7 @@ export default function EventsPage({ initialItems }) {
           </div>
         </div>
       </section>
-
+      {/* 
       <Modal closeModal={() => setShowUpdateMenu(false)}>
         <div
           id="menu"
@@ -579,30 +607,30 @@ export default function EventsPage({ initialItems }) {
                 <div className="grid grid-cols-1 gap-4">
                   <div className="flex flex-col space-y-1">
                     <label
-                      htmlFor="Product"
+                      htmlFor="uGridName"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Product Grid Name
                     </label>
                     <input
                       type="text"
-                      id="Product"
-                      name="Product"
+                      id="uGridName"
+                      name="uGridName"
                       required
                       className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
                   </div>
                   <div className="flex flex-col space-y-1">
                     <label
-                      htmlFor="productGridDescription"
+                      htmlFor="UGridDescription"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Product Grid Description
                     </label>
                     <input
                       type="text"
-                      id="productGridDescription"
-                      name="productGridDescription"
+                      id="UGridDescription"
+                      name="UGridDescription"
                       required
                       className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
@@ -610,15 +638,15 @@ export default function EventsPage({ initialItems }) {
                   <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col space-y-1">
                       <label
-                        htmlFor="row"
+                        htmlFor="uRow"
                         className="text-sm font-semibold text-gray-600"
                       >
                         Row
                       </label>
                       <input
                         type="number"
-                        id="row"
-                        name="row"
+                        id="uRow"
+                        name="uRow"
                         required
                         className="border border-gray-300 rounded-md p-2 focus:outline-none"
                       />
@@ -733,7 +761,7 @@ export default function EventsPage({ initialItems }) {
             </div>
           </div>
         </div>
-      </Modal>
+      </Modal> */}
 
       <Modal addModal={() => setShowAddMenu(false)}>
         <div
@@ -775,7 +803,7 @@ export default function EventsPage({ initialItems }) {
                   </svg>
                 </button>
               </div>
-              <form className="w-full mt-6">
+              <form onSubmit={handleAddProductGrid} className="w-full mt-6">
                 <div className="grid grid-cols-1 gap-4">
                   <div className="flex flex-col space-y-1">
                     <label
@@ -810,30 +838,30 @@ export default function EventsPage({ initialItems }) {
                   <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col space-y-1">
                       <label
-                        htmlFor="row"
+                        htmlFor="productRow"
                         className="text-sm font-semibold text-gray-600"
                       >
                         Row
                       </label>
                       <input
                         type="number"
-                        id="row"
-                        name="row"
+                        id="productRow"
+                        name="productRow"
                         required
                         className="border border-gray-300 rounded-md p-2 focus:outline-none"
                       />
                     </div>
                     <div className="flex flex-col space-y-1">
                       <label
-                        htmlFor="column"
+                        htmlFor="productColumn"
                         className="text-sm font-semibold text-gray-600"
                       >
                         Column
                       </label>
                       <input
                         type="number"
-                        id="column"
-                        name="column"
+                        id="productColumn"
+                        name="productColumn"
                         required
                         className="border border-gray-300 rounded-md p-2 focus:outline-none"
                       />
@@ -873,15 +901,17 @@ export default function EventsPage({ initialItems }) {
                       </label>
                       <div className="relative border border-gray-300 rounded-md">
                         <select
-                          id="orderBy"
-                          name="orderBy"
+                          id="ordersBy"
+                          name="ordersBy"
                           required
                           className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                         >
                           <option value="">Select Order</option>
-                          <option value="price">Price</option>
-                          <option value="name">Name</option>
-                          <option value="popularity">Popularity</option>
+                          {Array.from({ length: 9 }, (_, index) => (
+                            <option key={index + 1} value={index + 1}>
+                              {index + 1}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
@@ -931,7 +961,7 @@ export default function EventsPage({ initialItems }) {
                   <div className="flex flex-col space-y-1 w-full">
                     <label className="inline-flex items-center cursor-pointer gap-2">
                       Hide Out of Stock
-                      <input type="checkbox" class="sr-only peer" />
+                      <input type="checkbox" className="sr-only peer" />
                       <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
