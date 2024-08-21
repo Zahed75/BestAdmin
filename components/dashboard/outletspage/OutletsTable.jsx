@@ -226,21 +226,21 @@ export default function OutletsTable({ AllOutlets }) {
                       <th
                         scope="col"
                         onClick={() => handleSort("outletLocation")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Address &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("cityName")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         City &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("outletManagerPhone")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Phone Number &#x21d5;
                       </th>
@@ -250,9 +250,8 @@ export default function OutletsTable({ AllOutlets }) {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -285,14 +284,20 @@ export default function OutletsTable({ AllOutlets }) {
                             </div>
                           </Link>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item?.outletLocation}
+                        <td className="pl-14 md:px-0 py-4 text-sm justify-center font-medium text-gray-500 whitespace-nowrap ">
+                          <div className="flex justify-center items-center">
+                            {item?.outletLocation}
+                          </div>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item?.cityName}
+                        <td className="px-6 md:px-0 py-4 text-sm justify-center font-medium text-gray-900 whitespace-nowrap ">
+                          <div className="flex justify-center items-center">
+                            {item?.cityName}
+                          </div>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item?.outletManagerPhone}
+                        <td className="px-6 md:px-0 py-4 text-sm justify-center font-medium text-gray-900 whitespace-nowrap ">
+                          <div className="flex justify-center items-center">
+                            {item?.outletManagerPhone}
+                          </div>
                         </td>
                       </tr>
                     ))}
