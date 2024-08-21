@@ -281,7 +281,7 @@ export default function ProductTable({ AllProducts }) {
           <div className="flex flex-col">
             <div className="overflow-x-auto shadow-md sm:rounded-lg">
               <div className="inline-block min-w-full align-middle">
-                <div className="overflow-hidden ">
+                <div className="overflow-hidden">
                   <table
                     id="joy-bangla"
                     className="min-w-full table-fixed dark:divide-gray-700"
@@ -289,7 +289,7 @@ export default function ProductTable({ AllProducts }) {
                     {/* table head */}
                     <thead className="bg-gray-100 ">
                       <tr>
-                        <th scope="col" className="p-4 w-6">
+                        <th scope="col" className="px-6 py-4 lg:p-4 w-6">
                           <div className="flex items-center">
                             <input
                               id="checkbox_all"
@@ -306,41 +306,41 @@ export default function ProductTable({ AllProducts }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("productName")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Product name &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("inventory.sku")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           SKU &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("general.salePrice")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           SalePrice &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("date")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Published &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("inventory.stockStatus")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Stock &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Available
                         </th>
@@ -350,11 +350,10 @@ export default function ProductTable({ AllProducts }) {
                       {currentData?.map((item) => (
                         <tr
                           key={item._id}
-                          className={`${
-                            item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                          className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700`}
                         >
-                          <td scope="col" className="p-4">
+                          <td scope="col" className="px-6 lg:px-4 py-4">
                             <div className="flex items-center">
                               <input
                                 id={`checkbox_${item._id}`}
@@ -371,7 +370,7 @@ export default function ProductTable({ AllProducts }) {
                               </label>
                             </div>
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                             <Link href={`/dashboard/products/${item._id}`}>
                               <div className="flex justify-start items-center">
                                 <Image
@@ -381,34 +380,33 @@ export default function ProductTable({ AllProducts }) {
                                   src={item?.productImage || noPicture}
                                   alt={item?.productName}
                                 />
-                                <span className="ml-2">
+                                <span className="ml-2 lg:text-balance">
                                   {item?.productName}
                                 </span>
                               </div>
                             </Link>
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                          <td className="px-6 lg:ml-4 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                             {item?.inventory?.sku}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                          <td className="px-6 md:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             <span className="text-md">৳</span>
                             {item?.general?.salePrice}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item?.date}
                           </td>
-                          <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
+                          <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
-                              className={`${
-                                item?.inventory?.stockStatus === "In Stock"
-                                  ? "bg-green-100 text-green-400"
-                                  : "bg-red-100 text-red-400"
-                              } px-2 py-1 rounded-full`}
+                              className={`${item?.inventory?.stockStatus === "In Stock"
+                                ? "bg-green-100 text-green-400"
+                                : "bg-red-100 text-red-400"
+                                } px-2 py-1 rounded-full`}
                             >
                               {item?.inventory?.stockStatus}
                             </span>
                           </td>
-                          <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
+                          <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <button
                               className={`px-2 py-1 rounded-md border border-black`}
                             >

@@ -271,7 +271,7 @@ export default function CategoriesTable({ AllCategories }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("slug")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Slug &#x21d5;
                         </th>
@@ -288,9 +288,8 @@ export default function CategoriesTable({ AllCategories }) {
                         <>
                           <tr
                             key={item?.id}
-                            className={`${
-                              item.id % 2 !== 0 ? "" : "bg-gray-100"
-                            } hover:bg-gray-100 duration-700`}
+                            className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                              } hover:bg-gray-100 duration-700`}
                           >
                             <td scope="col" className="p-4">
                               <div className="flex items-center">
@@ -316,10 +315,10 @@ export default function CategoriesTable({ AllCategories }) {
                                 {item.categoryName}
                               </Link>
                             </td>
-                            <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                            <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
                               {item.slug}
                             </td>
-                            <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                               {item.productCount}
                             </td>
                           </tr>
@@ -328,7 +327,7 @@ export default function CategoriesTable({ AllCategories }) {
                               key={subcategory?.id}
                               className="bg-gray-50 hover:bg-gray-100 duration-700"
                             >
-                              <td scope="col" className="p-4 pl-8">
+                              <td scope="col" className="px-4 py-4">
                                 <div className="flex items-center">
                                   <input
                                     id={`checkbox_${subcategory?._id}`}
@@ -349,17 +348,17 @@ export default function CategoriesTable({ AllCategories }) {
                                   </label>
                                 </div>
                               </td>
-                              <td className="py-4 text-sm font-medium text-gray-900 pl-8">
+                              <td className="py-4 text-sm font-medium text-gray-900 ">
                                 <Link
                                   href={`/dashboard/products/categories/${subcategory._id}`}
                                 >
                                   {subcategory.categoryName}
                                 </Link>
                               </td>
-                              <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                              <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
                                 {subcategory.slug}
                               </td>
-                              <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                              <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                                 {subcategory.productCount}
                               </td>
                             </tr>
@@ -386,9 +385,8 @@ export default function CategoriesTable({ AllCategories }) {
         <Modal closeModal={() => setShowMenu(false)}>
           <div
             id="menu"
-            className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-              showMenu ? "fixed" : "hidden"
-            } sticky-0`}
+            className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showMenu ? "fixed" : "hidden"
+              } sticky-0`}
           >
             <div className="2xl:container h-screen 2xl:mx-auto py-48 px-4 md:px-28 flex justify-center items-center">
               <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
@@ -465,7 +463,7 @@ export default function CategoriesTable({ AllCategories }) {
                     </label>
                     <br />
                     <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                      
+
                       <select
                         id="parentCategoryId"
                         name="parentCategoryId"
