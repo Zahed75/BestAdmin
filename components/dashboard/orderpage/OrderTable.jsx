@@ -429,20 +429,20 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("createdAt")}
-                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order time &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Amount
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("channel")}
-                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Channel &#x21d5;
                         </th>
@@ -450,7 +450,7 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("orderStatus")}
-                          className="px-6 lg:px-0 py-3 text-md font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status &#x21d5;
                         </th>
@@ -485,18 +485,18 @@ export default function OrderTable({ AllOrders }) {
                               {item.orderId}
                             </Link>
                           </td>
-                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-500 text-center whitespace-nowrap ">
+                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                             {formatDate(item.createdAt)}
                           </td>
-                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             <span className="text-md">৳</span>
                             {item.totalPrice}
                           </td>
-                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item.channel}
                           </td>
 
-                          <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
+                          <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
                               className={`${item.orderStatus === "Received"
                                 ? "bg-yellow-200 text-yellow-800"
@@ -537,26 +537,26 @@ export default function OrderTable({ AllOrders }) {
                         </th>
                         <th
                           scope="col"
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Order time
                         </th>
                         <th
                           scope="col"
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Amount
                         </th>
                         <th
                           scope="col"
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Channel
                         </th>
 
                         <th
                           scope="col"
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status
                         </th>
