@@ -2,6 +2,7 @@
 import Modal from "@/components/global/modal/Modal";
 import { fetchCategories } from "@/redux/slice/categorySlice";
 import { fetchApi } from "@/utils/FetchApi";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,9 +15,10 @@ export default function EventsPage({ initialItems }) {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
-  const [isOpen, setIsOpen] = useState(false);
+  const [openItems, setOpenItems] = useState({});
   const [selectedCat, setSelectedCat] = useState([]);
   const [gridProducts, setGridProducts] = useState([]);
+  const [hideOutOfStock, setHideOutOfStock] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -33,7 +35,8 @@ export default function EventsPage({ initialItems }) {
         "GET"
       );
       if (response) {
-        const data = await response?.products;
+        let data = await response?.products;
+
         setSelectedCat(data || []);
       } else {
         setSelectedCat([]);
@@ -43,8 +46,15 @@ export default function EventsPage({ initialItems }) {
     }
   };
 
-  const toggleCollapse = () => {
-    setIsOpen(!isOpen);
+  const toggleCollapse = (id) => {
+    setOpenItems((prevOpenItems) => ({
+      ...prevOpenItems,
+      [id]: !prevOpenItems[id],
+    }));
+  };
+
+  const handleHideOutOfStock = () => {
+    setHideOutOfStock((prevState) => !prevState);
   };
 
   const handleGridProduct = (e) => {
@@ -124,7 +134,9 @@ export default function EventsPage({ initialItems }) {
     }
   };
 
-  console.log("initialItems", initialItems);
+  const filteredProducts = hideOutOfStock
+  ? selectedCat.filter((item) => item?.inventory?.stockStatus !== "Out of Stock")
+  : selectedCat;
 
   return (
     <main>
@@ -151,7 +163,7 @@ export default function EventsPage({ initialItems }) {
                 // onDragEnd={handleDragEnd}
                 // className={`w-full h-24 bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 ${draggedItem === index ? "scale-[1.02]" : ""
                 // }`}
-                className={`w-full h-auto bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 "scale-[1.02]" : ""
+                className={`w-full h-auto bg-slate-50 flex items-center justify-center mx-auto cursor-move rounded-md shadow-md transition-transform duration-700 ease-in-out hover:bg-slate-100 "scale-[1.02]
                   `}
                 style={{
                   transition: "transform 0.3s ease-in-out",
@@ -236,7 +248,7 @@ export default function EventsPage({ initialItems }) {
 
                       <div
                         className="flex justify-center ml-auto"
-                        onClick={toggleCollapse}
+                        onClick={() => toggleCollapse(item?._id)}
                       >
                         <svg
                           width="26"
@@ -245,7 +257,7 @@ export default function EventsPage({ initialItems }) {
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                           className={`cursor-pointer transition-transform duration-300 ${
-                            isOpen ? "rotate-180" : ""
+                            openItems[item?._id] ? "rotate-180" : ""
                           }`}
                         >
                           <path d="M1 0.5L13 12.5L25 0.5" stroke="black" />
@@ -254,50 +266,56 @@ export default function EventsPage({ initialItems }) {
                     </div>
                     <div
                       className={`mt-2 overflow-hidden transition-max-height duration-500 ease-in-out ${
-                        isOpen ? "h-auto" : "h-0"
+                        openItems[item?._id] ? "h-auto" : "h-0"
                       }`}
                     >
-                      <div className="p-4 bg-slate-50 hover:bg-white rounded-lg">
-                        <div className="flex flex-col sm:flex-row justify-center">
+                      <div className="p-4 bg-white rounded-lg">
+                        <div
+                          className={`grid grid-cols-1 md:grid-cols-${item?.productColumn} lg:grid-cols-${item?.productColumn} justify-center`}
+                        >
                           {item?.selectProducts?.map((product) => (
                             <div
                               key={product._id}
                               className={`w-full min-h-full overflow-hidden border shadow-sm hover:shadow-lg duration-700 rounded-md p-5 mx-auto relative`}
                             >
                               <div className="relative group duration-700">
-                                {/* {product?.general?.salePrice ? ( */}
-                                <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
-                                  <p className="text-sm px-3 py-1">
-                                    {/* {(
-                                  ((product?.general?.regularPrice -
-                                    product?.general?.salePrice) /
-                                    product?.general?.regularPrice) *
-                                  100
-                                ).toFixed(1)} */}
-                                    5%
-                                  </p>
-                                </div>
-                                {/* ) : ( */}
-                                <></>
-                                {/* )} */}
+                                {product?.general?.salePrice ? (
+                                  <div className="absolute top-0 left-0 bg-[#F16521] rounded-full text-white z-5">
+                                    <p className="text-sm px-3 py-1">
+                                      {(
+                                        ((product?.general?.regularPrice -
+                                          product?.general?.salePrice) /
+                                          product?.general?.regularPrice) *
+                                        100
+                                      ).toFixed(1)}
+                                      5%
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <></>
+                                )}
                                 <Link href="">
                                   <div className="object-cover min-h-[200px] flex justify-center overflow-hidden">
-                                    {/* <Image
-                                src=""
-                                width={200}
-                                height={200}
-                                alt="product"
-                                className="hover:scale-105 duration-700"
-                              /> */}
+                                    <Image
+                                      src={product?.productImage}
+                                      width={200}
+                                      height={200}
+                                      alt="product"
+                                      className="hover:scale-105 duration-700"
+                                    />
                                   </div>
                                 </Link>
                                 <div className="mt-5 flex justify-start items-center">
-                                  <p className="text-[#70BE38] text-xs font-semibold border border-[#70BE38] rounded-md px-3 py-1">
-                                    In Stock
+                                  <p
+                                    className={`text-xs font-semibold border rounded-md px-3 py-1 ${
+                                      (product?.inventory?.stockStatus ===
+                                        "In Stock" &&
+                                        " text-[#70BE38] border-[#70BE38]") ||
+                                      " text-red-400 border-red-400"
+                                    }`}
+                                  >
+                                    {product?.inventory?.stockStatus}
                                   </p>
-                                  <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
-                                    Online &amp; Offline
-                                  </span>
                                 </div>
                                 <div className="mt-3">
                                   <Link href="">
@@ -309,56 +327,42 @@ export default function EventsPage({ initialItems }) {
                                     <div className=" ">
                                       Offer Price:{" "}
                                       <span className="font-semibold ml-1">
-                                        ৳450
+                                        ৳{product?.general?.salePrice}
                                       </span>{" "}
                                     </div>
                                     <div className="">
                                       M.R.P:
-                                      <del className="ml-1">৳450</del>
+                                      <del className="ml-1">
+                                        ৳{product?.general?.regularPrice}
+                                      </del>
                                     </div>
                                     <div className="flex justify-start items-center">
                                       Your Save:
                                       <div className="ml-1 flex justify-start items-center">
-                                        {/* {product?.general?.salePrice ? ( */}
-                                        <p className="font-semibold">
-                                          {/* {(
-                                            ((product?.general?.regularPrice -
-                                              product?.general?.salePrice) /
-                                              product?.general?.regularPrice) *
-                                            100
-                                          ).toFixed(1)} */}
-                                          450 %
-                                        </p>
-                                        {/* ) : ( */}
-                                        <></>
-                                        {/* )} */}
+                                        {product?.general?.salePrice ? (
+                                          <p className="font-semibold">
+                                            {(
+                                              ((product?.general?.regularPrice -
+                                                product?.general?.salePrice) /
+                                                product?.general
+                                                  ?.regularPrice) *
+                                              100
+                                            ).toFixed(1)}
+                                            450 %
+                                          </p>
+                                        ) : (
+                                          <></>
+                                        )}
                                         <p>
-                                          {/* ( */}
-
-                                          {/* {product?.general?.regularPrice - product?.general?.salePrice} */}
-                                          {/* ) */}
+                                          (
+                                          {product?.general?.regularPrice -
+                                            product?.general?.salePrice}
+                                          )
                                         </p>
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="mt-5 flex justify-start items-center">
-                                    <p
-                                    // className={`${
-                                    //   product?.inventory?.stockStatus === "In Stock"
-                                    //     ? "text-[#70BE38]"
-                                    //     : "text-red-400"
-                                    // } text-xs font-semibold ${
-                                    //   product?.inventory?.stockStatus === "In Stock"
-                                    //     ? "border border-[#70BE38]"
-                                    //     : "border border-red-400 bg-red-100"
-                                    // } rounded-md px-3 py-1`}
-                                    >
-                                      {/* {product?.inventory?.stockStatus} */}
-                                    </p>
-                                    {/* <span className="text-[#F16521] text-xs font-semibold ml-3 px-3 py-1 border border-[#F16521] rounded-md">
-                                          {product?.inventory?.inventoryStatus}
-                                        </span> */}
-                                  </div>
+                                
                                 </div>
                               </div>
                             </div>
@@ -755,12 +759,12 @@ export default function EventsPage({ initialItems }) {
                         onChange={handleGridProduct}
                         id="selectProduct"
                         name="selectProduct"
-                        disabled={!selectedCat || selectedCat.length === 0}
+                        disabled={!filteredProducts  || filteredProducts .length === 0}
                         required
                         className="w-full h-10 pl-3 pr-10 text-gray-600 bg-white rounded-md focus:outline-none"
                       >
                         <option value="">Select Product</option>
-                        {selectedCat?.map((item) => (
+                        {filteredProducts ?.map((item) => (
                           <option key={item._id} value={item._id}>
                             {item.productName}
                           </option>
@@ -772,7 +776,13 @@ export default function EventsPage({ initialItems }) {
                   <div className="flex flex-col space-y-1 w-full">
                     <label className="inline-flex items-center cursor-pointer gap-2">
                       Hide Out of Stock
-                      <input type="checkbox" className="sr-only peer" />
+                      <input
+                        onClick={handleHideOutOfStock}
+                        type="checkbox"
+                        name="hideOutOfStock"
+                        id="hideOutOfStock"
+                        className="sr-only peer"
+                      />
                       <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
