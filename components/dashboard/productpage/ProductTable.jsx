@@ -289,7 +289,7 @@ export default function ProductTable({ AllProducts }) {
                     {/* table head */}
                     <thead className="bg-gray-100 ">
                       <tr>
-                        <th scope="col" className="px-6 py-4 lg:p-4 w-6">
+                        <th scope="col" className="px-6 py-6 lg:p-4 w-6">
                           <div className="flex items-center">
                             <input
                               id="checkbox_all"
@@ -306,35 +306,35 @@ export default function ProductTable({ AllProducts }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("productName")}
-                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Product name &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("inventory.sku")}
-                          className="px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-3 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           SKU &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("general.salePrice")}
-                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-3 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           SalePrice &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("date")}
-                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-3 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Published &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("inventory.stockStatus")}
-                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-3 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Stock &#x21d5;
                         </th>
@@ -396,18 +396,20 @@ export default function ProductTable({ AllProducts }) {
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item?.date}
                           </td>
-                          <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap">
+                          <td className="px-6 lg:px-0 py-4 text-[12px] font-medium text-center whitespace-nowrap">
                             <div
                               className={`${item?.inventory?.stockStatus === "In Stock"
                                 ? "bg-green-100 text-green-400"
                                 : "bg-red-100 text-red-400"
-                                } px-1 py-1 rounded-md flex justify-between mr-2`}
+                                } inline-block px-0 py-1 rounded-md mr-2 `}
                             >
-                              {item?.inventory?.stockStatus}
-                              <svg className="cursor-pointer" width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M11.4863 4.02943L12.4792 3.03652C13.0276 2.48815 13.9167 2.48815 14.465 3.03652C15.0134 3.58489 15.0134 4.47398 14.465 5.02235L13.4721 6.01526M11.4863 4.02943L7.77894 7.73679C7.03854 8.47721 6.66832 8.84738 6.41623 9.29852C6.16413 9.74966 5.9105 10.8149 5.66797 11.8336C6.68662 11.591 7.75189 11.3374 8.20302 11.0853C8.65416 10.8332 9.02434 10.463 9.76476 9.7226L13.4721 6.01526M11.4863 4.02943L13.4721 6.01526" stroke="#3E445A" stroke-width="1.0625" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M14.875 9.00024C14.875 12.0054 14.875 13.5081 13.9414 14.4417C13.0078 15.3752 11.5052 15.3752 8.5 15.3752C5.4948 15.3752 3.99219 15.3752 3.0586 14.4417C2.125 13.5081 2.125 12.0054 2.125 9.00024C2.125 5.99504 2.125 4.49244 3.0586 3.55884C3.99219 2.62524 5.4948 2.62524 8.5 2.62524" stroke="#3E445A" stroke-width="1.0625" stroke-linecap="round" />
-                              </svg>
+                              <div className="flex justify-center px-1">
+                                {item?.inventory?.stockStatus}
+                                <svg className="cursor-pointer ml-2" width="21" height="22" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M11.4863 4.02943L12.4792 3.03652C13.0276 2.48815 13.9167 2.48815 14.465 3.03652C15.0134 3.58489 15.0134 4.47398 14.465 5.02235L13.4721 6.01526M11.4863 4.02943L7.77894 7.73679C7.03854 8.47721 6.66832 8.84738 6.41623 9.29852C6.16413 9.74966 5.9105 10.8149 5.66797 11.8336C6.68662 11.591 7.75189 11.3374 8.20302 11.0853C8.65416 10.8332 9.02434 10.463 9.76476 9.7226L13.4721 6.01526M11.4863 4.02943L13.4721 6.01526" stroke="#3E445A" stroke-width="1.0625" stroke-linecap="round" stroke-linejoin="round" />
+                                  <path d="M14.875 9.00024C14.875 12.0054 14.875 13.5081 13.9414 14.4417C13.0078 15.3752 11.5052 15.3752 8.5 15.3752C5.4948 15.3752 3.99219 15.3752 3.0586 14.4417C2.125 13.5081 2.125 12.0054 2.125 9.00024C2.125 5.99504 2.125 4.49244 3.0586 3.55884C3.99219 2.62524 5.4948 2.62524 8.5 2.62524" stroke="#3E445A" stroke-width="1.0625" stroke-linecap="round" />
+                                </svg>
+                              </div>
                             </div>
                           </td>
                           {/* <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">

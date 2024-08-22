@@ -251,14 +251,14 @@ export default function CouponTable({ AllCoupons }) {
                       <th
                         scope="col"
                         onClick={() => handleSort("general.discountType")}
-                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Coupon Type &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("general.couponAmount")}
-                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Amount &#x21d5;
                       </th>
@@ -267,14 +267,14 @@ export default function CouponTable({ AllCoupons }) {
                         onClick={() =>
                           handleSort("usageLimit.usageLimitPerCoupon")
                         }
-                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         limit &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("general.couponExpiry")}
-                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         expire date &#x21d5;
                       </th>
