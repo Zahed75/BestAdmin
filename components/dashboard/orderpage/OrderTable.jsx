@@ -364,14 +364,12 @@ export default function OrderTable({ AllOrders }) {
               >
                 Filter
                 <FaFilter
-                  className={`${
-                    !showFilter ? "block" : "hidden"
-                  } cursor-pointer ml-1 w-4 h-4 flex justify-center items-center mx-auto text-gray-500`}
+                  className={`${!showFilter ? "block" : "hidden"
+                    } cursor-pointer ml-1 w-4 h-4 flex justify-center items-center mx-auto text-gray-500`}
                 />
                 <MdFilterAltOff
-                  className={`${
-                    showFilter ? "block" : "hidden"
-                  } cursor-pointer ml-1 w-6 h-6 flex justify-center items-center mx-auto text-gray-500`}
+                  className={`${showFilter ? "block" : "hidden"
+                    } cursor-pointer ml-1 w-6 h-6 flex justify-center items-center mx-auto text-gray-500`}
                 />
               </button>
             </div>
@@ -431,20 +429,20 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("createdAt")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order time &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Amount
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("channel")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Channel &#x21d5;
                         </th>
@@ -452,7 +450,7 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("orderStatus")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 lg:px-0 py-3 text-md font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status &#x21d5;
                         </th>
@@ -462,9 +460,8 @@ export default function OrderTable({ AllOrders }) {
                       {currentData?.map((item) => (
                         <tr
                           key={item._id}
-                          className={`${
-                            item._id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                          className={`${item._id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700`}
                         >
                           <td scope="col" className="p-4">
                             <div className="flex items-center">
@@ -488,36 +485,35 @@ export default function OrderTable({ AllOrders }) {
                               {item.orderId}
                             </Link>
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-500 text-center whitespace-nowrap ">
                             {formatDate(item.createdAt)}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
                             <span className="text-md">৳</span>
                             {item.totalPrice}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
                             {item.channel}
                           </td>
 
-                          <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
+                          <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
-                              className={`${
-                                item.orderStatus === "Received"
-                                  ? "bg-yellow-200 text-yellow-800"
-                                  : item.orderStatus === "Confirmed"
+                              className={`${item.orderStatus === "Received"
+                                ? "bg-yellow-200 text-yellow-800"
+                                : item.orderStatus === "Confirmed"
                                   ? "bg-blue-200 text-blue-800"
                                   : item.orderStatus === "Delivered"
-                                  ? "bg-green-200 text-green-800"
-                                  : item.orderStatus === "On-Hold"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Spammed"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Cancelled"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Dispatched"
-                                  ? "bg-orange-200 text-orange-600"
-                                  : ""
-                              } px-2 py-1 rounded-full`}
+                                    ? "bg-green-200 text-green-800"
+                                    : item.orderStatus === "On-Hold"
+                                      ? "bg-red-200 text-red-800"
+                                      : item.orderStatus === "Spammed"
+                                        ? "bg-red-200 text-red-800"
+                                        : item.orderStatus === "Cancelled"
+                                          ? "bg-red-200 text-red-800"
+                                          : item.orderStatus === "Dispatched"
+                                            ? "bg-orange-200 text-orange-600"
+                                            : ""
+                                } px-2 py-1 rounded-full`}
                             >
                               {item.orderStatus}
                             </span>
@@ -570,9 +566,8 @@ export default function OrderTable({ AllOrders }) {
                       {currentData?.map((item) => (
                         <tr
                           key={item._id}
-                          className={`${
-                            item._id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                          className={`${item._id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700`}
                         >
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
                             <Link href={`/dashboard/orders/${item._id}`}>
@@ -591,23 +586,22 @@ export default function OrderTable({ AllOrders }) {
 
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
-                              className={`${
-                                item.orderStatus === "Received"
-                                  ? "bg-yellow-200 text-yellow-800"
-                                  : item.orderStatus === "Confirmed"
+                              className={`${item.orderStatus === "Received"
+                                ? "bg-yellow-200 text-yellow-800"
+                                : item.orderStatus === "Confirmed"
                                   ? "bg-blue-200 text-blue-800"
                                   : item.orderStatus === "Delivered"
-                                  ? "bg-green-200 text-green-800"
-                                  : item.orderStatus === "On-Hold"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Spammed"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Cancelled"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Dispatched"
-                                  ? "bg-orange-200 text-orange-600"
-                                  : ""
-                              } px-2 py-1 rounded-full`}
+                                    ? "bg-green-200 text-green-800"
+                                    : item.orderStatus === "On-Hold"
+                                      ? "bg-red-200 text-red-800"
+                                      : item.orderStatus === "Spammed"
+                                        ? "bg-red-200 text-red-800"
+                                        : item.orderStatus === "Cancelled"
+                                          ? "bg-red-200 text-red-800"
+                                          : item.orderStatus === "Dispatched"
+                                            ? "bg-orange-200 text-orange-600"
+                                            : ""
+                                } px-2 py-1 rounded-full`}
                             >
                               {item.orderStatus}
                             </span>
@@ -631,11 +625,10 @@ export default function OrderTable({ AllOrders }) {
           </div>
         </div>
       </section>
-      
+
       <div
-        className={`${
-          showFilter ? "flex" : "hidden"
-        } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50 items-center justify-center`}
+        className={`${showFilter ? "flex" : "hidden"
+          } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50 items-center justify-center`}
       >
         <div className="bg-white w-11/12 md:w-1/3 mx-auto my-10 rounded-lg shadow-lg p-5">
           <div className="flex justify-between items-center">
