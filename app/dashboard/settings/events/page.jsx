@@ -12,7 +12,6 @@ export default function Events() {
       try {
         const res = await fetchApi(`/grid/allProductGrids`, "GET");
         setData(res);
-        // localStorage.setItem("itemsOrder", JSON.stringify(res?.productsAndEvents));
       } catch (error) {
         console.error("Error fetching product data:", error);
       }

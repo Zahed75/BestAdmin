@@ -4,6 +4,7 @@ import { fetchCategories } from "@/redux/slice/categorySlice";
 import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useEffect, use } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -33,6 +34,7 @@ export default function EventsPage({ initialItems }) {
   }, [selectedItem]);
 
   const AllCategories = categories?.categories?.categories;
+  const router = useRouter();
 
   const handleViewProducts = async (e) => {
     const id = e.target.value;
@@ -133,8 +135,8 @@ export default function EventsPage({ initialItems }) {
       const response = await fetchApi("/grid/createGrid", "POST", data);
       if (response) {
         setMessage("Grid created successfully");
-        console.log("response", response);
-
+        router.push("/dashboard/settings/events");
+        e.target.reset();
         setShowAddMenu(false);
         setIsLoading(false);
       } else {
@@ -210,10 +212,10 @@ export default function EventsPage({ initialItems }) {
       );
       if (response) {
         setMessage("Grid updated successfully");
-        console.log("response", response);
-
         setShowUpdateMenu(false);
         setIsLoading(false);
+        e.target.reset();
+        setMessage("");
       } else {
         setError("Error updating grid");
         setIsLoading(false);
