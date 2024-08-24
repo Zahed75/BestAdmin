@@ -227,6 +227,9 @@ export default function EventsPage({ initialItems }) {
     }
   };
 
+  // console.log("gridProducts", gridProducts);
+  
+
   return (
     <main>
       <section className="w-full">
