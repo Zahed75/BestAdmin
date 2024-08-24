@@ -422,14 +422,14 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("orderId")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Order &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("createdAt")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Order time &#x21d5;
                         </th>
@@ -442,7 +442,7 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("channel")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Channel &#x21d5;
                         </th>
@@ -450,7 +450,7 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("orderStatus")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Status &#x21d5;
                         </th>
