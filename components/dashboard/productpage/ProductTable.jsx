@@ -313,7 +313,7 @@ export default function ProductTable({ AllProducts }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("inventory.sku")}
-                          className="px-3 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                          className="px-8 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           SKU &#x21d5;
                         </th>

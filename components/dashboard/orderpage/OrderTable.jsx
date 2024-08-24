@@ -422,27 +422,27 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("orderId")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                          className="px-12 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Order &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("createdAt")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                          className="px-3 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Order time &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Amount
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("channel")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                          className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Channel &#x21d5;
                         </th>
@@ -450,7 +450,7 @@ export default function OrderTable({ AllOrders }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("orderStatus")}
-                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                          className="px-3 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Status &#x21d5;
                         </th>
@@ -488,11 +488,11 @@ export default function OrderTable({ AllOrders }) {
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                             {formatDate(item.createdAt)}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                          <td className="py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
                             <span className="text-md">৳</span>
                             {item.totalPrice}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                          <td className="py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
                             {item.channel}
                           </td>
 

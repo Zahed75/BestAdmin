@@ -308,7 +308,7 @@ export default function CategoriesTable({ AllCategories }) {
                                 </label>
                               </div>
                             </td>
-                            <td className="py-4 text-sm font-medium text-gray-900">
+                            <td className="py-4 text-sm font-medium text-gray-900  whitespace-nowrap">
                               <Link
                                 href={`/dashboard/products/categories/${item._id}`}
                               >
