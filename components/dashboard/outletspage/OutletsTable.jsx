@@ -219,28 +219,28 @@ export default function OutletsTable({ AllOutlets }) {
                       <th
                         scope="col"
                         onClick={() => handleSort("outletName")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Outlet Name &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("outletLocation")}
-                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Address &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("cityName")}
-                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         City &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("outletManagerPhone")}
-                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Phone Number &#x21d5;
                       </th>

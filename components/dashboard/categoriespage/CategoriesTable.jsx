@@ -264,14 +264,14 @@ export default function CategoriesTable({ AllCategories }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("categoryName")}
-                          className="py-3 text-sm font-medium text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="py-3 text-sm font-medium text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           categories &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("slug")}
-                          className="px-6 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                          className="px-6 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           Slug &#x21d5;
                         </th>
