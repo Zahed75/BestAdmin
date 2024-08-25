@@ -396,12 +396,12 @@ export default function ProductTable({ AllProducts }) {
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item?.date}
                           </td>
-                          <td className="px-6 lg:px-0 py-4 text-[12px] font-medium text-center whitespace-nowrap">
+                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap">
                             <div
                               className={`${item?.inventory?.stockStatus === "In Stock"
                                 ? "bg-green-100 text-green-400"
                                 : "bg-red-100 text-red-400"
-                                } inline-block px-0 py-1 rounded-md mr-2 `}
+                                } inline-block px-1 py-1 rounded-md mr-2 `}
                             >
                               <div className="flex justify-center px-1">
                                 {item?.inventory?.stockStatus}
