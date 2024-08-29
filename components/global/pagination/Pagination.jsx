@@ -6,10 +6,12 @@ export default function Pagination({
   totalItems,
   paginate,
   showingText,
-    data,
+  data,
 }) {
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(totalItems / dataPerPage); i++) {
+  const lastPage = Math.ceil(totalItems / dataPerPage);
+
+  for (let i = 1; i <= lastPage; i++) {
     pageNumbers.push(i);
   }
 
@@ -34,39 +36,47 @@ export default function Pagination({
             </li>
 
             <li>
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-              >
-                {currentPage - 1}
-              </button>
+              {currentPage > 1 && (
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  className={`py-2 px-4 bg-white text-gray-700 hover:bg-gray-100 focus:outline-none`}
+                >
+                  {currentPage - 1}
+                </button>
+              )}
               <button
                 className={`py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none`}
               >
                 {currentPage}
               </button>
+              {currentPage < lastPage && (
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  className={`py-2 px-4 bg-white text-gray-700 hover:bg-gray-100 focus:outline-none`}
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+              {currentPage < lastPage - 1 && (
+                <span
+                  className={`py-2 px-4 bg-white text-gray-700 focus:outline-none cursor-not-allowed`}
+                >
+                  ...
+                </span>
+              )}
               <button
-                disabled={currentPage === Math.ceil(data.length / dataPerPage)}
-                onClick={() => paginate(currentPage + 1)}
-                className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
+                onClick={() => paginate(lastPage)}
+                className={`py-2 px-4 bg-white text-gray-700 hover:bg-gray-100 focus:outline-none`}
               >
-                {currentPage + 1}
+                {lastPage}
               </button>
-              <span
-                className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none cursor-not-allowed`}
-              >
-                ...
-              </span>
-              <button
-                className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-              >
-                {Math.ceil(data.length / dataPerPage)}
-              </button>
+            </li>
+
+            <li>
               <button
                 className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
                 onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === Math.ceil(data.length / dataPerPage)}
+                disabled={currentPage === lastPage}
               >
                 &#x2192;
               </button>
