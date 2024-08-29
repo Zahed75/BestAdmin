@@ -57,13 +57,13 @@ export default function Pagination({
                   {currentPage + 1}
                 </button>
               )}
-              {currentPage < lastPage - 1 && (
-                <span
-                  className={`py-2 px-4 bg-white text-gray-700 focus:outline-none cursor-not-allowed`}
-                >
-                  ...
-                </span>
-              )}
+
+              <span
+                className={`py-2 px-4 bg-white text-gray-700 focus:outline-none cursor-not-allowed`}
+              >
+                ...
+              </span>
+
               <button
                 onClick={() => paginate(lastPage)}
                 className={`py-2 px-4 bg-white text-gray-700 hover:bg-gray-100 focus:outline-none`}
