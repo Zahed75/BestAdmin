@@ -29,3 +29,5 @@ export default function Page({ params }) {
     </main>
   );
 }
+
+// This code is used to fetch the product data from the server and display it on the page.
