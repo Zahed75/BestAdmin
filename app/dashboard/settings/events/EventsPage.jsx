@@ -228,8 +228,7 @@ export default function EventsPage({ initialItems }) {
     }
   };
 
-  // console.log("gridProducts", gridProducts);
-  // console.log("updateItemData", updateItemData);
+
 
   return (
     <main>
