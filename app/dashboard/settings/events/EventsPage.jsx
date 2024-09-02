@@ -170,8 +170,8 @@ export default function EventsPage({ initialItems }) {
 
   const filteredProducts = hideOutOfStock
     ? selectedCat.filter(
-      (item) => item?.inventory?.stockStatus !== "Out of Stock"
-    )
+        (item) => item?.inventory?.stockStatus !== "Out of Stock"
+      )
     : selectedCat;
 
   const ordersByValues = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -207,7 +207,7 @@ export default function EventsPage({ initialItems }) {
     try {
       const response = await fetchApi(
         `/grid/productGrids/${selectedItem._id}`,
-        "PUT",
+        "PATCH",
         data
       );
       if (response) {
@@ -216,6 +216,7 @@ export default function EventsPage({ initialItems }) {
         setIsLoading(false);
         e.target.reset();
         setMessage("");
+        setError("");
       } else {
         setError("Error updating grid");
         setIsLoading(false);
@@ -229,7 +230,6 @@ export default function EventsPage({ initialItems }) {
 
   // console.log("gridProducts", gridProducts);
   // console.log("updateItemData", updateItemData);
-
 
   return (
     <main>
@@ -348,16 +348,18 @@ export default function EventsPage({ initialItems }) {
                           viewBox="0 0 26 14"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
-                          className={`cursor-pointer transition-transform duration-300 ${openItems[item?._id] ? "rotate-180" : ""
-                            }`}
+                          className={`cursor-pointer transition-transform duration-300 ${
+                            openItems[item?._id] ? "rotate-180" : ""
+                          }`}
                         >
                           <path d="M1 0.5L13 12.5L25 0.5" stroke="black" />
                         </svg>
                       </div>
                     </div>
                     <div
-                      className={`mt-2 overflow-hidden transition-max-height duration-500 ease-in-out ${openItems[item?._id] ? "h-auto" : "h-0"
-                        }`}
+                      className={`mt-2 overflow-hidden transition-max-height duration-500 ease-in-out ${
+                        openItems[item?._id] ? "h-auto" : "h-0"
+                      }`}
                     >
                       <div className="p-4 bg-white rounded-lg">
                         <div
@@ -397,11 +399,12 @@ export default function EventsPage({ initialItems }) {
                                 </Link>
                                 <div className="mt-5 flex justify-start items-center">
                                   <p
-                                    className={`text-xs font-semibold border rounded-md px-3 py-1 ${(product?.inventory?.stockStatus ===
-                                      "In Stock" &&
-                                      " text-[#70BE38] border-[#70BE38]") ||
+                                    className={`text-xs font-semibold border rounded-md px-3 py-1 ${
+                                      (product?.inventory?.stockStatus ===
+                                        "In Stock" &&
+                                        " text-[#70BE38] border-[#70BE38]") ||
                                       " text-red-400 border-red-400"
-                                      }`}
+                                    }`}
                                   >
                                     {product?.inventory?.stockStatus}
                                   </p>
@@ -469,8 +472,9 @@ export default function EventsPage({ initialItems }) {
       <Modal updateModal={() => setShowUpdateMenu(false)}>
         <div
           id="update-menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showUpdateMenu ? "fixed" : "hidden"
-            } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+            showUpdateMenu ? "fixed" : "hidden"
+          } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
@@ -707,8 +711,9 @@ export default function EventsPage({ initialItems }) {
       <Modal addModal={() => setShowAddMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
-            } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+            showAddMenu ? "fixed" : "hidden"
+          } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
