@@ -318,7 +318,7 @@ export default function OrderTable({ AllOrders }) {
           <div className="flex justify-between items-center gap-3 ml-auto w-full">
             <div className="flex justify-between items-center gap-3 w-full">
               <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-                <button onClick={exportPdf} className="flex mx-auto py-2">
+                <button onClick={exportPdf} className="flex mx-auto py-2 text-nowrap">
                   Export As &#x2193;
                 </button>
               </div>
@@ -387,7 +387,7 @@ export default function OrderTable({ AllOrders }) {
           <button
             key={index}
             onClick={() => handleTitleButtonClick(title)}
-            className="bg-gray-100 text-gray-500 px-3 py-2 text-md rounded-md hover:bg-black hover:text-white duration-700 shadow-md w-full"
+            className="bg-gray-100 text-gray-500 px-3 py-2 text-sm lg:text-md rounded-md hover:bg-black hover:text-white duration-700 shadow-md w-full"
           >
             {title}
           </button>

@@ -42,14 +42,12 @@ export default function ReportingOverView() {
             >
               Filter
               <FaFilter
-                className={`${
-                  !showFilter ? "block" : "hidden"
-                } cursor-pointer ml-1 w-4 h-4 flex justify-center items-center mx-auto text-gray-500`}
+                className={`${!showFilter ? "block" : "hidden"
+                  } cursor-pointer ml-1 w-4 h-4 flex justify-center items-center mx-auto text-gray-500`}
               />
               <MdFilterAltOff
-                className={`${
-                  showFilter ? "block" : "hidden"
-                } cursor-pointer ml-1 w-6 h-6 flex justify-center items-center mx-auto text-gray-500`}
+                className={`${showFilter ? "block" : "hidden"
+                  } cursor-pointer ml-1 w-6 h-6 flex justify-center items-center mx-auto text-gray-500`}
               />
             </button>
           </div>
@@ -57,7 +55,7 @@ export default function ReportingOverView() {
             <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
               <p className="text-[#6B7280] mb-2">Total Sales</p>
               <div className="flex justify-between items-center">
-                <h1 className="text-[30px] font-bold">
+                <h1 className="text-[22px] lg:text-[30px] font-bold">
                   {data?.totalSalesSum}৳
                 </h1>
               </div>
@@ -65,13 +63,13 @@ export default function ReportingOverView() {
             <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
               <p className="text-[#6B7280] mb-2">Net Sales</p>
               <div className="flex justify-between items-center">
-                <h1 className="text-[30px] font-bold">{data?.netSalesSum}৳</h1>
+                <h1 className="text-[22px] lg:text-[30px] font-bold">{data?.netSalesSum}৳</h1>
               </div>
             </div>
             <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
               <p className="text-[#6B7280] mb-2">Total Order</p>
               <div className="flex justify-between items-center">
-                <h1 className="text-[30px] font-bold">
+                <h1 className="text-[23px] lg:text-[30px] font-bold">
                   {data?.totalOrdersInTimeFrame}
                 </h1>
               </div>
@@ -79,16 +77,15 @@ export default function ReportingOverView() {
             <div className="bg-[#F9FAFB] p-5 rounded-md hover:bg-[#c8c9c986] shadow-md duration-700">
               <p className="text-[#6B7280] mb-2">Total Order Today</p>
               <div className="flex justify-between items-center">
-                <h1 className="text-[30px] font-bold">
+                <h1 className="text-[23px] lg:text-[30px] font-bold">
                   {data?.totalOrdersToday}
                 </h1>
               </div>
             </div>
           </div>
           <div
-            className={`${
-              showFilter ? "flex" : "hidden"
-            } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50 items-center justify-center`}
+            className={`${showFilter ? "flex" : "hidden"
+              } fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-50 items-center justify-center`}
           >
             <div className="bg-white w-11/12 md:w-1/3 rounded-lg shadow-lg p-5">
               <div className="flex justify-between items-center">
