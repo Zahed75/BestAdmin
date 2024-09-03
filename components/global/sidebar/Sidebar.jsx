@@ -16,7 +16,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="lg:flex hidden">
+    <aside className="lg:flex hidden md:hidden">
       <div className="min-h-screen flex flex-row w-[290px] shadow-xl">
         <div className="flex flex-col bg-white overflow-hidden px-3 w-full">
           <div className="flex items-center justify-center my-5 w-full">
@@ -46,8 +46,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                   >
                     <circle
@@ -86,8 +86,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                   >
                     <circle
@@ -139,8 +139,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/orders"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                   >
                     <path
@@ -180,8 +180,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/orders"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                   >
                     <path
@@ -234,8 +234,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/products"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                   >
                     <path
@@ -258,8 +258,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/products"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                   >
                     <path
@@ -282,9 +282,9 @@ export default function Sidebar() {
               </Link>
               <ul
                 className={`ml-[53px] ${pathname == "/dashboard/products" ||
-                    pathname == "/dashboard/products/categories"
-                    ? "block"
-                    : "hidden"
+                  pathname == "/dashboard/products/categories"
+                  ? "block"
+                  : "hidden"
                   }`}
               >
                 <li>
@@ -341,8 +341,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/outlets"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                   >
                     <path
@@ -372,8 +372,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/outlets"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                   >
                     <path
@@ -406,8 +406,8 @@ export default function Sidebar() {
               <Link
                 href="/dashboard/customers"
                 className={`flex flex-row items-center duration-700 text-black ${pathname == "/dashboard/customers"
-                    ? "bg-black text-white"
-                    : ""
+                  ? "bg-black text-white"
+                  : ""
                   } hover:bg-black rounded-xl my-1 py-0 group`}
               >
                 <span className="inline-flex items-center justify-center px-2 py-2 text-lg group">
@@ -418,8 +418,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/customers"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                   >
                     <path
@@ -442,8 +442,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/customers"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                   >
                     <path
@@ -468,8 +468,8 @@ export default function Sidebar() {
               <Link
                 href="/dashboard/reporting"
                 className={`flex flex-row items-center duration-700 text-black ${pathname == "/dashboard/reporting"
-                    ? "bg-black text-white"
-                    : ""
+                  ? "bg-black text-white"
+                  : ""
                   } hover:bg-black rounded-xl my-1 py-0 group`}
               >
                 <span className="inline-flex items-center justify-center px-2 py-2 text-lg group">
@@ -480,8 +480,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/reporting"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                   >
                     <path
@@ -514,8 +514,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/reporting"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                   >
                     <path
@@ -555,8 +555,8 @@ export default function Sidebar() {
                 <span className="inline-flex items-center justify-center px-2 py-2 text-lg group">
                   <svg
                     className={`${pathname == "/dashboard/coupon"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                     width="24"
                     height="24"
@@ -588,8 +588,8 @@ export default function Sidebar() {
                   </svg>
                   <svg
                     className={`${pathname == "/dashboard/coupon"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                     width="24"
                     height="24"
@@ -639,8 +639,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/settings"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                   >
                     <path
@@ -663,8 +663,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/settings"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                   >
                     <path
@@ -686,9 +686,9 @@ export default function Sidebar() {
               </Link>
               <ul
                 className={`ml-[53px] ${pathname == "/dashboard/settings" ||
-                    pathname == "/dashboard/settings/events"
-                    ? "block"
-                    : "hidden"
+                  pathname == "/dashboard/settings/events"
+                  ? "block"
+                  : "hidden"
                   }`}
               >
                 <li>
@@ -737,8 +737,8 @@ export default function Sidebar() {
               <Link
                 href="/dashboard/usermanagement"
                 className={`flex flex-row items-center duration-700 text-black ${pathname == "/dashboard/usermanagement"
-                    ? "bg-black text-white"
-                    : ""
+                  ? "bg-black text-white"
+                  : ""
                   } hover:bg-black rounded-xl my-1 py-0 group`}
               >
                 <span className="inline-flex items-center justify-center px-2 py-2 text-lg group">
@@ -749,8 +749,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/usermanagement"
-                        ? "hidden"
-                        : "group-hover:hidden duration-700"
+                      ? "hidden"
+                      : "group-hover:hidden duration-700"
                       }`}
                   >
                     <path
@@ -780,8 +780,8 @@ export default function Sidebar() {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     className={`${pathname == "/dashboard/usermanagement"
-                        ? "block"
-                        : " hidden group-hover:block "
+                      ? "block"
+                      : " hidden group-hover:block "
                       } duration-700`}
                   >
                     <path
