@@ -35,7 +35,7 @@ export default function DashboardTable() {
       <div className="flex justify-between items-center">
         <h5 className="text-2xl font-bold">Recent Orders</h5>
         <Link href="/dashboard/orders" className="text-md font-bold">
-          ViewAll
+          View All
         </Link>
       </div>
 
@@ -86,9 +86,8 @@ export default function DashboardTable() {
                     {latestOrders?.map((item, i) => (
                       <tr
                         key={item._id}
-                        className={`${
-                          i % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${i % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td className="py-4 px-3 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
                           <Link href={`/dashboard/orders/${item._id}`}>
@@ -108,23 +107,22 @@ export default function DashboardTable() {
 
                         <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                           <span
-                            className={`${
-                              item.orderStatus === "Received"
-                                ? "bg-yellow-200 text-yellow-800"
-                                : item.orderStatus === "Confirmed"
+                            className={`${item.orderStatus === "Received"
+                              ? "bg-yellow-200 text-yellow-800"
+                              : item.orderStatus === "Confirmed"
                                 ? "bg-blue-200 text-blue-800"
                                 : item.orderStatus === "Delivered"
-                                ? "bg-green-200 text-green-800"
-                                : item.orderStatus === "On-Hold"
-                                ? "bg-red-200 text-red-800"
-                                : item.orderStatus === "Spammed"
-                                ? "bg-red-200 text-red-800"
-                                : item.orderStatus === "Cancelled"
-                                ? "bg-red-200 text-red-800"
-                                : item.orderStatus === "Dispatched"
-                                ? "bg-orange-200 text-orange-600"
-                                : ""
-                            } px-2 py-1 rounded-full`}
+                                  ? "bg-green-200 text-green-800"
+                                  : item.orderStatus === "On-Hold"
+                                    ? "bg-red-200 text-red-800"
+                                    : item.orderStatus === "Spammed"
+                                      ? "bg-red-200 text-red-800"
+                                      : item.orderStatus === "Cancelled"
+                                        ? "bg-red-200 text-red-800"
+                                        : item.orderStatus === "Dispatched"
+                                          ? "bg-orange-200 text-orange-600"
+                                          : ""
+                              } px-2 py-1 rounded-full`}
                           >
                             {item.orderStatus}
                           </span>

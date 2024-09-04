@@ -162,8 +162,8 @@ export default function CategoriesTable({ AllCategories }) {
           <div className="flex justify-between md:justify-start items-center w-full">
             <h5 className="text-lg md:text-2xl font-bold">All Categories</h5>
           </div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
-            <div className="relative flex items-center md:min-w-max w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
+          <div className="flex flex-col md:flex-row justify-start items-center gap-3 ml-auto w-full md:col-span-2">
+            <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
               <div className="grid place-items-center h-full w-12 text-gray-300">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -189,51 +189,53 @@ export default function CategoriesTable({ AllCategories }) {
                 placeholder="Search something.."
               />
             </div>
-            <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
-              <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
-                <button
-                  onClick={() => setShowAction(!showAction)}
-                  className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
-                >
-                  Action <FaCaretDown className="ml-3" />
-                </button>
-              </div>
-              <div
-                onMouseLeave={() => setShowAction(false)}
-                className={`
+            <div className="flex justify-end items-center gap-3 ml-auto">
+              <div className="flex justify-between items-center gap-3 relative">
+                <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
+                  <button
+                    onClick={() => setShowAction(!showAction)}
+                    className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
+                  >
+                    Action <FaCaretDown className="ml-3" />
+                  </button>
+                </div>
+                <div
+                  onMouseLeave={() => setShowAction(false)}
+                  className={`
               ${showAction ? "block" : "hidden"}
               absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
-                id="dropdown"
-              >
-                <ul className="py-1" aria-labelledby="dropdown">
-                  <li>
-                    <button
-                      onClick={handleUpdateCategory}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                    >
-                      Update
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleDeleteCategory}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                    >
-                      Delete
-                    </button>
-                  </li>
-                </ul>
+                  id="dropdown"
+                >
+                  <ul className="py-1" aria-labelledby="dropdown">
+                    <li>
+                      <button
+                        onClick={handleUpdateCategory}
+                        className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                      >
+                        Update
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={handleDeleteCategory}
+                        className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
 
-            <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
-              <button
-                onClick={() => setShowMenu(true)}
-                className="flex justify-center items-center px-2 py-1"
-              >
-                <span className="text-xl font-semibold mr-1">+</span>{" "}
-                <span className="text-nowrap">Add Categories</span>
-              </button>
+              <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
+                <button
+                  onClick={() => setShowMenu(true)}
+                  className="flex justify-center items-center px-2 py-1"
+                >
+                  <span className="text-xl font-semibold mr-1">+</span>{" "}
+                  <span className="text-nowrap">Add Categories</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
