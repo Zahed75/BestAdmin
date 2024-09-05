@@ -1493,8 +1493,8 @@ export default function Product({ product }) {
                         className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                       >
                         {productBrand?.map((brand, index) => (
-                          <option key={index} value={brand.name}>
-                            {brand.name}
+                          <option key={index} value={brand?._id}>
+                            {brand?.name}
                           </option>
                         ))}
                       </select>

@@ -1248,8 +1248,8 @@ export default function AddProductPage() {
                     >
                       <option value="">Select a brand </option>
                       {productBrand?.map((brand, index) => (
-                        <option key={index} value={brand.name}>
-                          {brand.name}
+                        <option key={index} value={brand?._id}>
+                          {brand?.name}
                         </option>
                       ))}
                     </select>
