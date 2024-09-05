@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "jspdf-autotable";
 import Image from "next/image";
 import { FaCaretDown, FaFilter } from "react-icons/fa";
@@ -19,8 +19,13 @@ export default function CustomersTable({ AllCustomers }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAction, setShowAction] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
+  const [customers, setCustomers] = useState(AllCustomers || []);
 
-  const data = AllCustomers;
+  const data = customers;
+
+  useEffect(() => {
+    setCustomers(AllCustomers);
+  }, [AllCustomers]);
 
   const router = useRouter();
 

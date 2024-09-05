@@ -4,11 +4,11 @@ import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
 import { FaCaretDown } from "react-icons/fa";
 
-export default function UsersTable({ users }) {
+export default function UsersTable({ AllUsers }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
@@ -18,8 +18,13 @@ export default function UsersTable({ users }) {
   const [showButton, setShowButton] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAction, setShowAction] = useState(false);
+  const [users, setUsers] = useState(AllUsers || []);
 
   let data = users;
+
+  useEffect(() => {
+    setUsers(AllUsers);
+  }, [AllUsers]);
 
   const router = useRouter();
   const titleData = ["All", "HQ", "AD", "BA", "MGR"];
@@ -90,16 +95,17 @@ export default function UsersTable({ users }) {
 
   const handleDeleteUser = async () => {
     try {
+      let updateUsers = [...users];
       for (const itemId of selectedItems) {
         const response = await fetchApi(`/auth/users/${itemId}`, "DELETE");
-        if (response.status === 200) {
-          const newData = data.filter((item) => item._id !== itemId);
-          data = newData;
+        if (response) {
+          updateUsers = updateUsers.filter((item) => item._id !== itemId);
         } else {
           console.log(`Failed to delete category with ID ${itemId}.`);
         }
       }
       setSelectedItems([]);
+      setUsers(updateUsers);
       console.log("Selected categories deleted successfully!");
     } catch (err) {
       console.log("An error occurred while deleting selected categories.", err);

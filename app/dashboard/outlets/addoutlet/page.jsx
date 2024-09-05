@@ -116,6 +116,7 @@ export default function AddOutlet() {
                       type="file"
                       id="file-upload"
                       name="file-upload"
+                      required
                       onChange={handleUserImgFileChange}
                       className="hidden "
                     />
@@ -150,8 +151,12 @@ export default function AddOutlet() {
                         />
                       </svg>
                     </label>
+                    <span className="text-xs text-red-500">
+                  outlet image is required *
+                </span>
                   </div>
                 )}
+        
 
                 <div className="col-span-2 grid grid-cols-2 justify-between items-center gap-5">
                   <div className="flex flex-col space-y-1 w-full">
