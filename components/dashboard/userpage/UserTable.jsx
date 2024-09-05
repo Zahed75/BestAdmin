@@ -234,12 +234,12 @@ export default function UsersTable({ AllUsers }) {
             {title === "HQ"
               ? "Head Office"
               : title === "AD"
-              ? "Admin"
-              : title === "BA"
-              ? "Branch Admin"
-              : title === "MGR"
-              ? "Manager"
-              : title}
+                ? "Admin"
+                : title === "BA"
+                  ? "Branch Admin"
+                  : title === "MGR"
+                    ? "Manager"
+                    : title}
           </button>
         ))}
       </div>
@@ -276,28 +276,28 @@ export default function UsersTable({ AllUsers }) {
                       </th>
                       <th
                         scope="col"
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-3 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Name
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("role")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-3 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Role &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("email")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-3 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Email &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("phoneNumber")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Phone &#x21d5;
                       </th>
@@ -307,9 +307,8 @@ export default function UsersTable({ AllUsers }) {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -333,7 +332,7 @@ export default function UsersTable({ AllUsers }) {
                             {item?.userName}
                           </Link>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <div className="flex justify-start items-center">
                             <Image
                               width={30}
@@ -347,13 +346,13 @@ export default function UsersTable({ AllUsers }) {
                             </span>
                           </div>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                        <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                           {item?.role}
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           {item?.email}
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           {item?.phoneNumber}
                         </td>
                       </tr>
