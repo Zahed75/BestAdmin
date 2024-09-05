@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaCaretDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
@@ -16,10 +16,15 @@ export default function OutletsTable({ AllOutlets }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showAction, setShowAction] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [outlets, setOutlets] = useState(AllOutlets || []);
 
   const router = useRouter();
 
-  const data = AllOutlets;
+  useEffect(() => {
+    setOutlets(AllOutlets || []);
+  }, [AllOutlets]);
+
+  const data = outlets;
 
   const filteredData = data?.filter((item) =>
     Object.values(item).some(
@@ -80,16 +85,20 @@ export default function OutletsTable({ AllOutlets }) {
 
   const handleDeleteOutlet = async () => {
     try {
+      let updatedOutlets = [...outlets];
       for (const itemId of selectedItems) {
-        const response = await fetchApi(`/outlet/deleteOutlet/${itemId}`, "DELETE");
-        if (response.status === 200) {
-          const newData = data.filter((item) => item._id !== itemId);
-          router.push("/dashboard/outlets");
+        const response = await fetchApi(
+          `/outlet/deleteOutlet/${itemId}`,
+          "DELETE"
+        );
+        if (response) {
+          updatedOutlets = updatedOutlets.filter((item) => item._id !== itemId);
         } else {
           console.log(`Failed to delete category with ID ${itemId}.`);
         }
       }
       setSelectedItems([]);
+      setOutlets(updatedOutlets);
       console.log("Selected categories deleted successfully!");
     } catch (err) {
       console.log("An error occurred while deleting selected categories.", err);
@@ -250,8 +259,9 @@ export default function OutletsTable({ AllOutlets }) {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                        className={`${
+                          item.id % 2 !== 0 ? "" : "bg-gray-100"
+                        } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">

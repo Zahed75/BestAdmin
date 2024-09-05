@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import Modal from "@/components/global/modal/Modal";
 import Pagination from "@/components/global/pagination/Pagination";
@@ -20,10 +20,13 @@ export default function CategoriesTable({ AllCategories }) {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showAction, setShowAction] = useState(false);
+  const [categories, setCategories] = useState(AllCategories || []);
 
-  const data = AllCategories || [];
+  const data = categories || [];
 
-  console.log("category", data);
+  useEffect(() => {
+    setCategories(AllCategories || []);
+  }, [AllCategories]);
 
   const router = useRouter();
 
@@ -57,6 +60,7 @@ export default function CategoriesTable({ AllCategories }) {
 
       if (response) {
         setMessage("Category added successfully!");
+        setCategories([...categories, response?.category]);
       } else {
         setError("Failed to add category. Please try again.");
       }
@@ -68,19 +72,22 @@ export default function CategoriesTable({ AllCategories }) {
 
   const handleDeleteCategory = async () => {
     try {
+      let updatedCategories = [...categories];
       for (const itemId of selectedItems) {
         const response = await fetchApi(
           `/category/deleteCategory/${itemId}`,
           "DELETE"
         );
-        if (response.status === 200) {
-          const newData = data.filter((item) => item._id !== itemId);
-          setData(newData);
+        if (response) {
+          updatedCategories = updatedCategories.filter(
+            (item) => item._id !== itemId
+          );
         } else {
           console.log(`Failed to delete category with ID ${itemId}.`);
         }
       }
       setSelectedItems([]);
+      setCategories(updatedCategories);
       console.log("Selected categories deleted successfully!");
     } catch (err) {
       console.log("An error occurred while deleting selected categories.", err);
@@ -286,12 +293,13 @@ export default function CategoriesTable({ AllCategories }) {
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {currentData?.map((item) => (
+                      {currentData?.sort().reverse().map((item) => (
                         <>
                           <tr
                             key={item?.id}
-                            className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
-                              } hover:bg-gray-100 duration-700`}
+                            className={`${
+                              item.id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700`}
                           >
                             <td scope="col" className="p-4">
                               <div className="flex items-center">
@@ -387,8 +395,9 @@ export default function CategoriesTable({ AllCategories }) {
         <Modal closeModal={() => setShowMenu(false)}>
           <div
             id="menu"
-            className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showMenu ? "fixed" : "hidden"
-              } sticky-0`}
+            className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+              showMenu ? "fixed" : "hidden"
+            } sticky-0`}
           >
             <div className="2xl:container h-screen 2xl:mx-auto py-48 px-4 md:px-28 flex justify-center items-center">
               <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
@@ -465,7 +474,6 @@ export default function CategoriesTable({ AllCategories }) {
                     </label>
                     <br />
                     <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-
                       <select
                         id="parentCategoryId"
                         name="parentCategoryId"

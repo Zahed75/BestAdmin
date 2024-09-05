@@ -32,23 +32,6 @@ export default function ProductTable({ AllProducts }) {
     setProducts(AllProducts || []);
   }, [AllProducts]);
 
-
-  const fetchProducts = async () => {
-    try {
-      const response = await fetchApi("/product/getAllProducts", "GET");
-      if (response.status === 200) {
-        const data = await response.json();
-        setProducts(data.products);
-      } else {
-        console.log("Failed to fetch products.");
-      }
-    } catch (err) {
-      console.log("An error occurred while fetching products.", err);
-    }
-  };
-
-
-
   const handleTitleButtonClick = (title) => {
     setFilter(title);
     setSearchQuery("");
@@ -133,20 +116,26 @@ export default function ProductTable({ AllProducts }) {
 
   const handleDeleteProduct = async () => {
     try {
+      let updatedProducts = [...products];
+
       for (const itemId of selectedItems) {
         const response = await fetchApi(
           `/product/deleteProduct/${itemId}`,
           "DELETE"
         );
-        if (response.status === 200) {
-          setProducts((prevProducts) =>
-            prevProducts.filter((item) => item._id !== itemId)
+
+        if (response) {
+          updatedProducts = updatedProducts.filter(
+            (item) => item._id !== itemId
           );
         } else {
           console.log(`Failed to delete product with ID ${itemId}.`);
         }
       }
+
+      setProducts(updatedProducts);
       setSelectedItems([]);
+
       console.log("Selected products deleted successfully!");
     } catch (err) {
       console.log("An error occurred while deleting selected products.", err);

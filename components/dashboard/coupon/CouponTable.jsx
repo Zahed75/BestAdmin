@@ -2,7 +2,8 @@
 import Pagination from "@/components/global/pagination/Pagination";
 import { fetchApi } from "@/utils/FetchApi";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
 export default function CouponTable({ AllCoupons }) {
@@ -14,13 +15,19 @@ export default function CouponTable({ AllCoupons }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showAction, setShowAction] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [coupons, setCoupons] = useState(AllCoupons || []);
 
-  const data = AllCoupons || [];
+  const data = coupons;
+
+  useEffect(() => {
+    setCoupons(AllCoupons);
+  }, [AllCoupons]);
+
+  const router = useRouter();
 
   const filteredData = data.filter((item) =>
     item.general?.couponName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
 
   const sortData = (filteredData, sortBy, sortDirection) => {
     if (!sortBy) return filteredData;
@@ -86,18 +93,20 @@ export default function CouponTable({ AllCoupons }) {
 
   const handleDeleteCoupon = async () => {
     try {
+      let updatedCoupons = [...coupons];
       for (const itemId of selectedItems) {
         const response = await fetchApi(
           `/discount/deleteCouponById/${itemId}`,
           "DELETE"
         );
-        if (response.status === 200) {
-          router.push("/dashboard/coupon");
+        if (response) {
+          updatedCoupons = updatedCoupons.filter((item) => item._id !== itemId);
         } else {
           console.log(`Failed to delete category with ID ${itemId}.`);
         }
       }
       setSelectedItems([]);
+      setCoupons(updatedCoupons);
       console.log("Selected categories deleted successfully!");
     } catch (err) {
       console.log("An error occurred while deleting selected categories.", err);
@@ -284,8 +293,9 @@ export default function CouponTable({ AllCoupons }) {
                     {currentData?.map((item, i) => (
                       <tr
                         key={item._id}
-                        className={`${i % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                        className={`${
+                          i % 2 !== 0 ? "" : "bg-gray-100"
+                        } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -330,7 +340,8 @@ export default function CouponTable({ AllCoupons }) {
                         <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <div className="flex justify-center items-center">
                             <span className="">
-                              {item?.usageLimit?.usageLimitPerCoupon || "&#8734;"}
+                              {item?.usageLimit?.usageLimitPerCoupon ||
+                                "&#8734;"}
                             </span>
                           </div>
                         </td>

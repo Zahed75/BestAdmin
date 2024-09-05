@@ -21,7 +21,7 @@ export default function UserManagementPage() {
       {AllUsers.length > 0 ? (
         <div>
           <PageHead pageHead="User Management" />
-          <UsersTable users={AllUsers} />
+          <UsersTable AllUsers={AllUsers} />
         </div>
       ) : (
         <Skeleton />
