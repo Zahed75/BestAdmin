@@ -46,7 +46,7 @@ export default function ProductTable({ AllProducts }) {
       console.log("An error occurred while fetching products.", err);
     }
   };
-  
+
 
 
   const handleTitleButtonClick = (title) => {
@@ -316,14 +316,14 @@ export default function ProductTable({ AllProducts }) {
                         <th
                           scope="col"
                           onClick={() => handleSort("inventory.sku")}
-                          className="px-8 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                          className="px-8 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           SKU &#x21d5;
                         </th>
                         <th
                           scope="col"
                           onClick={() => handleSort("general.salePrice")}
-                          className="px-3 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                          className="px-3 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           SalePrice &#x21d5;
                         </th>
@@ -353,9 +353,8 @@ export default function ProductTable({ AllProducts }) {
                       {currentData?.map((item) => (
                         <tr
                           key={item._id}
-                          className={`${
-                            item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700 `}
+                          className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700 `}
                         >
                           <td scope="col" className="px-6 lg:px-4 py-4">
                             <div className="flex items-center">
@@ -404,11 +403,10 @@ export default function ProductTable({ AllProducts }) {
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap">
                             <Link href={`/dashboard/products/${item._id}`}>
                               <div
-                                className={`${
-                                  item?.inventory?.stockStatus === "In Stock"
-                                    ? "bg-green-100 text-green-400"
-                                    : "bg-red-100 text-red-400"
-                                } inline-block px-1 py-1 rounded-md mr-2 `}
+                                className={`${item?.inventory?.stockStatus === "In Stock"
+                                  ? "bg-green-100 text-green-400"
+                                  : "bg-red-100 text-red-400"
+                                  } inline-block px-1 py-1 rounded-md mr-2 `}
                               >
                                 <div className="flex justify-center px-1">
                                   {item?.inventory?.stockStatus}
