@@ -45,7 +45,7 @@ export default function AddUser() {
       userName:
         formData.get("userName") ||
         formData.get("firstName").replace(/\s/g, "").toLowerCase() +
-          formData.get("lastName").replace(/\s/g, "").toLowerCase(),
+        formData.get("lastName").replace(/\s/g, "").toLowerCase(),
       outletId: "",
       role: formData.get("userRole"),
       firstName: formData.get("firstName"),
@@ -100,6 +100,7 @@ export default function AddUser() {
                       type="file"
                       id="file-upload"
                       name="file-upload"
+                      required
                       onChange={handleUserImgFileChange}
                       className="hidden "
                     />
@@ -134,6 +135,9 @@ export default function AddUser() {
                         />
                       </svg>
                     </label>
+                    <span className="text-xs text-red-500">
+                      User image is required *
+                    </span>
                   </div>
                 )}
 
