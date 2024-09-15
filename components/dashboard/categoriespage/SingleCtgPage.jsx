@@ -4,6 +4,7 @@ import { fetchCategories } from "@/redux/slice/categorySlice";
 import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,6 +17,7 @@ export default function SingleCtgPage({ category }) {
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -94,7 +96,7 @@ export default function SingleCtgPage({ category }) {
       );
       if (response) {
         setLoading(false);
-        console.log("Category Updated Successfully");
+        router.push("/dashboard/products/categories");
       } else {
         setLoading(false);
         console.log("Failed to update category");
@@ -106,7 +108,19 @@ export default function SingleCtgPage({ category }) {
   };
 
   const findCategoryById = (id) => {
-    return AllCategories?.find((category) => category._id === id);
+    const parentCategory = AllCategories?.find(
+      (category) => category._id === id
+    );
+    if (parentCategory) return parentCategory;
+
+    for (const category of AllCategories) {
+      const subCategory = category?.subCategories?.find(
+        (subcategory) => subcategory._id === id
+      );
+      if (subCategory) return subCategory;
+    }
+
+    return null;
   };
 
   return (
@@ -203,14 +217,30 @@ export default function SingleCtgPage({ category }) {
                         <option value="">Select Parent Category</option>
                       )}
 
-                      {AllCategories?.map((category) => (
-                        <option value={category?._id} key={category._id}>
-                          {category?.categoryName}
-                        </option>
+                      {AllCategories?.map((parentCategory) => (
+                        <>
+                          <option
+                            value={parentCategory?._id}
+                            key={parentCategory?._id}
+                          >
+                            {parentCategory?.categoryName}
+                          </option>
+
+                          {parentCategory?.subCategories?.map((subcategory) => (
+                            <option
+                              key={subcategory._id}
+                              value={subcategory._id}
+                              className="ml-2"
+                            >
+                              &nbsp;&nbsp;{subcategory?.categoryName}
+                            </option>
+                          ))}
+                        </>
                       ))}
                     </select>
                   </div>
                 </div>
+
                 <div className="flex flex-col space-y-1 w-full mt-5">
                   <label
                     htmlFor="note"
@@ -247,8 +277,7 @@ export default function SingleCtgPage({ category }) {
                             <div className="flex flex-col">
                               <p>Best Electronics</p>
                               <p className="text-xs">
-                                www.bestelectronics.com.bd &#x3e; Conion &#x3e;
-                                Fan{" "}
+                                www.bestelectronics.com.bd 
                               </p>
                             </div>
                           </div>

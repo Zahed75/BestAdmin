@@ -22,7 +22,7 @@ export default function CategoriesTable({ AllCategories }) {
   const [showAction, setShowAction] = useState(false);
   const [categories, setCategories] = useState(AllCategories || []);
 
-  const data = categories || [];
+  const data = categories;
 
   useEffect(() => {
     setCategories(AllCategories || []);
@@ -162,6 +162,55 @@ export default function CategoriesTable({ AllCategories }) {
       ]);
     }
   };
+
+  const renderSubcategories = (subCategories, level) => {
+    if (!subCategories) return null;
+
+    return subCategories.map((subcategory) => (
+      <>
+        <tr
+          key={subcategory._id}
+          className={`bg-gray-${
+            level % 2 === 0 ? "100" : "50"
+          } hover:bg-gray-100 duration-700`}
+        >
+          <td scope="col" className="px-4 py-4">
+            <div className="flex items-center">
+              <input
+                id={`checkbox_${subcategory?._id}`}
+                type="checkbox"
+                className="w-4 h-4 bg-gray-100 rounded border-gray-300"
+                checked={selectedItems.includes(subcategory?._id)}
+                onChange={() => handleSelectItem(subcategory?._id)}
+              />
+              <label
+                htmlFor={`checkbox_${subcategory?._id}`}
+                className="sr-only"
+              >
+                checkbox
+              </label>
+            </div>
+          </td>
+          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+            <Link href={`/dashboard/products/categories/${subcategory._id}`}>
+              {" ".repeat(level * 2)}
+              {subcategory.categoryName}
+            </Link>
+          </td>
+          <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+            {subcategory.slug}
+          </td>
+          <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+            {subcategory.productCount}
+          </td>
+        </tr>
+
+      
+        {renderSubcategories(subcategory.subCategories, level + 2)}
+      </>
+    ));
+  };
+
   return (
     <section className="w-full my-5">
       <div>
@@ -293,88 +342,52 @@ export default function CategoriesTable({ AllCategories }) {
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {currentData?.sort().reverse().map((item) => (
-                        <>
-                          <tr
-                            key={item?.id}
-                            className={`${
-                              item.id % 2 !== 0 ? "" : "bg-gray-100"
-                            } hover:bg-gray-100 duration-700`}
-                          >
-                            <td scope="col" className="p-4">
-                              <div className="flex items-center">
-                                <input
-                                  id={`checkbox_${item?._id}`}
-                                  type="checkbox"
-                                  className="w-4 h-4 bg-gray-100 rounded border-gray-300"
-                                  checked={selectedItems.includes(item?._id)}
-                                  onChange={() => handleSelectItem(item?._id)}
-                                />
-                                <label
-                                  htmlFor={`checkbox_${item?._id}`}
-                                  className="sr-only"
-                                >
-                                  checkbox
-                                </label>
-                              </div>
-                            </td>
-                            <td className="py-4 text-sm font-medium text-gray-900  whitespace-nowrap">
-                              <Link
-                                href={`/dashboard/products/categories/${item._id}`}
-                              >
-                                {item.categoryName}
-                              </Link>
-                            </td>
-                            <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
-                              {item.slug}
-                            </td>
-                            <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                              {item.productCount}
-                            </td>
-                          </tr>
-                          {item.subCategories?.map((subcategory) => (
+                      {currentData
+                        ?.sort()
+                        .reverse()
+                        .map((item) => (
+                          <>
                             <tr
-                              key={subcategory?.id}
-                              className="bg-gray-50 hover:bg-gray-100 duration-700"
+                              key={item._id}
+                              className={`${
+                                item._id % 2 !== 0 ? "" : "bg-gray-100"
+                              } hover:bg-gray-100 duration-700`}
                             >
-                              <td scope="col" className="px-4 py-4">
+                              <td scope="col" className="p-4">
                                 <div className="flex items-center">
                                   <input
-                                    id={`checkbox_${subcategory?._id}`}
+                                    id={`checkbox_${item?._id}`}
                                     type="checkbox"
                                     className="w-4 h-4 bg-gray-100 rounded border-gray-300"
-                                    checked={selectedItems.includes(
-                                      subcategory?._id
-                                    )}
-                                    onChange={() =>
-                                      handleSelectItem(subcategory?._id)
-                                    }
+                                    checked={selectedItems.includes(item?._id)}
+                                    onChange={() => handleSelectItem(item?._id)}
                                   />
                                   <label
-                                    htmlFor={`checkbox_${subcategory?._id}`}
+                                    htmlFor={`checkbox_${item?._id}`}
                                     className="sr-only"
                                   >
                                     checkbox
                                   </label>
                                 </div>
                               </td>
-                              <td className="py-4 text-sm font-medium text-gray-900 ">
+                              <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                                 <Link
-                                  href={`/dashboard/products/categories/${subcategory._id}`}
+                                  href={`/dashboard/products/categories/${item._id}`}
                                 >
-                                  {subcategory.categoryName}
+                                  {item.categoryName}
                                 </Link>
                               </td>
                               <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
-                                {subcategory.slug}
+                                {item.slug}
                               </td>
                               <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                {subcategory.productCount}
+                                {item.productCount}
                               </td>
                             </tr>
-                          ))}
-                        </>
-                      ))}
+
+                            {renderSubcategories(item.subCategories, 1)}
+                          </>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -477,17 +490,31 @@ export default function CategoriesTable({ AllCategories }) {
                       <select
                         id="parentCategoryId"
                         name="parentCategoryId"
-                        className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                        className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                       >
                         <option value="">Select Parent Category</option>
                         {AllCategories?.map((item) => (
-                          <option key={item._id} value={item._id}>
-                            {item.categoryName}
-                          </option>
+                          <>
+                            {/* Parent Category */}
+                            <option key={item._id} value={item._id}>
+                              {item.categoryName}
+                            </option>
+                            {/* Subcategories */}
+                            {item?.subCategories?.map((subcategory) => (
+                              <option
+                                key={subcategory._id}
+                                value={subcategory._id}
+                                className="ml-2"
+                              >
+                                &nbsp;&nbsp;{subcategory.categoryName}
+                              </option>
+                            ))}
+                          </>
                         ))}
                       </select>
                     </div>
                   </div>
+
                   <div className="flex flex-col space-y-1 w-full mt-5">
                     <label
                       htmlFor="note"
