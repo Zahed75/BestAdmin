@@ -309,7 +309,7 @@ export default function AddProductPage() {
     setIsLoading(false);
   };
 
-  // console.log("specification data:", specData);
+  
 
   return (
     <main className="">
