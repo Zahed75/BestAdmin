@@ -155,6 +155,83 @@ export default function ProductTable({ AllProducts }) {
     }
   };
 
+  const handleDuplicateProduct = async (product) => {
+    try {
+      const productNameRegex = new RegExp(
+        `^${product.productName}( copy( \\d+)?)?$`
+      );
+      const existingProducts = currentData.filter((p) =>
+        productNameRegex.test(p.productName)
+      );
+
+      let newProductName = `${product.productName} copy 1`;
+      if (existingProducts.length > 0) {
+        newProductName = `${product.productName} copy ${
+          existingProducts.length + 1
+        }`;
+      }
+
+      const duplicatedProductData = {
+        productName: newProductName,
+        categoryId: product.categoryId,
+        productBrand: product.productBrand,
+        productImage:
+          product.productImage || "https://i.ibb.co/sqPhfrt/notimgpng.png",
+        isTrash: false,
+        productGallery: product.productGallery,
+        productVideos: product.productVideos || [],
+        productSpecification: product.productSpecification,
+        productDescription: product.productDescription,
+        productShortDescription: product.productShortDescription,
+        productStatus: product.productStatus,
+        seo: {
+          productTitle: `${newProductName} at Best Electronics`,
+          prodDescription: product.seo.prodDescription,
+          productTags: product.seo.productTags,
+          productNotes: product.seo.productNotes,
+        },
+        general: {
+          regularPrice: product.general.regularPrice,
+          salePrice: product.general.salePrice,
+          taxStatus: product.general.taxStatus,
+          taxClass: product.general.taxClass,
+        },
+        inventory: {
+          sku: product.inventory.sku + " (copy)",
+          stockManagement: product.inventory.stockManagement,
+          stockStatus: product.inventory.stockStatus,
+          soldIndividually: product.inventory.soldIndividually,
+          inventoryStatus: product.inventory.inventoryStatus,
+        },
+        shipping: {
+          weight: product.shipping.weight,
+          productDimensions: {
+            length: product.shipping.productDimensions.length,
+            width: product.shipping.productDimensions.width,
+            height: product.shipping.productDimensions.height,
+          },
+        },
+        date: new Date().toISOString(),
+      };
+
+      const response = await fetchApi(
+        "/product/addProduct",
+        "POST",
+        duplicatedProductData
+      );
+
+      if (response) {
+        const newProductId = response?.product?._id;
+        router.push(`/dashboard/products/${newProductId}`);
+      } else {
+        const errorData = await response.json();
+        console.log("Failed to duplicate product:", errorData);
+      }
+    } catch (error) {
+      console.log("Error duplicating product:", error);
+    }
+  };
+
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -342,8 +419,9 @@ export default function ProductTable({ AllProducts }) {
                       {currentData?.map((item) => (
                         <tr
                           key={item._id}
-                          className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
-                            } hover:bg-gray-100 duration-700 `}
+                          className={`${
+                            item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700 `}
                         >
                           <td scope="col" className="px-6 lg:px-4 py-4">
                             <div className="flex items-center">
@@ -362,21 +440,30 @@ export default function ProductTable({ AllProducts }) {
                               </label>
                             </div>
                           </td>
-                          <td className="px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                            <Link href={`/dashboard/products/${item._id}`}>
-                              <div className="flex justify-start items-center">
-                                <Image
-                                  className="w-7 h-7 rounded-md"
-                                  width={30}
-                                  height={30}
-                                  src={item?.productImage || noPicture}
-                                  alt={item?.productName}
-                                />
-                                <span className="ml-2 text-wrap">
-                                  {item?.productName}
-                                </span>
+                          <td className="px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap group">
+                            <div className="flex justify-start items-center">
+                              <Image
+                                className="w-7 h-7 rounded-md"
+                                width={30}
+                                height={30}
+                                src={item?.productImage || noPicture}
+                                alt={item?.productName}
+                              />
+                              <div className="flex flex-col justify-center items-start ml-2 ">
+                                <Link href={`/dashboard/products/${item._id}`}>
+                                  <span className="text-wrap">
+                                    {item?.productName}
+                                  </span>
+                                </Link>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDuplicateProduct(item)}
+                                  className="text-xs cursor-pointer text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-[#f16521] duration-700"
+                                >
+                                  Duplicate
+                                </button>
                               </div>
-                            </Link>
+                            </div>
                           </td>
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                             {item?.inventory?.sku}
@@ -392,10 +479,11 @@ export default function ProductTable({ AllProducts }) {
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap">
                             <Link href={`/dashboard/products/${item._id}`}>
                               <div
-                                className={`${item?.inventory?.stockStatus === "In Stock"
-                                  ? "bg-green-100 text-green-400"
-                                  : "bg-red-100 text-red-400"
-                                  } inline-block px-1 py-1 rounded-md mr-2 `}
+                                className={`${
+                                  item?.inventory?.stockStatus === "In Stock"
+                                    ? "bg-green-100 text-green-400"
+                                    : "bg-red-100 text-red-400"
+                                } inline-block px-1 py-1 rounded-md mr-2 `}
                               >
                                 <div className="flex justify-center px-1">
                                   {item?.inventory?.stockStatus}
@@ -412,7 +500,7 @@ export default function ProductTable({ AllProducts }) {
                                       stroke="#3E445A"
                                       stroke-width="1.0625"
                                       stroke-linecap="round"
-                                      stroke-linejoin="round"
+                                      strokeLinejoin="round"
                                     />
                                     <path
                                       d="M14.875 9.00024C14.875 12.0054 14.875 13.5081 13.9414 14.4417C13.0078 15.3752 11.5052 15.3752 8.5 15.3752C5.4948 15.3752 3.99219 15.3752 3.0586 14.4417C2.125 13.5081 2.125 12.0054 2.125 9.00024C2.125 5.99504 2.125 4.49244 3.0586 3.55884C3.99219 2.62524 5.4948 2.62524 8.5 2.62524"
