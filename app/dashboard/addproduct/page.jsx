@@ -308,8 +308,33 @@ export default function AddProductPage() {
     setProductGallery(newGallery);
     setIsLoading(false);
   };
-
-  
+  const renderCategoryList = (categories, parentIndex = "") => {
+    return categories?.map((category, index) => {
+      const uniqueIndex = `${parentIndex}-${index}`; // Unique index for nested subcategories
+      return (
+        <ul key={uniqueIndex} className="font-semibold">
+          <li className="text-md flex justify-start items-center gap-2 mb-1">
+            <div className="flex items-center">
+              <input
+                id={`checkbox-${uniqueIndex}`}
+                type="checkbox"
+                onClick={() => categoryId.push(category?._id)}
+                className="w-4 h-4 bg-gray-500 rounded"
+              />
+            </div>
+            {category.categoryName}
+          </li>
+          {category?.subCategories?.length > 0 && (
+            <li>
+              <ul className="ml-5">
+                {renderCategoryList(category.subCategories, uniqueIndex)}
+              </ul>
+            </li>
+          )}
+        </ul>
+      );
+    });
+  };
 
   return (
     <main className="">
@@ -1121,47 +1146,7 @@ export default function AddProductPage() {
                 } h-52 overflow-y-scroll
                 `}
               >
-                {AllCategories?.map((category, index) => (
-                  <ul key={index} className="font-semibold">
-                    <li className="text-md flex justify-start items-center gap-2 mb-1">
-                      <div className="flex items-center">
-                        <input
-                          id={`checkbox-${index}`}
-                          type="checkbox"
-                          onClick={() => categoryId.push(category?._id)}
-                          className="w-4 h-4 bg-gray-500 rounded"
-                        />
-                      </div>
-                      {category.categoryName}
-                    </li>
-                    {category?.subCategories?.length > 0 && (
-                      <li>
-                        <ul className="ml-5">
-                          {category?.subCategories?.map(
-                            (subcategory, subIndex) => (
-                              <li
-                                key={subIndex}
-                                className="text-md flex justify-start items-center gap-2 mb-1"
-                              >
-                                <div className="flex items-center">
-                                  <input
-                                    id={`checkbox-${index}-${subIndex}`}
-                                    type="checkbox"
-                                    onClick={() =>
-                                      categoryId.push(subcategory?._id)
-                                    }
-                                    className="w-4 h-4 bg-gray-500 rounded"
-                                  />
-                                </div>
-                                {subcategory.categoryName}
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </li>
-                    )}
-                  </ul>
-                ))}
+                {renderCategoryList(AllCategories)}
               </div>
               <div
                 className={`
