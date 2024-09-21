@@ -725,7 +725,7 @@ export default function Sidebar() {
                         />
                       </svg>
                     )}
-                    <span className="text-sm mx-3">Page Setup</span>
+                    <span className="text-sm mx-3">Product Grid</span>
                   </Link>
                 </li>
               </ul>
