@@ -123,6 +123,7 @@ export default function EventsPage({ initialItems }) {
     const formData = new FormData(e.target);
     const data = {
       gridName: formData.get("gridName"),
+      url: formData.get("url"),
       gridDescription: formData.get("productGridDescription"),
       productRow: formData.get("productRow"),
       productColumn: formData.get("productColumn"),
@@ -196,6 +197,7 @@ export default function EventsPage({ initialItems }) {
     const data = {
       _id: selectedItem._id,
       gridName: formData.get("UpdateGridName"),
+      url: formData.get("UpdateUrl"),
       gridDescription: formData.get("UpdateProductGridDescription"),
       productRow: formData.get("UpdateProductRow"),
       productColumn: formData.get("updateProductColumn"),
@@ -227,8 +229,6 @@ export default function EventsPage({ initialItems }) {
       setIsLoading(false);
     }
   };
-
-
 
   return (
     <main>
@@ -528,6 +528,22 @@ export default function EventsPage({ initialItems }) {
                   </div>
                   <div className="flex flex-col space-y-1">
                     <label
+                      htmlFor="UpdateGridName"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Url
+                    </label>
+                    <input
+                      type="text"
+                      id="updateUrl"
+                      name="updateUrl"
+                      defaultValue={selectedItem?.url}
+                      required
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <label
                       htmlFor="UpdateProductGridDescription"
                       className="text-sm font-semibold text-gray-600"
                     >
@@ -760,6 +776,21 @@ export default function EventsPage({ initialItems }) {
                       type="text"
                       id="gridName"
                       name="gridName"
+                      required
+                      className="border border-gray-300 rounded-md p-2 focus:outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <label
+                      htmlFor="gridName"
+                      className="text-sm font-semibold text-gray-600"
+                    >
+                      Url
+                    </label>
+                    <input
+                      type="text"
+                      id="url"
+                      name="url"
                       required
                       className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
