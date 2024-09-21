@@ -2,6 +2,7 @@
 import Modal from "@/components/global/modal/Modal";
 import { fetchCategories } from "@/redux/slice/categorySlice";
 import { fetchApi } from "@/utils/FetchApi";
+import { set } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,6 +23,11 @@ export default function EventsPage({ initialItems }) {
   const [hideOutOfStock, setHideOutOfStock] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [updateItemData, setUpdateItemData] = useState([]);
+  const [gridItems, setGridItems] = useState(initialItems || []);
+
+  useEffect(() => {
+    setGridItems(initialItems || []);
+  }, [initialItems]);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -119,6 +125,8 @@ export default function EventsPage({ initialItems }) {
   const handleAddProductGrid = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setMessage("");
+    setError("");
 
     const formData = new FormData(e.target);
     const data = {
@@ -136,8 +144,7 @@ export default function EventsPage({ initialItems }) {
       const response = await fetchApi("/grid/createGrid", "POST", data);
       if (response) {
         setMessage("Grid created successfully");
-        router.push("/dashboard/settings/events");
-        e.target.reset();
+        setGridItems([...gridItems, response?.grid]);
         setShowAddMenu(false);
         setIsLoading(false);
       } else {
@@ -157,9 +164,9 @@ export default function EventsPage({ initialItems }) {
       if (response) {
         setMessage("Grid deleted successfully");
         console.log("response", response);
-        const newGrids = initialItems.filter((item) => item._id !== gridId);
+        const newGrids = gridItems.filter((item) => item._id !== gridId);
+        setGridItems(newGrids);
         setGridProducts([]);
-        setInitialItems(newGrids);
       } else {
         setError("Error deleting grid");
       }
@@ -193,11 +200,13 @@ export default function EventsPage({ initialItems }) {
     e.preventDefault();
     setIsLoading(true);
 
+    let updateGrid = [...gridItems];
+
     const formData = new FormData(e.target);
     const data = {
       _id: selectedItem._id,
       gridName: formData.get("UpdateGridName"),
-      url: formData.get("UpdateUrl"),
+      url: formData.get("updateUrl"),
       gridDescription: formData.get("UpdateProductGridDescription"),
       productRow: formData.get("UpdateProductRow"),
       productColumn: formData.get("updateProductColumn"),
@@ -213,7 +222,9 @@ export default function EventsPage({ initialItems }) {
         data
       );
       if (response) {
-        setMessage("Grid updated successfully");
+        updateGrid = updateGrid.map((item) =>
+          item._id === selectedItem._id ? response?.grid : item
+        );
         setShowUpdateMenu(false);
         setIsLoading(false);
         e.target.reset();
@@ -223,6 +234,7 @@ export default function EventsPage({ initialItems }) {
         setError("Error updating grid");
         setIsLoading(false);
       }
+      setGridItems(updateGrid);
     } catch (error) {
       console.error(error);
       setError("Error updating grid");
@@ -246,7 +258,7 @@ export default function EventsPage({ initialItems }) {
         </div>
         <div className="flex justify-center">
           <div className="flex flex-col gap-5 my-5 w-full">
-            {initialItems?.map((item, index) => (
+            {gridItems?.map((item, index) => (
               <div
                 key={item._id}
                 // draggable
@@ -528,7 +540,7 @@ export default function EventsPage({ initialItems }) {
                   </div>
                   <div className="flex flex-col space-y-1">
                     <label
-                      htmlFor="UpdateGridName"
+                      htmlFor="updateUrl"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Url
@@ -537,7 +549,7 @@ export default function EventsPage({ initialItems }) {
                       type="text"
                       id="updateUrl"
                       name="updateUrl"
-                      defaultValue={selectedItem?.url}
+                      defaultValue={selectedItem?.url ?? ""}
                       required
                       className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
@@ -782,7 +794,7 @@ export default function EventsPage({ initialItems }) {
                   </div>
                   <div className="flex flex-col space-y-1">
                     <label
-                      htmlFor="gridName"
+                      htmlFor="url"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Url
