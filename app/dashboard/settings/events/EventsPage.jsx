@@ -22,6 +22,11 @@ export default function EventsPage({ initialItems }) {
   const [hideOutOfStock, setHideOutOfStock] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [updateItemData, setUpdateItemData] = useState([]);
+  const [gridItems, setGridItems] = useState(initialItems || []);
+
+  useEffect(() => {
+    setGridItems(initialItems || []);
+  }, [initialItems]);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -34,7 +39,6 @@ export default function EventsPage({ initialItems }) {
   }, [selectedItem]);
 
   const AllCategories = categories?.categories?.categories;
-  const router = useRouter();
 
   const handleViewProducts = async (e) => {
     const id = e.target.value;
@@ -119,6 +123,8 @@ export default function EventsPage({ initialItems }) {
   const handleAddProductGrid = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setMessage("");
+    setError("");
 
     const formData = new FormData(e.target);
     const data = {
@@ -136,8 +142,7 @@ export default function EventsPage({ initialItems }) {
       const response = await fetchApi("/grid/createGrid", "POST", data);
       if (response) {
         setMessage("Grid created successfully");
-        router.push("/dashboard/settings/events");
-        e.target.reset();
+        setGridItems([...gridItems, response?.grid]);
         setShowAddMenu(false);
         setIsLoading(false);
       } else {
@@ -157,9 +162,9 @@ export default function EventsPage({ initialItems }) {
       if (response) {
         setMessage("Grid deleted successfully");
         console.log("response", response);
-        const newGrids = initialItems.filter((item) => item._id !== gridId);
+        const newGrids = gridItems.filter((item) => item._id !== gridId);
+        setGridItems(newGrids);
         setGridProducts([]);
-        setInitialItems(newGrids);
       } else {
         setError("Error deleting grid");
       }
@@ -193,11 +198,13 @@ export default function EventsPage({ initialItems }) {
     e.preventDefault();
     setIsLoading(true);
 
+    let updateGrid = [...gridItems];
+
     const formData = new FormData(e.target);
     const data = {
       _id: selectedItem._id,
       gridName: formData.get("UpdateGridName"),
-      url: formData.get("UpdateUrl"),
+      url: formData.get("updateUrl"),
       gridDescription: formData.get("UpdateProductGridDescription"),
       productRow: formData.get("UpdateProductRow"),
       productColumn: formData.get("updateProductColumn"),
@@ -213,7 +220,9 @@ export default function EventsPage({ initialItems }) {
         data
       );
       if (response) {
-        setMessage("Grid updated successfully");
+        updateGrid = updateGrid.map((item) =>
+          item._id === selectedItem._id ? response?.grid : item
+        );
         setShowUpdateMenu(false);
         setIsLoading(false);
         e.target.reset();
@@ -223,6 +232,7 @@ export default function EventsPage({ initialItems }) {
         setError("Error updating grid");
         setIsLoading(false);
       }
+      setGridItems(updateGrid);
     } catch (error) {
       console.error(error);
       setError("Error updating grid");
@@ -246,7 +256,7 @@ export default function EventsPage({ initialItems }) {
         </div>
         <div className="flex justify-center">
           <div className="flex flex-col gap-5 my-5 w-full">
-            {initialItems?.map((item, index) => (
+            {gridItems?.map((item, index) => (
               <div
                 key={item._id}
                 // draggable
@@ -302,26 +312,26 @@ export default function EventsPage({ initialItems }) {
                         <path
                           d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5"
                           stroke="#FF3B30"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
                         />
                         <path
                           d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5"
                           stroke="#FF3B30"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
                         />
                         <path
                           d="M9.5 16.5V10.5"
                           stroke="#FF3B30"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
                         />
                         <path
                           d="M14.5 16.5V10.5"
                           stroke="#FF3B30"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
                         />
                       </svg>
                     </div>
@@ -528,7 +538,7 @@ export default function EventsPage({ initialItems }) {
                   </div>
                   <div className="flex flex-col space-y-1">
                     <label
-                      htmlFor="UpdateGridName"
+                      htmlFor="updateUrl"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Url
@@ -537,7 +547,7 @@ export default function EventsPage({ initialItems }) {
                       type="text"
                       id="updateUrl"
                       name="updateUrl"
-                      defaultValue={selectedItem?.url}
+                      defaultValue={selectedItem?.url ?? ""}
                       required
                       className="border border-gray-300 rounded-md p-2 focus:outline-none"
                     />
@@ -782,7 +792,7 @@ export default function EventsPage({ initialItems }) {
                   </div>
                   <div className="flex flex-col space-y-1">
                     <label
-                      htmlFor="gridName"
+                      htmlFor="url"
                       className="text-sm font-semibold text-gray-600"
                     >
                       Url
