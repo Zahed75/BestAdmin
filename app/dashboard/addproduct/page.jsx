@@ -44,7 +44,7 @@ export default function AddProductPage() {
       try {
         const response = await fetchApi("/brand/getAll", "GET");
 
-        setProductBrand(response?.data?.data);
+        setProductBrand(response?.data);
 
       } catch (error) {
         console.error("Error fetching categories:", error);
