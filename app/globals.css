@@ -414,6 +414,26 @@ checkbox style
   font-weight: bold;
 }
 
+/* -------------------------------------------
+scroll bar hidden
+-------------------------------------------- */
+.scrollbar_hidden::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Hide scrollbar for IE, Edge add Firefox */
+.scrollbar_hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* number input array hidden */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* ------------------------------------
 remove input number arrow
  --------------------------------------- */
