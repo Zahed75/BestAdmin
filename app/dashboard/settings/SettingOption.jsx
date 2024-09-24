@@ -11,6 +11,7 @@ export default function SettingOption() {
   const [bgSelectedColor, setBgSelectedColor] = useState("#ffffff");
   const [bodyBgSelectedColor, setBodyBgSelectedColor] = useState("#ffffff");
   const [bodyTextSelectedColor, setBodyTextSelectedColor] = useState("#000000");
+  const [isChecked, setIsChecked] = useState(false);
 
   const handleBaseColorChange = (event) => {
     setBaseSelectedColor(event.target.value);
@@ -23,6 +24,9 @@ export default function SettingOption() {
   };
   const handleBodyTextColorChange = (event) => {
     setBodyTextSelectedColor(event.target.value);
+  };
+  const handleToggle = () => {
+    setIsChecked((prev) => !prev);
   };
 
   const couponDataTabs = [
@@ -61,7 +65,7 @@ export default function SettingOption() {
               <div className="">
                 <div>
                   <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                   
+
                     <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
                       <option>Shop base address</option>
                       <option>Customer shipping address</option>
@@ -75,7 +79,7 @@ export default function SettingOption() {
               <div className="">
                 <div>
                   <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                
+
                     <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
                       <option>Shipping tax class based on cart items</option>
                       <option>Customer shipping address</option>
@@ -115,7 +119,7 @@ export default function SettingOption() {
               <div className="">
                 <div>
                   <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                    
+
                     <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
                       <option>Including Tax</option>
                       <option>Customer shipping address</option>
@@ -131,7 +135,7 @@ export default function SettingOption() {
               <div className="">
                 <div>
                   <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                   
+
                     <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
                       <option>Including Tax</option>
                       <option>Customer shipping address</option>
@@ -158,7 +162,7 @@ export default function SettingOption() {
               <div className="">
                 <div>
                   <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                   
+
                     <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
                       <option>Itemized</option>
                       <option>Customer shipping address</option>
@@ -321,7 +325,7 @@ export default function SettingOption() {
                 <div className="">
                   <div>
                     <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                      
+
                       <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
                         <option>Shop base address</option>
                         <option>Customer shipping address</option>
@@ -337,7 +341,7 @@ export default function SettingOption() {
                 <div className="">
                   <div>
                     <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                      
+
                       <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
                         <option>Shop base address</option>
                         <option>Customer shipping address</option>
@@ -362,318 +366,330 @@ export default function SettingOption() {
             <h4 className="text-lg font-semibold my-5 text-black">
               Notifications
             </h4>
-            <table className="table-auto w-full mb-10 shadow-sm">
-              <thead className="text-md font-semibold uppercase text-gray-400 bg-gray-50">
-                <tr>
-                  <th className="p-2 whitespace-nowrap">
-                    <div className="font-semibold text-left">Email</div>
-                  </th>
-                  <th className="p-2 whitespace-nowrap">
-                    <div className="font-semibold text-left">Enabled</div>
-                  </th>
-                  <th className="p-2 whitespace-nowrap">
-                    <div className="font-semibold text-left">recipients</div>
-                  </th>
-                  <th className="p-2 whitespace-nowrap">
-                    <div className="font-semibold text-left">Action</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-md pt-5">
-                <tr>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">New Order</div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+            <div className="overflow-x-auto">
+              <table className="table-auto w-full mb-10 shadow-sm">
+                <thead className="text-md font-semibold uppercase text-gray-400 bg-gray-50">
+                  <tr>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">Email</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">Enabled</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">recipients</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">Action</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-md pt-5">
+                  <tr>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">New Order</div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">
-                        example@example.com
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">
+                          example@example.com
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => setShowEmail(false)}
-                      className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1"
-                    >
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr className="bg-gray-100">
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">
-                        Cancelled Order
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => setShowEmail(false)}
+                        className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1"
+                      >
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-100">
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">
+                          Cancelled Order
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+
+                      {/* <label className="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" class="sr-only peer" />
+                        <div className={`relative w-[50px] h-[25px] rounded-full transition-all duration-300 ${isChecked ? 'bg-black' : 'bg-gray-300'}`}
+                          onClick={handleToggle} >
+                          <div
+                            className={`absolute top-0.5 left-1 h-[21px] w-[21px] bg-white border border-gray-300 rounded-full transition-transform duration-300 ${isChecked ? 'translate-x-full' : ''}`}
+                          ></div>
+                        </div>
+                      </label> */}
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">
+                          example@example.com , holder@gmail.com
+                        </div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">
-                        example@example.com , holder@gmail.com
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Failed Order</div>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Failed Order</div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">
+                          example@example.com
+                        </div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">
-                        example@example.com
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-100">
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Order-on-Hold</div>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr className="bg-gray-100">
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Order-on-Hold</div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer</div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer</div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">
-                        Processing Order
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">
+                          Processing Order
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer</div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer</div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr className="bg-gray-100">
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">
-                        Completed Order
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-100">
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">
+                          Completed Order
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer</div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer</div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Refunded Order</div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Refunded Order</div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer</div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr className="bg-gray-100">
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">
-                        Customer Invoice / Order Details
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer</div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-100">
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">
+                          Customer Invoice / Order Details
+                        </div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer</div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer Note</div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer</div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer</div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr className="bg-gray-100">
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Reset Password</div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer Note</div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer</div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">New Account</div>
-                    </div>
-                  </td>
-                  <td className="relative ">
-                    <label className="toggle-switch">
-                      <input type="checkbox" />
-                      <div className="toggle-switch-background">
-                        <div className="toggle-switch-handle"></div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer</div>
                       </div>
-                    </label>
-                  </td>
-                  <td className="whitespace-nowrap p-2">
-                    <div className="flex items-center">
-                      <div className="font-semibold text-black">Customer</div>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-100">
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Reset Password</div>
+                      </div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer</div>
+                      </div>
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">New Account</div>
+                      </div>
+                    </td>
+                    <td className="relative ">
+                      <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <div className="toggle-switch-background">
+                          <div className="toggle-switch-handle"></div>
+                        </div>
+                      </label>
+                    </td>
+                    <td className="whitespace-nowrap p-2">
+                      <div className="flex items-center">
+                        <div className="font-semibold text-black">Customer</div>
+                      </div>
+                    </td>
+                    <td>
+                      <button className="text-sm text-black font-semibold border-2 border-black rounded-lg px-3 py-1">
+                        Manage
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
             <div className="divide-y divide-gray-200">
               <div className="mb-10">
