@@ -1,10 +1,10 @@
 "use client";
+import GalleryUploadModal from "@/components/global/modal/GalleryUploadModal";
 import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
 import { useState } from "react";
 
 const ImageUploadComponent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -19,10 +19,7 @@ const ImageUploadComponent = () => {
         Open Image Manager
       </button>
 
-      <ImageUploadModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-      />
+      <GalleryUploadModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 };

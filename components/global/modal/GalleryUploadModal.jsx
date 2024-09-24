@@ -5,8 +5,9 @@ import Image from "next/image";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addImage, removeImage } from "@/redux/slice/imagesSlice";
+import { addGalleryImage, removeGalleryImage } from "@/redux/slice/gallerySlice";
 
-const ImageUploadModal = ({ isOpen, onClose }) => {
+const GalleryUploadModal = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("upload");
   const [featureFile, setFeatureFile] = useState(null);
   const [productFile, setProductFile] = useState(null);
@@ -23,8 +24,7 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
   } = useImageUpload();
 
   const dispatch = useDispatch();
-  const selectedImages = useSelector((state) => state.images.selectedImages);
-  
+  const selectedImages = useSelector((state) => state.gallery.selectedImages);
 
   useEffect(() => {
     if (isOpen) {
@@ -58,19 +58,14 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
     uploadImage(featureFile, productFile);
   };
 
-  // const handleImageSelect = (image) => {
-  //   if (selectedImages.includes(image.src)) {
-  //     setSelectedImages(selectedImages.filter((img) => img !== image.src));
-  //   } else {
-  //     setSelectedImages([...selectedImages, image.src]);
-  //   }
-  // };
+
 
   const handleImageSelect = (image) => {
+    // Check if the image is already selected, and toggle its selection
     if (selectedImages.includes(image.src)) {
-      dispatch(removeImage(image.src));
+      dispatch(removeGalleryImage(image.src)); // Remove image from selectedImages
     } else {
-      dispatch(addImage(image.src));
+      dispatch(addGalleryImage(image.src)); // Add image to selectedImages
     }
   };
 
@@ -127,7 +122,7 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
     },
   ];
 
-  console.log("Selected Images: ", selectedImages);
+  console.log("Selected Images: form galleryUploadModal.jsx: ", selectedImages);
 
   return (
     <>
@@ -261,4 +256,4 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default ImageUploadModal;
+export default GalleryUploadModal;

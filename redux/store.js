@@ -8,6 +8,8 @@ import outletsReducer from "@/redux/slice/outletSlice";
 import couponsReducer from "@/redux/slice/couponSlice";
 import customersReducer from "@/redux/slice/customersSlice";
 import reportReducer from "@/redux/slice/reportSlice";
+import imagesReducer from "@/redux/slice/imagesSlice";
+import galleryReducer from "@/redux/slice/gallerySlice";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +22,8 @@ const store = configureStore({
     coupons: couponsReducer,
     report: reportReducer,
     customer: customersReducer,
+    images: imagesReducer,
+    gallery: galleryReducer,
   },
 });
 
