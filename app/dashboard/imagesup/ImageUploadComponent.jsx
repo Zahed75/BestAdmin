@@ -11,7 +11,7 @@ const ImageUploadComponent = () => {
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-2xl font-semibold my-6">Image Manager</h1>
+      <h1 className="text-2xl font-semibold my-6">Image Manager </h1>
       <button
         className="bg-[#f26522] text-white py-2 px-4 rounded"
         onClick={openModal}
@@ -19,7 +19,7 @@ const ImageUploadComponent = () => {
         Open Image Manager
       </button>
 
-      <GalleryUploadModal isOpen={isModalOpen} onClose={closeModal} />
+      <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 };
