@@ -25,7 +25,7 @@ export default function OrdersPage() {
       ) : (
         <div>
           <PageHead pageHead="Orders" />
-          <OrderTable AllOrders={AllOrders} />
+          <OrderTable AllOrders={AllOrders?.slice().reverse()} />
         </div>
       )}
     </main>
