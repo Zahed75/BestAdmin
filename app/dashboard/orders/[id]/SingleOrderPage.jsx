@@ -345,7 +345,7 @@ export default function SingleOrderPage({ order }) {
                   <div className="flex justify-between items-center border-b-2 pb-2 mb-2">
                     <span className="text-gray-600 text-sm">Vat</span>
                     <span className="ml-24 text-md font-semibold">
-                      ৳{order?.vatRate}
+                      5 %
                     </span>
                   </div>
                   <div className="flex justify-between items-center border-b-2 pb-2">
