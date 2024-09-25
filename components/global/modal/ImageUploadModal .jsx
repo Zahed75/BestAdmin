@@ -7,11 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { addImage, removeImage } from "@/redux/slice/imagesSlice";
 
 const ImageUploadModal = ({ isOpen, onClose }) => {
-  // const [activeTab, setActiveTab] = useState("upload");
   const [imageFile, setImageFile] = useState(null);
   const [imgList, setImgList] = useState([]);
-  const [allImages, setAllImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const {
@@ -55,12 +52,14 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
   };
 
   const handleImageSelect = (image) => {
-    if (selectedImages.includes(image.ImageUrl)) {
+    if (selectedImages === image.ImageUrl) {
       dispatch(removeImage(image.ImageUrl));
     } else {
       dispatch(addImage(image.ImageUrl));
     }
   };
+
+  console.log("selectedImages: ", selectedImages);
 
   return (
     <>
@@ -173,19 +172,19 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
                   .map((image, i) => (
                     <div key={i} className="relative">
                       <Image
-                        width={100}
-                        height={100}
+                        width={400}
+                        height={400}
                         src={image.ImageUrl}
                         alt="Uploaded"
                         className={`w-full h-32 object-cover rounded-lg shadow-sm cursor-pointer ${
-                          selectedImages.includes(image.ImageUrl)
+                          selectedImages === image.ImageUrl
                             ? "border-2 border-[#f26522]"
                             : ""
                         }`}
                         onClick={() => handleImageSelect(image)}
                       />
 
-                      {selectedImages.includes(image.ImageUrl) && (
+                      {selectedImages === image.ImageUrl && (
                         <div className="absolute top-0 right-0 bg-[#f26522] text-white p-1 h-6 w-6 flex items-center justify-center rounded-full">
                           <span className="text-sm">✔</span>
                         </div>

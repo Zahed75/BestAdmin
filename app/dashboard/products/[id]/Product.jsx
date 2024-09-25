@@ -14,6 +14,8 @@ import Loading from "../../loading";
 import Skeleton from "@/components/global/skeleton/Skeleton";
 import Image from "next/image";
 import { fetchProducts } from "@/redux/slice/productsSlice";
+import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
+import { removeImage } from "@/redux/slice/imagesSlice";
 
 export default function Product({ product }) {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -38,14 +40,14 @@ export default function Product({ product }) {
   const [isProductGalleryDeleted, setIsProductGalleryDeleted] = useState(false);
   const [specData, setSpecData] = useState({});
   const [showBtn, setShowBtn] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
-  const products = useSelector((state) => state?.products);
+  const selectedImages = useSelector((state) => state.images.selectedImages);
 
   useEffect(() => {
     dispatch(fetchCategories());
-    dispatch(fetchProducts());
   }, [dispatch]);
 
   const router = useRouter();
@@ -288,10 +290,9 @@ export default function Product({ product }) {
   };
 
   const handleRemoveProductPicture = async () => {
-    setIsLoading(true);
-    setProductPicture("");
+    dispatch(removeImage());
     setIsProductImageDeleted(true);
-    setIsLoading(false);
+    
   };
 
   const handleRemoveProductGallery = async (image) => {
@@ -422,6 +423,9 @@ export default function Product({ product }) {
     });
   };
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <main className="">
       {isLoading && <Loading />}
@@ -489,27 +493,21 @@ export default function Product({ product }) {
                     )}
                     {isProductImageDeleted && (
                       <div className="flex flex-col w-full">
-                        {imageUrl && (
+                        {selectedImages && (
                           <Image
                             width={200}
                             height={200}
-                            src={imageUrl}
+                            src={selectedImages}
                             alt="Uploaded"
                             className="w-full h-full rounded-md"
                           />
                         )}
 
-                        {!image && !imageUrl ? (
-                          <div>
-                            <input
-                              type="file"
-                              id="featuredImageUpload"
-                              className="hidden"
-                              accept="image/*"
-                              onChange={handleProductImgFileChange}
-                            />
-                            <label
-                              htmlFor="featuredImageUpload"
+                        { !selectedImages ? (
+                          <div
+                           onClick={() => openModal()}
+                          >                          
+                            <div
                               className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md"
                             >
                               <svg
@@ -538,7 +536,7 @@ export default function Product({ product }) {
                                   strokeLinejoin="round"
                                 />
                               </svg>
-                            </label>
+                            </div>
                           </div>
                         ) : (
                           <></>
@@ -1527,6 +1525,7 @@ export default function Product({ product }) {
       ) : (
         <Skeleton />
       )}
+      <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
     </main>
   );
 }

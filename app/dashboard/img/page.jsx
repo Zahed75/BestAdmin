@@ -17,7 +17,7 @@ export default function YourComponent() {
 
   return (
     <main className="my-10">
-      <input type="file" onChange={handleFileChange} />
+      <input type="file" multiple={true} onChange={handleFileChange} />
       <button onClick={handleUploadClick} disabled={uploading}>
         {uploading ? "Uploading..." : "Upload Image"}
       </button>

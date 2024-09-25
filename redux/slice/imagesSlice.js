@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  selectedImages: [],
+  selectedImages: null,
 };
 
 const imageSlice = createSlice({
@@ -12,12 +12,10 @@ const imageSlice = createSlice({
       state.selectedImages = action.payload;
     },
     addImage: (state, action) => {
-      state.selectedImages.push(action.payload);
+      state.selectedImages = action.payload;
     },
     removeImage: (state, action) => {
-      state.selectedImages = state.selectedImages.filter(
-        (image) => image !== action.payload
-      );
+      state.selectedImages = null;
     },
   },
 });
