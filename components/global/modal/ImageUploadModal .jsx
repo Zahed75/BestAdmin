@@ -68,7 +68,7 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
           <div className="bg-white rounded-lg p-6 w-full max-w-4xl shadow-lg overflow-y-auto max-h-[80vh] md:mx-10 mx-4 lg:max-w-6xl lg:px-10 scrollbar_hidden">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-700">
-                Upload or Select One Image
+                Upload or Select One Image 
               </h2>
               <button
                 onClick={onClose}
@@ -109,7 +109,7 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
                 >
                   <input
                     type="file"
-                    className="absolute inset-0 w-full opacity-0 z-50"
+                    className="absolute inset-0 w-full opacity-0"
                   />
                   <div className="text-center">
                     <img
@@ -129,7 +129,7 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
                           id="file-upload"
                           name="file-upload"
                           type="file"
-                          className="sr-only"
+                          className="sr-only z-50"
                           onChange={handleImageFileChange}
                         />
                       </label>

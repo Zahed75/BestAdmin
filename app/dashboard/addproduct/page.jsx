@@ -46,7 +46,6 @@ export default function AddProductPage() {
     const fetchData = async () => {
       try {
         const response = await fetchApi("/brand/getAll", "GET");
-
         setProductBrand(response?.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -324,7 +323,7 @@ export default function AddProductPage() {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <main className="">
+    <main className="container mx-auto">
       {isLoading && <Loading />}
 
       <form onSubmit={handleAddProduct}>
@@ -341,7 +340,7 @@ export default function AddProductPage() {
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-3 justify-between items-start gap-5 w-full my-10">
-          {/* main one section */}
+ 
           <div className="flex flex-col justify-start items-center w-full md:col-span-2 space-y-5">
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">General</h5>
@@ -505,7 +504,7 @@ export default function AddProductPage() {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold">Product SEO</h5>
               <div className="mt-5">
-                {/* preview */}
+               
                 <div className="grid grid-cols-1 md:grid-cols-3">
                   <div className="p-3 border bg-white rounded-md shadow-md w-full mb-5 md:col-span-2">
                     <div>
@@ -538,7 +537,7 @@ export default function AddProductPage() {
                           width={200}
                           height={200}
                           src={
-                            imageUrl || "https://i.ibb.co/sqPhfrt/notimgpng.png"
+                            selectedImages || "https://i.ibb.co/sqPhfrt/notimgpng.png"
                           }
                           alt="Deep-Blue-300x300"
                           className="w-full object-cover"
@@ -549,7 +548,7 @@ export default function AddProductPage() {
                   <div></div>
                 </div>
 
-                {/* SEO Title */}
+ 
                 <div className="flex flex-col space-y-1 w-full">
                   <label
                     htmlFor="seoTitle"
@@ -573,7 +572,7 @@ export default function AddProductPage() {
                     ></div>
                   </div>
                 </div>
-                {/* SEO Description */}
+
                 <div className="flex flex-col space-y-1 w-full mt-5">
                   <label
                     htmlFor="seoDescription"
@@ -660,13 +659,7 @@ export default function AddProductPage() {
                 <div className="flex flex-col justify-between items-start space-y-3">
                   <h5 className="text-md font-bold mb-3">Video Gallery</h5>
                   <div className="grid grid-cols-3 justify-between items-start gap-5 ">
-                    {/* <div className="h-[160px] w-full object-cover content-center">
-                    <img
-                      className="w-full h-full rounded-md"
-                      src="https://i.ibb.co/HdPgcbd/Rectangle-2.png"
-                      alt=""
-                    />
-                  </div> */}
+                
 
                     <div>
                       <input
@@ -1047,19 +1040,11 @@ export default function AddProductPage() {
                         {specData.map((item, index) => (
                           <tr className="" key={index}>
                             <td className="border px-5 py-2 w-1/2">
-                              {/* <input
-                  type="text"
-                  defaultValue={item.key + ":"}
-                  className="w-full px-2 py-1 focus:outline-0"
-                /> */}
+                            
                               {item.key}
                             </td>
                             <td className="border px-5 py-2 w-1/2">
-                              {/* <input
-                  type="text"
-                  defaultValue={item.value}
-                  className="w-full px-2 py-1 focus:outline-0"
-                /> */}
+                          
                               {item.value}
                             </td>
                           </tr>
@@ -1071,7 +1056,7 @@ export default function AddProductPage() {
               </div>
             </div>
           </div>
-          {/* main two section */}
+       
           <div className="flex flex-col justify-end items-center w-full space-y-5">
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">{productStatus}</h5>
@@ -1270,9 +1255,8 @@ export default function AddProductPage() {
           </div>
         </section>
       </form>
-     <div>
-     <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
-     </div>
+    
+      <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
     </main>
   );
 }
