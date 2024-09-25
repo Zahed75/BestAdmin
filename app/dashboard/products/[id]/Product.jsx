@@ -427,7 +427,7 @@ export default function Product({ product }) {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <main className="">
+    <main className="container mx-auto">
       {isLoading && <Loading />}
       {product ? (
         <form onSubmit={handleUpdateProduct}>
@@ -505,7 +505,7 @@ export default function Product({ product }) {
 
                         { !selectedImages ? (
                           <div
-                           onClick={() => openModal()}
+                          onClick={openModal}
                           >                          
                             <div
                               className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md"

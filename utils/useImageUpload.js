@@ -44,9 +44,11 @@ const useImageUpload = () => {
       
       setSuccessMessage("Images uploaded successfully!");
       setActiveTab("select");
+      setIsUploading(false);
     } catch (error) {
       console.error("Error uploading images:", error);
       setError("Error uploading images. Please try again.");
+      setIsUploading(false);
     } finally {
       setIsUploading(false);
     }
