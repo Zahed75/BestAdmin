@@ -11,12 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { removeImage } from "@/redux/slice/imagesSlice";
+import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
 
 export default function AddProductPage() {
   const [tagValueArray, setTagValueArray] = useState([]);
   const [tagInputValue, setTagInputValue] = useState("");
-  const [image, setImage] = useState(null);
-  const [productImage, setProductImage] = useState(null);
   const [productGallery, setProductGallery] = useState([]);
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,10 +30,13 @@ export default function AddProductPage() {
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
   const [brandName, setBrandName] = useState("");
   const [specData, setSpecData] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
   const user = useSelector((state) => state.user?.items || {});
+  const selectedImages = useSelector((state) => state.images.selectedImages);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -52,10 +55,6 @@ export default function AddProductPage() {
 
     fetchData();
   }, [dispatch]);
-
-  useEffect(() => {
-    setProductImage(imageUrl);
-  }, [imageUrl]);
 
   useEffect(() => {
     localStorage.setItem("Description", "");
@@ -101,20 +100,6 @@ export default function AddProductPage() {
   };
   const handleDescriptionInputChange = (event) => {
     setDescriptionInputValue(event.target.value);
-  };
-  const handleProductImgFileChange = async (event) => {
-    const file = event.target.files[0];
-    setIsLoading(true);
-
-    try {
-      const uploadedImageUrl = await handleUpload(file);
-
-      setIsLoading(false);
-      setProductImage(imageUrl);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      setIsLoading(false);
-    }
   };
   const handleGalleryUpload = async (file) => {
     const apiKey = "7a0f43e157252e0ca3031dea1d8dcccd";
@@ -174,7 +159,7 @@ export default function AddProductPage() {
     e.preventDefault();
     const newTagValueArray = [...tagValueArray, tagInputValue];
     setTagValueArray(newTagValueArray);
-    setTagInputValue(""); // Clear input value after adding
+    setTagInputValue(""); 
   };
   const handleRemoveTag = (indexToRemove) => {
     const newTagValueArray = tagValueArray.filter(
@@ -195,7 +180,7 @@ export default function AddProductPage() {
       productName: e.target.productName.value,
       categoryId: categoryId,
       productBrand: e.target.productBrand.value,
-      productImage: productImage || "https://i.ibb.co/sqPhfrt/notimgpng.png",
+      productImage: selectedImages || "https://i.ibb.co/sqPhfrt/notimgpng.png",
       isTrash: false,
       productGallery: productGallery,
       productVideos: [],
@@ -300,7 +285,7 @@ export default function AddProductPage() {
     console.log("Brand Data:", brandData);
   };
   const handleRemoveProductPicture = () => {
-    setProductImage("");
+    dispatch(removeImage());
   };
   const handleRemoveProductGallery = async (image) => {
     setIsLoading(true);
@@ -310,7 +295,7 @@ export default function AddProductPage() {
   };
   const renderCategoryList = (categories, parentIndex = "") => {
     return categories?.map((category, index) => {
-      const uniqueIndex = `${parentIndex}-${index}`; // Unique index for nested subcategories
+      const uniqueIndex = `${parentIndex}-${index}`;
       return (
         <ul key={uniqueIndex} className="font-semibold">
           <li className="text-md flex justify-start items-center gap-2 mb-1">
@@ -335,6 +320,8 @@ export default function AddProductPage() {
       );
     });
   };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <main className="">
@@ -382,12 +369,12 @@ export default function AddProductPage() {
                 <div className="flex flex-col justify-between items-start space-y-3">
                   <h5 className="text-md font-bold mb-3">Featured Image</h5>
                   <div className="flex flex-col w-full">
-                    {productImage && (
+                    {selectedImages && (
                       <div className={` flex flex-col w-full`}>
                         <Image
                           width={200}
                           height={200}
-                          src={productImage}
+                          src={selectedImages}
                           alt="Uploaded"
                           className="w-full h-full rounded-md"
                         />
@@ -401,17 +388,10 @@ export default function AddProductPage() {
                       </div>
                     )}
 
-                    {!productImage ? (
-                      <div className={` flex flex-col w-full`}>
-                        <input
-                          type="file"
-                          id="featuredImageUpload"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={handleProductImgFileChange}
-                        />
-                        <label
-                          htmlFor="featuredImageUpload"
+                    {!selectedImages ? (
+                      <div onClick={openModal} className={` flex flex-col w-full`}>
+                 
+                        <div
                           className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md"
                         >
                           <svg
@@ -440,13 +420,13 @@ export default function AddProductPage() {
                               strokeLinejoin="round"
                             />
                           </svg>
-                        </label>
+                        </div>
                       </div>
                     ) : (
                       <></>
                     )}
                   </div>
-                  {!imageUrl && (
+                  {!selectedImages && (
                     <div className="mt-5">
                       <p className="text-xs text-red-500">
                         * Upload an image for the product
@@ -1290,6 +1270,9 @@ export default function AddProductPage() {
           </div>
         </section>
       </form>
+     <div>
+     <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+     </div>
     </main>
   );
 }
