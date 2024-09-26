@@ -31,7 +31,6 @@ export default function AddProductPage() {
   const [brandName, setBrandName] = useState("");
   const [specData, setSpecData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
@@ -158,7 +157,7 @@ export default function AddProductPage() {
     e.preventDefault();
     const newTagValueArray = [...tagValueArray, tagInputValue];
     setTagValueArray(newTagValueArray);
-    setTagInputValue(""); 
+    setTagInputValue("");
   };
   const handleRemoveTag = (indexToRemove) => {
     const newTagValueArray = tagValueArray.filter(
@@ -323,7 +322,7 @@ export default function AddProductPage() {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <main className="container mx-auto">
+    <main className="">
       {isLoading && <Loading />}
 
       <form onSubmit={handleAddProduct}>
@@ -340,7 +339,6 @@ export default function AddProductPage() {
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-3 justify-between items-start gap-5 w-full my-10">
- 
           <div className="flex flex-col justify-start items-center w-full md:col-span-2 space-y-5">
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">General</h5>
@@ -388,11 +386,11 @@ export default function AddProductPage() {
                     )}
 
                     {!selectedImages ? (
-                      <div onClick={openModal} className={` flex flex-col w-full`}>
-                 
-                        <div
-                          className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md"
-                        >
+                      <div
+                        onClick={openModal}
+                        className={` flex flex-col w-full`}
+                      >
+                        <div className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md">
                           <svg
                             width="21"
                             height="20"
@@ -504,7 +502,6 @@ export default function AddProductPage() {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold">Product SEO</h5>
               <div className="mt-5">
-               
                 <div className="grid grid-cols-1 md:grid-cols-3">
                   <div className="p-3 border bg-white rounded-md shadow-md w-full mb-5 md:col-span-2">
                     <div>
@@ -537,7 +534,8 @@ export default function AddProductPage() {
                           width={200}
                           height={200}
                           src={
-                            selectedImages || "https://i.ibb.co/sqPhfrt/notimgpng.png"
+                            selectedImages ||
+                            "https://i.ibb.co/sqPhfrt/notimgpng.png"
                           }
                           alt="Deep-Blue-300x300"
                           className="w-full object-cover"
@@ -548,7 +546,6 @@ export default function AddProductPage() {
                   <div></div>
                 </div>
 
- 
                 <div className="flex flex-col space-y-1 w-full">
                   <label
                     htmlFor="seoTitle"
@@ -659,8 +656,6 @@ export default function AddProductPage() {
                 <div className="flex flex-col justify-between items-start space-y-3">
                   <h5 className="text-md font-bold mb-3">Video Gallery</h5>
                   <div className="grid grid-cols-3 justify-between items-start gap-5 ">
-                
-
                     <div>
                       <input
                         type="file"
@@ -1040,11 +1035,9 @@ export default function AddProductPage() {
                         {specData.map((item, index) => (
                           <tr className="" key={index}>
                             <td className="border px-5 py-2 w-1/2">
-                            
                               {item.key}
                             </td>
                             <td className="border px-5 py-2 w-1/2">
-                          
                               {item.value}
                             </td>
                           </tr>
@@ -1056,7 +1049,7 @@ export default function AddProductPage() {
               </div>
             </div>
           </div>
-       
+
           <div className="flex flex-col justify-end items-center w-full space-y-5">
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">{productStatus}</h5>
@@ -1255,8 +1248,10 @@ export default function AddProductPage() {
           </div>
         </section>
       </form>
-    
-      <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+
+      <div>
+        <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+      </div>
     </main>
   );
 }
