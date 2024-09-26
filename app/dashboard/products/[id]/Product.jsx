@@ -20,7 +20,6 @@ import { removeImage } from "@/redux/slice/imagesSlice";
 export default function Product({ product }) {
   const [tagValueArray, setTagValueArray] = useState([]);
   const [tagInputValue, setTagInputValue] = useState("");
-  const [image, setImage] = useState(null);
   const [productGallery, setProductGallery] = useState([]);
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
   const [isLoading, setIsLoading] = useState(false);
@@ -79,7 +78,6 @@ export default function Product({ product }) {
         const response = await fetchApi("/brand/getAll", "GET");
 
         setProductBrand(response?.data);
-
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -292,7 +290,6 @@ export default function Product({ product }) {
   const handleRemoveProductPicture = async () => {
     dispatch(removeImage());
     setIsProductImageDeleted(true);
-    
   };
 
   const handleRemoveProductGallery = async (image) => {
@@ -323,10 +320,8 @@ export default function Product({ product }) {
   const handleCatCheckboxClick = (categoryId) => {
     setCategoryId((prevCategoryId) => {
       if (prevCategoryId.includes(categoryId)) {
-        // If the ID is already in the array, remove it
         return prevCategoryId.filter((id) => id !== categoryId);
       } else {
-        // If the ID is not in the array, add it
         return [...prevCategoryId, categoryId];
       }
     });
@@ -335,10 +330,8 @@ export default function Product({ product }) {
   const handleSubCatCheckboxClick = (subcategoryId) => {
     setCategoryId((prevCategoryId) => {
       if (prevCategoryId.includes(subcategoryId)) {
-        // If the ID is already in the array, remove it
         return prevCategoryId.filter((id) => id !== subcategoryId);
       } else {
-        // If the ID is not in the array, add it
         return [...prevCategoryId, subcategoryId];
       }
     });
@@ -427,7 +420,7 @@ export default function Product({ product }) {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <main className="container mx-auto">
+    <main className="">
       {isLoading && <Loading />}
       {product ? (
         <form onSubmit={handleUpdateProduct}>
@@ -472,8 +465,9 @@ export default function Product({ product }) {
                     <h5 className="text-md font-bold mb-3">Featured Image</h5>
                     {productPicture && (
                       <div
-                        className={`flex flex-col w-full ${isProductImageDeleted ? "hidden" : "block"
-                          }`}
+                        className={`flex flex-col w-full ${
+                          isProductImageDeleted ? "hidden" : "block"
+                        }`}
                       >
                         <Image
                           width={200}
@@ -494,22 +488,27 @@ export default function Product({ product }) {
                     {isProductImageDeleted && (
                       <div className="flex flex-col w-full">
                         {selectedImages && (
-                          <Image
-                            width={200}
-                            height={200}
-                            src={selectedImages}
-                            alt="Uploaded"
-                            className="w-full h-full rounded-md"
-                          />
+                          <div>
+                            <Image
+                              width={200}
+                              height={200}
+                              src={selectedImages}
+                              alt="Uploaded"
+                              className="w-full h-full rounded-md"
+                            />
+                            <button
+                              type="button"
+                              onClick={handleRemoveProductPicture}
+                              className="text-sm text-red-500 flex justify-start py-2 underline underline-offset-2"
+                            >
+                              Remove product Image
+                            </button>
+                          </div>
                         )}
 
-                        { !selectedImages ? (
-                          <div
-                          onClick={openModal}
-                          >                          
-                            <div
-                              className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md"
-                            >
+                        {!selectedImages ? (
+                          <div onClick={openModal}>
+                            <div className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md">
                               <svg
                                 width="21"
                                 height="20"
@@ -548,24 +547,6 @@ export default function Product({ product }) {
                     <h5 className="text-md font-bold mb-3">Image Gallery</h5>
 
                     <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
-                      {/* {productGallery?.map((image, index) => (
-                        <div className="relative" key={index}>
-                          <Image
-                            width={100}
-                            height={100}
-                            src={image}
-                            alt="Uploaded"
-                            className="object-cover rounded-md w-full h-[90px]"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveProductGallery(image)}
-                            className="absolute -top-1 -right-1 bg-red-400 w-5 h-5 rounded-full font-bold text-sm text-white flex justify-center items-center pb-1 shadow-md"
-                          >
-                            x
-                          </button>
-                        </div>
-                      ))} */}
                       {productGallery.map((image, index) => (
                         <div className="relative" key={index}>
                           <Image
@@ -722,9 +703,14 @@ export default function Product({ product }) {
                             </span>
                           </div>
                           <Image
+                            // src={
+                            //   product?.productImage ||
+                            //   "https://i.ibb.co/bJXhK7w/3256026-200.png"
+                            // }
                             src={
-                              product?.productImage ||
-                              "https://i.ibb.co/bJXhK7w/3256026-200.png"
+                              selectedImages
+                                ? selectedImages
+                                : product?.productImage
                             }
                             alt="Deep-Blue-300x300"
                             width={100}
@@ -787,7 +773,7 @@ export default function Product({ product }) {
                         style={{
                           width: `${calculateDescriptionProgress(
                             product?.seo?.prodDescription ||
-                            descriptionInputValue
+                              descriptionInputValue
                           )}%`,
                         }}
                       ></div>
@@ -928,30 +914,33 @@ export default function Product({ product }) {
                   <button
                     type="button"
                     onClick={() => setActiveTab("general")}
-                    className={`${activeTab === "general"
-                      ? "border-gray-500 text-black "
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${
+                      activeTab === "general"
+                        ? "border-gray-500 text-black "
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   >
                     General
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab("inventory")}
-                    className={`${activeTab === "inventory"
-                      ? "border-gray-500 text-black"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${
+                      activeTab === "inventory"
+                        ? "border-gray-500 text-black"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   >
                     Inventory
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab("shipping")}
-                    className={`${activeTab === "shipping"
-                      ? "border-gray-500 text-black"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${
+                      activeTab === "shipping"
+                        ? "border-gray-500 text-black"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   >
                     Shipping
                   </button>
@@ -1351,20 +1340,22 @@ export default function Product({ product }) {
                 <div className="flex justify-between items-center gap-5 mb-5">
                   <button
                     type="button"
-                    className={`${categoryTab === "all"
-                      ? "border-gray-500 text-black"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${
+                      categoryTab === "all"
+                        ? "border-gray-500 text-black"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                     onClick={() => setCategoryTab("all")}
                   >
                     All
                   </button>
                   <button
                     type="button"
-                    className={`${categoryTab === "popular"
-                      ? "border-gray-500 text-black"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${
+                      categoryTab === "popular"
+                        ? "border-gray-500 text-black"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                     onClick={() => setCategoryTab("popular")}
                   >
                     Popular
@@ -1372,8 +1363,9 @@ export default function Product({ product }) {
                 </div>
                 <div
                   className={`
-                ${categoryTab === "all" ? "block" : "hidden"
-                    } h-52 overflow-y-scroll
+                ${
+                  categoryTab === "all" ? "block" : "hidden"
+                } h-52 overflow-y-scroll
                 `}
                 >
                   {renderCategoryList(AllCategories)}
@@ -1429,20 +1421,22 @@ export default function Product({ product }) {
                 <div className="flex justify-between items-center gap-5 mb-5">
                   <button
                     type="button"
-                    className={`${brandTab === "brand"
-                      ? "border-gray-500 text-black"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${
+                      brandTab === "brand"
+                        ? "border-gray-500 text-black"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                     onClick={() => setBrandTab("brand")}
                   >
                     Brand
                   </button>
                   <button
                     type="button"
-                    className={`${brandTab === "new"
-                      ? "border-gray-500 text-black"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${
+                      brandTab === "new"
+                        ? "border-gray-500 text-black"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                     onClick={() => setBrandTab("new")}
                   >
                     Add New Brand
@@ -1525,7 +1519,9 @@ export default function Product({ product }) {
       ) : (
         <Skeleton />
       )}
-      <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+      <div className="container mx-auto">
+        <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+      </div>
     </main>
   );
 }
