@@ -4,22 +4,22 @@ import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
 import { useState } from "react";
 
 const ImageUploadComponent = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openGalleryModal = () => setIsGalleryModalOpen(true);
+  const closeGalleryModal = () => setIsGalleryModalOpen(false);
 
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-semibold my-6">Image Manager </h1>
       <button
         className="bg-[#f26522] text-white py-2 px-4 rounded"
-        onClick={openModal}
+        onClick={openGalleryModal}
       >
         Open Image Manager
       </button>
 
-      <GalleryUploadModal isOpen={isModalOpen} onClose={closeModal} />
+      <GalleryUploadModal isGalleryOpen={isGalleryModalOpen} onGalleryClose={closeGalleryModal} />
     </div>
   );
 };

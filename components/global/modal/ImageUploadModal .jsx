@@ -130,6 +130,7 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
                           type="file"
                           className="sr-only z-50"
                           onChange={handleImageFileChange}
+                          accept="image/png, image/jpeg, image/jpg"
                         />
                       </label>
                     </h3>

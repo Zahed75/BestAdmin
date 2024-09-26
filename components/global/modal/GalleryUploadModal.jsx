@@ -9,7 +9,7 @@ import {
 } from "@/redux/slice/gallerySlice";
 import Image from "next/image";
 
-const GalleryUploadModal = ({ isOpen, onClose }) => {
+const GalleryUploadModal = ({ isGalleryOpen, onGalleryClose }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imgList, setImgList] = useState([]);
   const [error, setError] = useState(null);
@@ -69,7 +69,7 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {isOpen && (
+      {isGalleryOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-4xl shadow-lg overflow-y-auto max-h-[80vh] md:mx-10 mx-4 lg:max-w-6xl lg:px-10 scrollbar_hidden">
             <div className="flex justify-between items-center mb-6">
@@ -77,7 +77,7 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
                 Upload or Select Images
               </h2>
               <button
-                onClick={onClose}
+                onClick={onGalleryClose}
                 className="text-gray-500 hover:text-gray-700 text-2xl"
               >
                 &times;
@@ -138,6 +138,7 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
                           className="sr-only z-50"
                           onChange={handleImageFileChange}
                           multiple
+                          accept="image/png, image/jpeg, image/jpg"
                         />
                       </label>
                     </h3>
