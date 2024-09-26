@@ -1,27 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  selectedImages: [],
+  selectedGalleryImages: [],
 };
 
 const gallerySlice = createSlice({
   name: "gallery",
   initialState,
   reducers: {
-    setSelectedImages: (state, action) => {
-      state.selectedImages = action.payload;
+    setSelectedGalleryImages: (state, action) => {
+      state.selectedGalleryImages = action.payload;
     },
     addGalleryImage: (state, action) => {
-      state.selectedImages.push(action.payload);
+      state.selectedGalleryImages.push(action.payload);
     },
     removeGalleryImage: (state, action) => {
-      state.selectedImages = state.selectedImages.filter(
+      state.selectedGalleryImages = state.selectedGalleryImages.filter(
         (image) => image !== action.payload
       );
     },
   },
 });
 
-export const { setSelectedImages, addGalleryImage, removeGalleryImage } = gallerySlice.actions;
+export const { setSelectedGalleryImages, addGalleryImage, removeGalleryImage } = gallerySlice.actions;
 
 export default gallerySlice.reducer;
