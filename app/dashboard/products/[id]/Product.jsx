@@ -16,6 +16,7 @@ import Image from "next/image";
 import { fetchProducts } from "@/redux/slice/productsSlice";
 import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
 import { removeImage } from "@/redux/slice/imagesSlice";
+import GalleryUploadModal from "@/components/global/modal/GalleryUploadModal";
 
 export default function Product({ product }) {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -40,10 +41,14 @@ export default function Product({ product }) {
   const [specData, setSpecData] = useState({});
   const [showBtn, setShowBtn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
   const selectedImages = useSelector((state) => state.images.selectedImages);
+  const selectedGalleryImages = useSelector(
+    (state) => state.gallery.selectedGalleryImages
+  );
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -226,9 +231,9 @@ export default function Product({ product }) {
       productName: e.target.productName.value,
       categoryId: categoryId,
       productBrand: e.target.productBrand.value,
-      productImage: productPicture ? productPicture : imageUrl,
+      productImage: selectedImages ? selectedImages : productPicture,
       isTrash: false,
-      productGallery: productGallery,
+      productGallery: selectedGalleryImages ? [...selectedGalleryImages, ...productGallery] : productGallery,
       productVideos: [],
       productDescription: productDescription,
       productShortDescription: productShortDescription,
@@ -293,11 +298,8 @@ export default function Product({ product }) {
   };
 
   const handleRemoveProductGallery = async (image) => {
-    setIsLoading(true);
-    const newGallery = productGallery.filter((img) => img !== image);
-    setProductGallery(newGallery);
+    dispatch(removeGalleryImage(image));
     setIsProductGalleryDeleted(true);
-    setIsLoading(false);
   };
 
   const handleCreateBrand = async (e) => {
@@ -418,6 +420,8 @@ export default function Product({ product }) {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const openGalleryModal = () => setIsGalleryModalOpen(true);
+  const closeGalleryModal = () => setIsGalleryModalOpen(false);
 
   return (
     <main className="">
@@ -547,7 +551,7 @@ export default function Product({ product }) {
                     <h5 className="text-md font-bold mb-3">Image Gallery</h5>
 
                     <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
-                      {productGallery.map((image, index) => (
+                      {selectedGalleryImages.map((image, index) => (
                         <div className="relative" key={index}>
                           <Image
                             width={100}
@@ -565,15 +569,7 @@ export default function Product({ product }) {
                           </button>
                         </div>
                       ))}
-                      <div>
-                        <input
-                          type="file"
-                          id="galleryImageUpload"
-                          className="hidden"
-                          multiple
-                          accept="image/*"
-                          onChange={handleGalleryImgFileChange}
-                        />
+                      <div onClick={openGalleryModal}>
                         <label
                           htmlFor="galleryImageUpload"
                           className="z-20 flex flex-col-reverse items-center justify-center w-full h-[90px] cursor-pointer border py-2 bg-gray-200 rounded-md"
@@ -620,15 +616,7 @@ export default function Product({ product }) {
                             className="object-cover rounded-md w-full h-[90px]"
                           />
                         ))}
-                        <div>
-                          <input
-                            type="file"
-                            id="galleryImageUpload"
-                            className="hidden"
-                            multiple
-                            accept="image/*"
-                            onChange={handleGalleryImgFileChange}
-                          />
+                        <div onClick={openGalleryModal}>
                           <label
                             htmlFor="galleryImageUpload"
                             className="z-20 flex flex-col-reverse items-center justify-center w-full h-[90px] cursor-pointer border py-2 bg-gray-200 rounded-md"
@@ -1521,6 +1509,10 @@ export default function Product({ product }) {
       )}
       <div className="container mx-auto">
         <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+        <GalleryUploadModal
+          isGalleryOpen={isGalleryModalOpen}
+          onGalleryClose={closeGalleryModal}
+        />
       </div>
     </main>
   );

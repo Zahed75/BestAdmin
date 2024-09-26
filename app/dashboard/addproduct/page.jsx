@@ -5,7 +5,6 @@ import AddProductRichText from "@/components/dashboard/addproduct/ProductRichTex
 import AddProductShortDesRichText from "@/components/dashboard/addproduct/ProductShortDesRichText";
 import { fetchCategories } from "@/redux/slice/categorySlice";
 import { fetchApi } from "@/utils/FetchApi";
-import useImgBBUpload from "@/utils/useImgBBUpload";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../loading";
@@ -13,12 +12,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { removeImage } from "@/redux/slice/imagesSlice";
 import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
+import GalleryUploadModal from "@/components/global/modal/GalleryUploadModal";
+import { removeGalleryImage } from "@/redux/slice/gallerySlice";
 
 export default function AddProductPage() {
   const [tagValueArray, setTagValueArray] = useState([]);
   const [tagInputValue, setTagInputValue] = useState("");
   const [productGallery, setProductGallery] = useState([]);
-  const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
   const [categoryTab, setCategoryTab] = useState("all");
@@ -31,11 +31,15 @@ export default function AddProductPage() {
   const [brandName, setBrandName] = useState("");
   const [specData, setSpecData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state?.categories);
   const user = useSelector((state) => state.user?.items || {});
   const selectedImages = useSelector((state) => state.images.selectedImages);
+  const selectedGalleryImages = useSelector(
+    (state) => state.gallery.selectedGalleryImages
+  );
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -99,60 +103,7 @@ export default function AddProductPage() {
   const handleDescriptionInputChange = (event) => {
     setDescriptionInputValue(event.target.value);
   };
-  const handleGalleryUpload = async (file) => {
-    const apiKey = "7a0f43e157252e0ca3031dea1d8dcccd";
-    const formData = new FormData();
-    formData.append("image", file);
 
-    try {
-      const response = await fetch(
-        `https://api.imgbb.com/1/upload?key=${apiKey}`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        return data.data.url;
-      } else {
-        throw new Error("Failed to upload image");
-      }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      throw error;
-    }
-  };
-  const handleGalleryImgFileChange = async (event) => {
-    const files = event.target.files;
-    const maxImages = 9;
-
-    setIsLoading(true);
-
-    const uploadPromises = [];
-
-    for (let i = 0; i < Math.min(files.length, maxImages); i++) {
-      uploadPromises.push(handleGalleryUpload(files[i]));
-    }
-
-    try {
-      const uploadedImageUrls = await Promise.all(uploadPromises);
-      setProductGallery((prevGallery) => [
-        ...prevGallery,
-        ...uploadedImageUrls,
-      ]);
-    } catch (error) {
-      console.error("Error uploading images:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
   const handleTagValue = (e) => {
     e.preventDefault();
     const newTagValueArray = [...tagValueArray, tagInputValue];
@@ -286,10 +237,7 @@ export default function AddProductPage() {
     dispatch(removeImage());
   };
   const handleRemoveProductGallery = async (image) => {
-    setIsLoading(true);
-    const newGallery = productGallery.filter((img) => img !== image);
-    setProductGallery(newGallery);
-    setIsLoading(false);
+    dispatch(removeGalleryImage(image));
   };
   const renderCategoryList = (categories, parentIndex = "") => {
     return categories?.map((category, index) => {
@@ -320,6 +268,8 @@ export default function AddProductPage() {
   };
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const openGalleryModal = () => setIsGalleryModalOpen(true);
+  const closeGalleryModal = () => setIsGalleryModalOpen(false);
 
   return (
     <main className="">
@@ -434,7 +384,7 @@ export default function AddProductPage() {
                 <div className="flex flex-col justify-between items-start space-y-3">
                   <h5 className="text-md font-bold mb-3">Image Gallery</h5>
                   <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
-                    {productGallery.map((image, index) => (
+                    {selectedGalleryImages.map((image, index) => (
                       <div className="relative" key={index}>
                         <Image
                           width={100}
@@ -453,15 +403,7 @@ export default function AddProductPage() {
                       </div>
                     ))}
 
-                    <div>
-                      <input
-                        type="file"
-                        id="galleryImageUpload"
-                        className="hidden"
-                        multiple
-                        accept="image/*"
-                        onChange={handleGalleryImgFileChange}
-                      />
+                    <div onClick={openGalleryModal}>
                       <label
                         htmlFor="galleryImageUpload"
                         className="z-20 flex flex-col-reverse items-center justify-center w-full h-[90px] cursor-pointer border py-2 bg-gray-200 rounded-md"
@@ -1251,6 +1193,10 @@ export default function AddProductPage() {
 
       <div>
         <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+        <GalleryUploadModal
+          isGalleryOpen={isGalleryModalOpen}
+          onGalleryClose={closeGalleryModal}
+        />
       </div>
     </main>
   );
