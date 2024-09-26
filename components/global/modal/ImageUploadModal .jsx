@@ -59,7 +59,6 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
     }
   };
 
-  console.log("selectedImages: ", selectedImages);
 
   return (
     <>
@@ -68,7 +67,7 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
           <div className="bg-white rounded-lg p-6 w-full max-w-4xl shadow-lg overflow-y-auto max-h-[80vh] md:mx-10 mx-4 lg:max-w-6xl lg:px-10 scrollbar_hidden">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-700">
-                Upload or Select One Image 
+                Upload or Select One Image
               </h2>
               <button
                 onClick={onClose}

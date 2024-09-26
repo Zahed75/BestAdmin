@@ -19,7 +19,7 @@ const ImageUploadComponent = () => {
         Open Image Manager
       </button>
 
-      <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+      <GalleryUploadModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 };

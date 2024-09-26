@@ -16,9 +16,17 @@ const useImageUpload = () => {
 
     const formData = new FormData();
 
-    formData.append("images", images);
-    formData.append("image_names", image_names);
-    formData.append("image_descriptions", image_descriptions);
+    if (!Array.isArray(images)) {
+      formData.append("images", images);
+      formData.append("image_names", image_names);
+      formData.append("image_descriptions", image_descriptions);
+    } else {
+      for (let i = 0; i < images.length; i++) {
+        formData.append("images", images[i]);
+        formData.append("image_names", image_names[i]);
+        formData.append("image_descriptions", image_descriptions[i]);
+      }
+    }
 
     setIsUploading(true);
     setError(null);
@@ -41,7 +49,7 @@ const useImageUpload = () => {
       );
 
       console.log(response?.data);
-      
+
       setSuccessMessage("Images uploaded successfully!");
       setActiveTab("select");
       setIsUploading(false);

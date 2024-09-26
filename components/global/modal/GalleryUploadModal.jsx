@@ -1,128 +1,71 @@
 "use client";
 import { useState, useEffect } from "react";
 import useImageUpload from "@/utils/useImageUpload";
-import Image from "next/image";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addImage, removeImage } from "@/redux/slice/imagesSlice";
-import { addGalleryImage, removeGalleryImage } from "@/redux/slice/gallerySlice";
+import {
+  addGalleryImage,
+  removeGalleryImage,
+} from "@/redux/slice/gallerySlice";
+import Image from "next/image";
 
 const GalleryUploadModal = ({ isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState("upload");
-  const [featureFile, setFeatureFile] = useState(null);
-  const [productFile, setProductFile] = useState(null);
-  const [allImages, setAllImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imgList, setImgList] = useState([]);
   const [error, setError] = useState(null);
 
   const {
     uploadImage,
     isUploading,
     uploadProgress,
-    error: uploadError,
+    uploadError,
     successMessage,
+    activeTab,
+    setActiveTab,
   } = useImageUpload();
 
   const dispatch = useDispatch();
-  const selectedImages = useSelector((state) => state.gallery.selectedImages);
+  const selectedGalleryImages = useSelector(
+    (state) => state.gallery.selectedGalleryImages
+  );
 
   useEffect(() => {
-    if (isOpen) {
-      fetchImages();
-    }
-  }, [isOpen]);
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get(
+          "https://service.bestelectronics.com.bd/feature/api/get-all-images/"
+        );
+        setImgList(response?.data?.data);
+      } catch (error) {
+        console.error("Error fetching images:", error);
+        setError("Error fetching images.");
+      }
+    };
 
-  const fetchImages = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get("https://via.placeholder.com/300x200"); // Replace with your API URL
-      setAllImages(response.data);
-    } catch (err) {
-      setError("Failed to fetch images. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    fetchImages();
+  }, [activeTab]);
+
+  const handleImageFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImageFile(files);
   };
 
-  const handleFeatureFileChange = (e) => {
-    setFeatureFile(e.target.files[0]);
-  };
-
-  const handleProductFileChange = (e) => {
-    setProductFile(e.target.files[0]);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    uploadImage(featureFile, productFile);
+    if (imageFile) {
+      const response = await uploadImage(imageFile, "images", "product images");
+    }
   };
-
-
 
   const handleImageSelect = (image) => {
-    // Check if the image is already selected, and toggle its selection
-    if (selectedImages.includes(image.src)) {
-      dispatch(removeGalleryImage(image.src)); // Remove image from selectedImages
+    if (selectedGalleryImages.includes(image.ImageUrl)) {
+      dispatch(removeGalleryImage(image.ImageUrl));
     } else {
-      dispatch(addGalleryImage(image.src)); // Add image to selectedImages
+      dispatch(addGalleryImage(image.ImageUrl));
     }
   };
 
-  const imgList = [
-    {
-      id: 1,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 2,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 3,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 4,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 5,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 6,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 7,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 8,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 9,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-    {
-      id: 10,
-      src: "https://via.placeholder.com/300x200",
-      selected: false,
-    },
-  ];
-
-  console.log("Selected Images: form galleryUploadModal.jsx: ", selectedImages);
+  console.log(selectedGalleryImages);
 
   return (
     <>
@@ -147,7 +90,7 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
                   activeTab === "upload"
                     ? "text-white bg-[#f26522]"
                     : "text-gray-700 bg-gray-200"
-                } rounded-l-md focus:outline-0 duration-700 ease-in-out`}
+                } rounded-l-md focus:outline-none transition duration-700 ease-in-out`}
                 onClick={() => setActiveTab("upload")}
               >
                 Upload Images
@@ -157,7 +100,7 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
                   activeTab === "select"
                     ? "text-white bg-[#f26522]"
                     : "text-gray-700 bg-gray-200"
-                } rounded-r-md focus:outline-0 duration-700 ease-in-out`}
+                } rounded-r-md focus:outline-none transition duration-700 ease-in-out`}
                 onClick={() => setActiveTab("select")}
               >
                 Select Images
@@ -172,7 +115,7 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
                 >
                   <input
                     type="file"
-                    className="absolute inset-0 w-full opacity-0 z-50"
+                    className="absolute inset-0 w-full opacity-0"
                   />
                   <div className="text-center">
                     <img
@@ -192,7 +135,9 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
                           id="file-upload"
                           name="file-upload"
                           type="file"
-                          className="sr-only"
+                          className="sr-only z-50"
+                          onChange={handleImageFileChange}
+                          multiple
                         />
                       </label>
                     </h3>
@@ -201,13 +146,6 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
                     </p>
                   </div>
                 </div>
-                <button
-                  type="submit"
-                  disabled={isUploading}
-                  className="bg-[#f26522] text-white text-lg py-2 px-4 rounded-lg mt-4 focus:outline-none transition ease-in-out duration-200 flex ml-auto"
-                >
-                  {isUploading ? "Uploading..." : "Upload Images"}
-                </button>
 
                 {isUploading && (
                   <p className="mt-4 text-gray-600">
@@ -220,33 +158,44 @@ const GalleryUploadModal = ({ isOpen, onClose }) => {
                 {successMessage && (
                   <p className="mt-4 text-green-500">{successMessage}</p>
                 )}
+
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className="bg-[#f26522] text-white text-lg py-2 px-4 rounded-lg focus:outline-none transition ease-in-out duration-200 flex ml-auto"
+                >
+                  {isUploading ? "Uploading..." : "Upload Images"}
+                </button>
               </form>
             )}
 
             {activeTab === "select" && (
-              <div
-                className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto min-h-[60vh] scrollbar_hidden`}
-              >
-                {imgList.map((image) => (
-                  <div key={image.id} className="relative">
-                    <img
-                      src={image.src}
-                      alt="Uploaded"
-                      className={`w-full h-32 object-cover rounded-lg shadow-sm cursor-pointer ${
-                        selectedImages.includes(image.src)
-                          ? "border-2 border-[#f26522]"
-                          : ""
-                      }`}
-                      onClick={() => handleImageSelect(image)}
-                    />
-
-                    {selectedImages.includes(image.src) && (
-                      <div className="absolute top-0 right-0 bg-[#f26522] text-white p-1 h-6 w-6 flex items-center justify-center rounded-full">
-                        <span className="text-sm">✔</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto min-h-[60vh]">
+                {imgList
+                  .slice()
+                  .reverse()
+                  .map((image) => (
+                    <div key={image.id} className="relative">
+                      <Image
+                        width={400}
+                        height={400}
+                        src={image.ImageUrl}
+                        alt="Uploaded"
+                        className={`w-full h-32 object-cover rounded-lg shadow-sm cursor-pointer ${
+                          selectedGalleryImages.includes(image.ImageUrl)
+                            ? "border-2 border-[#f26522]"
+                            : ""
+                        }`}
+                        onClick={() => handleImageSelect(image)}
+                      />
+                      {selectedGalleryImages.includes(image.ImageUrl) && (
+                        <div className="absolute top-0 right-0 bg-[#f26522] text-white p-1 h-6 w-6 flex items-center justify-center rounded-full">
+                          <span className="text-sm">✔</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                {error && <p className="text-red-500">{error}</p>}
               </div>
             )}
           </div>
