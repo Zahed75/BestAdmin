@@ -19,9 +19,17 @@ const gallerySlice = createSlice({
         (image) => image !== action.payload
       );
     },
+    removeAllGalleryImages: (state) => {
+      state.selectedGalleryImages = [];
+    },
   },
 });
 
-export const { setSelectedGalleryImages, addGalleryImage, removeGalleryImage } = gallerySlice.actions;
+export const {
+  setSelectedGalleryImages,
+  addGalleryImage,
+  removeGalleryImage,
+  removeAllGalleryImages,
+} = gallerySlice.actions;
 
 export default gallerySlice.reducer;

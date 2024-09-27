@@ -59,7 +59,6 @@ const ImageUploadModal = ({ isOpen, onClose }) => {
     }
   };
 
-
   return (
     <>
       {isOpen && (

@@ -13,7 +13,10 @@ import Image from "next/image";
 import { removeImage } from "@/redux/slice/imagesSlice";
 import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
 import GalleryUploadModal from "@/components/global/modal/GalleryUploadModal";
-import { removeGalleryImage } from "@/redux/slice/gallerySlice";
+import {
+  removeAllGalleryImages,
+  removeGalleryImage,
+} from "@/redux/slice/gallerySlice";
 
 export default function AddProductPage() {
   const [tagValueArray, setTagValueArray] = useState([]);
@@ -131,7 +134,7 @@ export default function AddProductPage() {
       productBrand: e.target.productBrand.value,
       productImage: selectedImages || "https://i.ibb.co/sqPhfrt/notimgpng.png",
       isTrash: false,
-      productGallery: productGallery,
+      productGallery: selectedGalleryImages,
       productVideos: [],
       productSpecification: specData,
       productDescription: productDescription,
@@ -186,6 +189,7 @@ export default function AddProductPage() {
       if (response) {
         localStorage.removeItem("Description");
         localStorage.removeItem("ShortDescription");
+        dispatch(removeAllGalleryImages());
         router.push("/dashboard/products");
       } else {
         const errorData = await response.json();
