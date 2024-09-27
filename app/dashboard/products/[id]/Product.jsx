@@ -17,12 +17,15 @@ import { fetchProducts } from "@/redux/slice/productsSlice";
 import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
 import { removeImage } from "@/redux/slice/imagesSlice";
 import GalleryUploadModal from "@/components/global/modal/GalleryUploadModal";
+import {
+  addGalleryImage,
+  removeAllGalleryImages,
+  removeGalleryImage,
+} from "@/redux/slice/gallerySlice";
 
 export default function Product({ product }) {
   const [tagValueArray, setTagValueArray] = useState([]);
   const [tagInputValue, setTagInputValue] = useState("");
-  const [productGallery, setProductGallery] = useState([]);
-  const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
   const [categoryTab, setCategoryTab] = useState("all");
@@ -33,6 +36,9 @@ export default function Product({ product }) {
   const [titleInputValue, setTitleInputValue] = useState("");
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
   const [productPicture, setProductPicture] = useState("");
+  const [productGallery, setProductGallery] = useState([
+    ...(product?.productGallery || []),
+  ]);
   const [brandTab, setBrandTab] = useState("brand");
   const [productBrand, setProductBrand] = useState("");
   const [brandName, setBrandName] = useState("");
@@ -64,7 +70,6 @@ export default function Product({ product }) {
       setIsProductImageDeleted(product?.productImage ? false : true);
       setTagValueArray(product?.seo?.productTags || []);
       setProductPicture(product?.productImage);
-      setProductGallery(product?.productGallery || []);
       setProductStatus(product?.productStatus);
       setCategoryId(product?.categoryId);
       setTitleInputValue(product?.seo?.productTitle || "");
@@ -90,6 +95,15 @@ export default function Product({ product }) {
 
     fetchData();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (product?.productGallery || selectedGalleryImages.length > 0) {
+      setProductGallery([
+        ...(product?.productGallery || []),
+        ...selectedGalleryImages,
+      ]);
+    }
+  }, [product, selectedGalleryImages]);
 
   const calculateTitleProgress = (value) => {
     let progress = (value.length / 100) * 100;
@@ -133,76 +147,6 @@ export default function Product({ product }) {
     setDescriptionInputValue(event.target.value);
   };
 
-  const handleProductImgFileChange = async (event) => {
-    const file = event.target.files[0];
-    setIsLoading(true);
-
-    try {
-      const uploadedImageUrl = await handleUpload(file);
-
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      setIsLoading(false);
-    }
-  };
-
-  const handleGalleryUpload = async (file) => {
-    const apiKey = "7a0f43e157252e0ca3031dea1d8dcccd";
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      const response = await fetch(
-        `https://api.imgbb.com/1/upload?key=${apiKey}`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        return data.data.url;
-      } else {
-        throw new Error("Failed to upload image");
-      }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      throw error;
-    }
-  };
-
-  const handleGalleryImgFileChange = async (event) => {
-    const files = event.target.files;
-    const maxImages = 9;
-
-    setIsLoading(true);
-
-    const uploadPromises = [];
-
-    for (let i = 0; i < Math.min(files.length, maxImages); i++) {
-      uploadPromises.push(handleGalleryUpload(files[i]));
-    }
-
-    try {
-      const uploadedImageUrls = await Promise.all(uploadPromises);
-      setProductGallery((prevGallery) => [
-        ...prevGallery,
-        ...uploadedImageUrls,
-      ]);
-    } catch (error) {
-      console.error("Error uploading images:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleTagValue = (e) => {
     e.preventDefault();
     const newTagValueArray = [...tagValueArray, tagInputValue];
@@ -233,7 +177,7 @@ export default function Product({ product }) {
       productBrand: e.target.productBrand.value,
       productImage: selectedImages ? selectedImages : productPicture,
       isTrash: false,
-      productGallery: selectedGalleryImages ? [...selectedGalleryImages, ...productGallery] : productGallery,
+      productGallery: productGallery,
       productVideos: [],
       productDescription: productDescription,
       productShortDescription: productShortDescription,
@@ -282,6 +226,7 @@ export default function Product({ product }) {
 
       if (response) {
         router.push("/dashboard/products");
+        dispatch(removeAllGalleryImages());
       } else {
         const errorData = await response.json();
         console.log("Failed to add product:", errorData.response.data);
@@ -298,8 +243,25 @@ export default function Product({ product }) {
   };
 
   const handleRemoveProductGallery = async (image) => {
-    dispatch(removeGalleryImage(image));
-    setIsProductGalleryDeleted(true);
+    try {
+      // Remove the selected image from productGallery
+      const updatedGallery = productGallery.filter(
+        (galleryImage) => galleryImage !== image
+      );
+
+      // Update the state
+      setProductGallery(updatedGallery);
+
+      // Indicate that an image has been deleted
+      setIsProductGalleryDeleted(true);
+
+      // If the image exists in selectedGalleryImages, dispatch the action
+      if (selectedGalleryImages.includes(image)) {
+        dispatch(removeGalleryImage(image));
+      }
+    } catch (error) {
+      console.error("Error removing image from product gallery:", error);
+    }
   };
 
   const handleCreateBrand = async (e) => {
@@ -551,7 +513,7 @@ export default function Product({ product }) {
                     <h5 className="text-md font-bold mb-3">Image Gallery</h5>
 
                     <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
-                      {selectedGalleryImages.map((image, index) => (
+                      {productGallery?.map((image, index) => (
                         <div className="relative" key={index}>
                           <Image
                             width={100}
@@ -606,7 +568,7 @@ export default function Product({ product }) {
 
                     {!product?.productGallery && (
                       <div className="grid grid-cols-3 justify-between items-start gap-5 w-full">
-                        {productGallery.map((image, index) => (
+                        {productGallery?.map((image, index) => (
                           <Image
                             width={100}
                             height={100}
