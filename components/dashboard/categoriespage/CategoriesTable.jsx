@@ -61,6 +61,7 @@ export default function CategoriesTable({ AllCategories }) {
       if (response) {
         setMessage("Category added successfully!");
         setCategories([...categories, response?.category]);
+        setMessage("");
       } else {
         setError("Failed to add category. Please try again.");
       }
@@ -205,7 +206,6 @@ export default function CategoriesTable({ AllCategories }) {
           </td>
         </tr>
 
-      
         {renderSubcategories(subcategory.subCategories, level + 2)}
       </>
     ));
