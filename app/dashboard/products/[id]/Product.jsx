@@ -244,18 +244,14 @@ export default function Product({ product }) {
 
   const handleRemoveProductGallery = async (image) => {
     try {
-      // Remove the selected image from productGallery
       const updatedGallery = productGallery.filter(
         (galleryImage) => galleryImage !== image
       );
 
-      // Update the state
       setProductGallery(updatedGallery);
 
-      // Indicate that an image has been deleted
       setIsProductGalleryDeleted(true);
 
-      // If the image exists in selectedGalleryImages, dispatch the action
       if (selectedGalleryImages.includes(image)) {
         dispatch(removeGalleryImage(image));
       }
@@ -287,16 +283,6 @@ export default function Product({ product }) {
         return prevCategoryId.filter((id) => id !== categoryId);
       } else {
         return [...prevCategoryId, categoryId];
-      }
-    });
-  };
-
-  const handleSubCatCheckboxClick = (subcategoryId) => {
-    setCategoryId((prevCategoryId) => {
-      if (prevCategoryId.includes(subcategoryId)) {
-        return prevCategoryId.filter((id) => id !== subcategoryId);
-      } else {
-        return [...prevCategoryId, subcategoryId];
       }
     });
   };
