@@ -37,7 +37,6 @@ export default function ProductTable({ AllProducts }) {
     setSearchQuery("");
   };
 
-  // Filter data based on the filter state
   const filteredData = data
     .filter((item) => {
       if (filter === "Draft") {
@@ -76,7 +75,6 @@ export default function ProductTable({ AllProducts }) {
 
   const sortedData = sortData(filteredData, sortBy, sortDirection);
 
-  // Pagination
   const indexOfLastData = currentPage * dataPerPage;
   const indexOfFirstData = indexOfLastData - dataPerPage;
   const currentData = sortedData.slice(indexOfFirstData, indexOfLastData);
@@ -173,45 +171,47 @@ export default function ProductTable({ AllProducts }) {
 
       const duplicatedProductData = {
         productName: newProductName,
-        categoryId: product.categoryId,
-        productBrand: product.productBrand,
+        categoryId: product?.categoryId,
+        productBrand: product?.productBrand,
         productImage:
           product.productImage || "https://i.ibb.co/sqPhfrt/notimgpng.png",
         isTrash: false,
-        productGallery: product.productGallery,
-        productVideos: product.productVideos || [],
-        productSpecification: product.productSpecification,
-        productDescription: product.productDescription,
-        productShortDescription: product.productShortDescription,
-        productStatus: product.productStatus,
+        productGallery: product?.productGallery,
+        productVideos:  [],
+        productSpecification: product?.productSpecification,
+        productDescription: product?.productDescription,
+        productShortDescription: product?.productShortDescription,
+        productStatus: "Draft",
         seo: {
           productTitle: `${newProductName} at Best Electronics`,
-          prodDescription: product.seo.prodDescription,
-          productTags: product.seo.productTags,
-          productNotes: product.seo.productNotes,
+          prodDescription:
+            "Best Electronics is the leading provider of high-quality electronics products. We offer a wide range of products including laptops, mobile phones, tablets, cameras, and more.",
+          productTags: product?.seo?.productTags,
+          productNotes: product?.seo?.productNotes,
         },
         general: {
-          regularPrice: product.general.regularPrice,
-          salePrice: product.general.salePrice,
-          taxStatus: product.general.taxStatus,
-          taxClass: product.general.taxClass,
+          regularPrice: product?.general?.regularPrice,
+          salePrice: product?.general?.salePrice,
+          taxStatus: product?.general?.taxStatus,
+          taxClass: product?.general?.taxClass,
         },
         inventory: {
-          sku: product.inventory.sku + " (copy)",
-          stockManagement: product.inventory.stockManagement,
-          stockStatus: product.inventory.stockStatus,
-          soldIndividually: product.inventory.soldIndividually,
-          inventoryStatus: product.inventory.inventoryStatus,
+          sku: " ",
+          stockManagement: product?.inventory?.stockManagement || false,
+          stockStatus: product?.inventory?.stockStatus || "Out of Stock",
+          soldIndividually: product?.inventory?.soldIndividually || false,
+          inventoryStatus:
+            product?.inventory?.inventoryStatus || "Online & Offline",
         },
         shipping: {
-          weight: product.shipping.weight,
+          weight: product?.shipping?.weight || 0,
           productDimensions: {
-            length: product.shipping.productDimensions.length,
-            width: product.shipping.productDimensions.width,
-            height: product.shipping.productDimensions.height,
+            length: product?.shipping?.productDimensions?.length || 0,
+            width: product?.shipping?.productDimensions?.width || 0,
+            height: product?.shipping?.productDimensions?.height || 0,
           },
         },
-        date: new Date().toISOString(),
+        date: new Date(),
       };
 
       const response = await fetchApi(
@@ -474,7 +474,7 @@ export default function ProductTable({ AllProducts }) {
                           </td>
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {/* {formatTime(item?.date)} */}
-                            {item?.date}
+                            {item?.CreatedAt}
                           </td>
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap">
                             <Link href={`/dashboard/products/${item._id}`}>

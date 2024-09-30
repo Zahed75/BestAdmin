@@ -190,6 +190,7 @@ export default function AddProductPage() {
         localStorage.removeItem("Description");
         localStorage.removeItem("ShortDescription");
         dispatch(removeAllGalleryImages());
+        dispatch(removeImage());
         router.push("/dashboard/products");
       } else {
         const errorData = await response.json();
