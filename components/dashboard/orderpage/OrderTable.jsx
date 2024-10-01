@@ -35,6 +35,28 @@ export default function OrderTable({ AllOrders }) {
     setOrders(AllOrders || []);
   }, [AllOrders]);
 
+
+  const totalOrders = AllOrders.length;
+  const uniqueCustomers = new Set(
+    AllOrders.map(order => order.customer)
+  ).size;
+  let deliveredCount = 0;
+  let cancelledCount = 0;
+  let receivedCount = 0;
+  AllOrders.forEach(order => {
+      if (order.orderStatus === 'Delivered') {
+          deliveredCount++;
+      } else if (order.orderStatus === 'Cancelled') {
+          cancelledCount++;
+      } else if (order.orderStatus === 'Received') {
+        receivedCount++;
+      }
+  });
+
+
+
+
+
   const titleData = [
     "All",
     "Received",
@@ -48,28 +70,29 @@ export default function OrderTable({ AllOrders }) {
 
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
-
+  
     const img = new Image();
     img.src = "https://i.ibb.co/RpLHjCv/log.png";
     img.onload = () => {
       // Set font size
       doc.setFontSize(12);
-
+  
+      // Header information
       doc.text("Order Summary Report:", 10, 20);
-
+  
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
       doc.text("Payment Method: Online payment", 10, 30);
       doc.text("Report Generated at 09:42 AM, Jul 01, 2024", 10, 35);
-
+  
       doc.setTextColor(0, 0, 0);
       doc.text("Account Details:", 10, 45);
-
+  
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
       doc.text("Account Name: Syed Zaman", 10, 55);
       doc.text("Account Address: Head Office", 10, 60);
-
+  
       // Add the company logo
       const logoWidth = 90;
       const logoHeight = 15;
@@ -78,14 +101,13 @@ export default function OrderTable({ AllOrders }) {
       const logoX = pageWidth - logoWidth - rightMargin;
       const logoY = 10;
       doc.addImage(img, "PNG", logoX, logoY, logoWidth, logoHeight);
-
-      // Head Office (bold)
+  
+      // Head Office information
       const headOfficeX = logoX;
       const headOfficeY = logoY + logoHeight + 20;
       doc.setTextColor(0, 0, 0);
       doc.text("Head Office:", headOfficeX, headOfficeY);
-
-      // Other text (gray)
+  
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
       doc.text(
@@ -94,8 +116,11 @@ export default function OrderTable({ AllOrders }) {
         headOfficeY + 10
       );
       doc.text("Dhaka, Bangladesh", headOfficeX, headOfficeY + 15);
-
-      // Add the table
+  
+      // Calculate the total price
+      const totalPrice = pdfData?.reduce((sum, item) => sum + item.totalPrice, 0);
+  
+      // Generate the table
       doc.autoTable({
         html: "#my-table",
         startY: 70,
@@ -103,13 +128,116 @@ export default function OrderTable({ AllOrders }) {
           fillColor: "#F26522",
           textColor: [255, 255, 255],
         },
+        columnStyles: {
+          0: { cellWidth: 40 },  // Order column width
+          1: { cellWidth: 45 },  // Customer column width
+          2: { cellWidth: 30 },  // Phone column width
+          3: { cellWidth: 40 },  // Payment Method column width
+          4: { cellWidth: 40 },  // Order time column width
+          5: { cellWidth: 20 },  // Channel column width
+          6: { cellWidth: 30 },  // Status column width
+          7: { cellWidth: 30 },  // Amount column width
+        },
         margin: { left: 10, right: 10 },
       });
+  
+    
+    
+    const finalY = doc.lastAutoTable.finalY || 70; 
+    const marginBottom = 20; 
+    const totalWidth = doc.getStringUnitWidth(`Total Price: ${totalPrice.toFixed(2)} BDT`) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+    const pageHeight = doc.internal.pageSize.getHeight();
+    
+   
+    const rightX = pageWidth - totalWidth - 25;
+    const leftX = 25;
+  
+    doc.setFontSize(15);
+    doc.setTextColor(0, 0, 0);
+    
+    
+    doc.text(`Total Price: ${totalPrice.toFixed(2)} BDT`, rightX, pageHeight - marginBottom - 20);
+    doc.text(`Total Orders: ${totalOrders}`, rightX, pageHeight - marginBottom - 10);
+    doc.text(`Total Customers: ${uniqueCustomers}`, rightX, pageHeight - marginBottom);
 
-      // Save the PDF
-      doc.save("dataTable.pdf");
+    
+    const deliveredPercentage = (deliveredCount / totalOrders * 100).toFixed(0) + '%'; 
+    const cancelledPercentage = (cancelledCount / totalOrders * 100).toFixed(0) + '%'; 
+    const receivedPercentage = (receivedCount / totalOrders * 100).toFixed(0) + '%'; 
+
+    doc.text(`Delivered:   ${deliveredCount}    ${deliveredPercentage}`, leftX, pageHeight - marginBottom - 20);
+    doc.text(`Cancelled:   ${cancelledCount}    ${cancelledPercentage}`, leftX, pageHeight - marginBottom - 10);
+    doc.text(`Received:   ${receivedCount}    ${receivedPercentage}`, leftX, pageHeight - marginBottom - 0);
+
+    doc.save("dataTable.pdf");
     };
   };
+  
+
+  // const exportPdf = async () => {
+  //   const doc = new jsPDF({ orientation: "landscape" });
+
+  //   const img = new Image();
+  //   img.src = "https://i.ibb.co/RpLHjCv/log.png";
+  //   img.onload = () => {
+  //     // Set font size
+  //     doc.setFontSize(12);
+
+  //     doc.text("Order Summary Report:", 10, 20);
+
+  //     doc.setFont("helvetica", "normal");
+  //     doc.setTextColor(128, 128, 128);
+  //     doc.text("Payment Method: Online payment", 10, 30);
+  //     doc.text("Report Generated at 09:42 AM, Jul 01, 2024", 10, 35);
+
+  //     doc.setTextColor(0, 0, 0);
+  //     doc.text("Account Details:", 10, 45);
+
+  //     doc.setFont("helvetica", "normal");
+  //     doc.setTextColor(128, 128, 128);
+  //     doc.text("Account Name: Syed Zaman", 10, 55);
+  //     doc.text("Account Address: Head Office", 10, 60);
+
+  //     // Add the company logo
+  //     const logoWidth = 90;
+  //     const logoHeight = 15;
+  //     const rightMargin = 10;
+  //     const pageWidth = doc.internal.pageSize.getWidth();
+  //     const logoX = pageWidth - logoWidth - rightMargin;
+  //     const logoY = 10;
+  //     doc.addImage(img, "PNG", logoX, logoY, logoWidth, logoHeight);
+
+  //     // Head Office (bold)
+  //     const headOfficeX = logoX;
+  //     const headOfficeY = logoY + logoHeight + 20;
+  //     doc.setTextColor(0, 0, 0);
+  //     doc.text("Head Office:", headOfficeX, headOfficeY);
+
+  //     // Other text (gray)
+  //     doc.setFont("helvetica", "normal");
+  //     doc.setTextColor(128, 128, 128);
+  //     doc.text(
+  //       "Level 16, City Center, 90/1, Motijheel C/A",
+  //       headOfficeX,
+  //       headOfficeY + 10
+  //     );
+  //     doc.text("Dhaka, Bangladesh", headOfficeX, headOfficeY + 15);
+
+  //     // Add the table
+  //     doc.autoTable({
+  //       html: "#my-table",
+  //       startY: 70,
+  //       headStyles: {
+  //         fillColor: "#F26522",
+  //         textColor: [255, 255, 255],
+  //       },
+  //       margin: { left: 10, right: 10 },
+  //     });
+
+  //     // Save the PDF
+  //     doc.save("dataTable.pdf");
+  //   };
+  // };
 
   const handleTitleButtonClick = (title) => {
     setSearchQuery(title === "All" ? "" : title);
@@ -135,6 +263,7 @@ export default function OrderTable({ AllOrders }) {
   const indexOfLastData = currentPage * dataPerPage;
   const indexOfFirstData = indexOfLastData - dataPerPage;
   const currentData = sortedData?.slice(indexOfFirstData, indexOfLastData);
+  const pdfData = sortedData;
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -540,7 +669,7 @@ export default function OrderTable({ AllOrders }) {
                   {/* table for pdf */}
                   <table
                     id="my-table"
-                    className="min-w-full table-fixed dark:divide-gray-700 hidden"
+                    className="min-w-full table-auto dark:divide-gray-700 hidden"
                   >
                     <thead className="bg-gray-100 ">
                       <tr>
@@ -552,16 +681,29 @@ export default function OrderTable({ AllOrders }) {
                         </th>
                         <th
                           scope="col"
-                          className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
-                          Order time
+                          Customer
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                          Phone 
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                           paymentMethod
                         </th>
                         <th
                           scope="col"
                           className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
-                          Amount
+                          Order time
                         </th>
+                       
                         <th
                           scope="col"
                           className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
@@ -575,10 +717,16 @@ export default function OrderTable({ AllOrders }) {
                         >
                           Status
                         </th>
+                        <th
+                          scope="col"
+                          className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                        >
+                          Amount
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {currentData?.map((item) => (
+                      {pdfData?.map((item) => (
                         <tr
                           key={item._id}
                           className={`${
@@ -586,20 +734,23 @@ export default function OrderTable({ AllOrders }) {
                           } hover:bg-gray-100 duration-700`}
                         >
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                            <Link href={`/dashboard/orders/${item._id}`}>
                               {item.orderId}
-                            </Link>
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
+                              {item.firstName + " " + item.lastName}
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">                       
+                              {item.phoneNumber}
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">                       
+                              {item.paymentMethod}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                             {formatDate(item.createdAt)}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                            {item.totalPrice}
-                          </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item.channel}
                           </td>
-
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
                               className={`${
@@ -622,6 +773,9 @@ export default function OrderTable({ AllOrders }) {
                             >
                               {item.orderStatus}
                             </span>
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                            {item.totalPrice}
                           </td>
                         </tr>
                       ))}
