@@ -29,33 +29,33 @@ export default function OrderTable({ AllOrders }) {
 
   const router = useRouter();
 
-  const data = filterData.length > 0? filterData : orders;
+  const data = filterData.length > 0 ? filterData : orders;
 
   useEffect(() => {
     setOrders(AllOrders || []);
   }, [AllOrders]);
 
-
   const totalOrders = AllOrders.length;
-  const uniqueCustomers = new Set(
-    AllOrders.map(order => order.customer)
-  ).size;
+  const uniqueCustomers = new Set(AllOrders.map((order) => order.customer))
+    .size;
   let deliveredCount = 0;
   let cancelledCount = 0;
-  let receivedCount = 0;
-  AllOrders.forEach(order => {
-      if (order.orderStatus === 'Delivered') {
-          deliveredCount++;
-      } else if (order.orderStatus === 'Cancelled') {
-          cancelledCount++;
-      } else if (order.orderStatus === 'Received') {
-        receivedCount++;
-      }
+  let otherCount = 0;
+  let deliveredTotalTaka = 0;
+  let cancelledTotalTaka = 0;
+  let otherTotalTaka = 0;
+  AllOrders.forEach((order) => {
+    if (order.orderStatus === "Delivered") {
+      deliveredCount++;
+      deliveredTotalTaka += order.totalPrice;
+    } else if (order.orderStatus === "Cancelled") {
+      cancelledCount++;
+      cancelledTotalTaka += order.totalPrice;
+    } else {
+      otherCount++;
+      otherTotalTaka += order.totalPrice;
+    }
   });
-
-
-
-
 
   const titleData = [
     "All",
@@ -70,29 +70,29 @@ export default function OrderTable({ AllOrders }) {
 
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
-  
+
     const img = new Image();
     img.src = "https://i.ibb.co/RpLHjCv/log.png";
     img.onload = () => {
       // Set font size
       doc.setFontSize(12);
-  
+
       // Header information
       doc.text("Order Summary Report:", 10, 20);
-  
+
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
       doc.text("Payment Method: Online payment", 10, 30);
       doc.text("Report Generated at 09:42 AM, Jul 01, 2024", 10, 35);
-  
+
       doc.setTextColor(0, 0, 0);
       doc.text("Account Details:", 10, 45);
-  
+
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
       doc.text("Account Name: Syed Zaman", 10, 55);
       doc.text("Account Address: Head Office", 10, 60);
-  
+
       // Add the company logo
       const logoWidth = 90;
       const logoHeight = 15;
@@ -101,13 +101,13 @@ export default function OrderTable({ AllOrders }) {
       const logoX = pageWidth - logoWidth - rightMargin;
       const logoY = 10;
       doc.addImage(img, "PNG", logoX, logoY, logoWidth, logoHeight);
-  
+
       // Head Office information
       const headOfficeX = logoX;
       const headOfficeY = logoY + logoHeight + 20;
       doc.setTextColor(0, 0, 0);
       doc.text("Head Office:", headOfficeX, headOfficeY);
-  
+
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
       doc.text(
@@ -116,11 +116,12 @@ export default function OrderTable({ AllOrders }) {
         headOfficeY + 10
       );
       doc.text("Dhaka, Bangladesh", headOfficeX, headOfficeY + 15);
-  
-      // Calculate the total price
-      const totalPrice = pdfData?.reduce((sum, item) => sum + item.totalPrice, 0);
-  
-      // Generate the table
+
+      const totalPrice = pdfData?.reduce(
+        (sum, item) => sum + item.totalPrice,
+        0
+      );
+
       doc.autoTable({
         html: "#my-table",
         startY: 70,
@@ -129,115 +130,107 @@ export default function OrderTable({ AllOrders }) {
           textColor: [255, 255, 255],
         },
         columnStyles: {
-          0: { cellWidth: 40 },  // Order column width
-          1: { cellWidth: 45 },  // Customer column width
-          2: { cellWidth: 30 },  // Phone column width
-          3: { cellWidth: 40 },  // Payment Method column width
-          4: { cellWidth: 40 },  // Order time column width
-          5: { cellWidth: 20 },  // Channel column width
-          6: { cellWidth: 30 },  // Status column width
-          7: { cellWidth: 30 },  // Amount column width
+          0: { cellWidth: 40 }, // Order column width
+          1: { cellWidth: 45 }, // Customer column width
+          2: { cellWidth: 30 }, // Phone column width
+          3: { cellWidth: 40 }, // Payment Method column width
+          4: { cellWidth: 40 }, // Order time column width
+          5: { cellWidth: 20 }, // Channel column width
+          6: { cellWidth: 30 }, // Status column width
+          7: { cellWidth: 30 }, // Amount column width
         },
         margin: { left: 10, right: 10 },
       });
-  
-    
-    
-    const finalY = doc.lastAutoTable.finalY || 70; 
-    const marginBottom = 20; 
-    const totalWidth = doc.getStringUnitWidth(`Total Price: ${totalPrice.toFixed(2)} BDT`) * doc.internal.getFontSize() / doc.internal.scaleFactor;
-    const pageHeight = doc.internal.pageSize.getHeight();
-    
-   
-    const rightX = pageWidth - totalWidth - 25;
-    const leftX = 25;
-  
-    doc.setFontSize(15);
-    doc.setTextColor(0, 0, 0);
-    
-    
-    doc.text(`Total Price: ${totalPrice.toFixed(2)} BDT`, rightX, pageHeight - marginBottom - 20);
-    doc.text(`Total Orders: ${totalOrders}`, rightX, pageHeight - marginBottom - 10);
-    doc.text(`Total Customers: ${uniqueCustomers}`, rightX, pageHeight - marginBottom);
 
-    
-    const deliveredPercentage = (deliveredCount / totalOrders * 100).toFixed(0) + '%'; 
-    const cancelledPercentage = (cancelledCount / totalOrders * 100).toFixed(0) + '%'; 
-    const receivedPercentage = (receivedCount / totalOrders * 100).toFixed(0) + '%'; 
+      const marginBottom = 20;
+      const pageHeight = doc.internal.pageSize.getHeight();
 
-    doc.text(`Delivered:   ${deliveredCount}    ${deliveredPercentage}`, leftX, pageHeight - marginBottom - 20);
-    doc.text(`Cancelled:   ${cancelledCount}    ${cancelledPercentage}`, leftX, pageHeight - marginBottom - 10);
-    doc.text(`Received:   ${receivedCount}    ${receivedPercentage}`, leftX, pageHeight - marginBottom - 0);
+      const rightX = pageWidth - 90; // Adjust this to position it on the right
+      const lineXStart = rightX;
+      const lineXEnd = rightX + 75; // Length of the underline
 
-    doc.save("dataTable.pdf");
+      const textBlockHeight = 30;
+      const tableStartY = pageHeight - marginBottom - textBlockHeight + 3;
+
+      // Add text on the right
+      doc.setFontSize(15);
+      doc.setTextColor(0, 0, 0);
+      doc.text(
+        `Total Price: ${totalPrice.toFixed(2)} BDT`,
+        rightX,
+        pageHeight - marginBottom - 20
+      );
+      doc.text(
+        `Total Orders: ${totalOrders}`,
+        rightX,
+        pageHeight - marginBottom - 10
+      );
+      doc.text(
+        `Total Customers: ${uniqueCustomers}`,
+        rightX,
+        pageHeight - marginBottom
+      );
+
+      // Underline for the text
+      doc.setDrawColor(0, 0, 0); // Black underline
+      doc.line(
+        lineXStart,
+        pageHeight - marginBottom - 18,
+        lineXEnd,
+        pageHeight - marginBottom - 18
+      ); // Underline for Total Price
+      doc.line(
+        lineXStart,
+        pageHeight - marginBottom - 8,
+        lineXEnd,
+        pageHeight - marginBottom - 8
+      ); // Underline for Total Orders
+      doc.line(
+        lineXStart,
+        pageHeight - marginBottom + 2,
+        lineXEnd,
+        pageHeight - marginBottom + 2
+      ); // Underline for Total Customers
+
+      // Calculate the percentages for the table data
+      const deliveredPercentage =
+        ((deliveredCount / totalOrders) * 100).toFixed(0) + "%";
+      const cancelledPercentage =
+        ((cancelledCount / totalOrders) * 100).toFixed(0) + "%";
+      const otherPercentage =
+        ((otherCount / totalOrders) * 100).toFixed(0) + "%";
+
+      // Create the table on the left, aligned with the text on the right
+      doc.autoTable({
+        head: [["Status", "Count", "Percentage", "Total Amount"]],
+        body: [
+          [
+            `Delivered`,
+            deliveredCount,
+            `${deliveredPercentage}`,
+            `${deliveredTotalTaka.toFixed(2)} BDT`,
+          ],
+          [
+            `Cancelled`,
+            cancelledCount,
+            `${cancelledPercentage}`,
+            `${cancelledTotalTaka.toFixed(2)} BDT`,
+          ],
+          [
+            `Other`,
+            otherCount,
+            `${otherPercentage}`,
+            `${otherTotalTaka.toFixed(2)} BDT`,
+          ],
+        ],
+        startY: tableStartY, // Align table with the bottom text
+        headStyles: { fillColor: "#F26522", textColor: [255, 255, 255] },
+        margin: { left: 10, right: pageWidth / 2 + 10 },
+      });
+
+      doc.save("dataTable.pdf");
     };
   };
-  
-
-  // const exportPdf = async () => {
-  //   const doc = new jsPDF({ orientation: "landscape" });
-
-  //   const img = new Image();
-  //   img.src = "https://i.ibb.co/RpLHjCv/log.png";
-  //   img.onload = () => {
-  //     // Set font size
-  //     doc.setFontSize(12);
-
-  //     doc.text("Order Summary Report:", 10, 20);
-
-  //     doc.setFont("helvetica", "normal");
-  //     doc.setTextColor(128, 128, 128);
-  //     doc.text("Payment Method: Online payment", 10, 30);
-  //     doc.text("Report Generated at 09:42 AM, Jul 01, 2024", 10, 35);
-
-  //     doc.setTextColor(0, 0, 0);
-  //     doc.text("Account Details:", 10, 45);
-
-  //     doc.setFont("helvetica", "normal");
-  //     doc.setTextColor(128, 128, 128);
-  //     doc.text("Account Name: Syed Zaman", 10, 55);
-  //     doc.text("Account Address: Head Office", 10, 60);
-
-  //     // Add the company logo
-  //     const logoWidth = 90;
-  //     const logoHeight = 15;
-  //     const rightMargin = 10;
-  //     const pageWidth = doc.internal.pageSize.getWidth();
-  //     const logoX = pageWidth - logoWidth - rightMargin;
-  //     const logoY = 10;
-  //     doc.addImage(img, "PNG", logoX, logoY, logoWidth, logoHeight);
-
-  //     // Head Office (bold)
-  //     const headOfficeX = logoX;
-  //     const headOfficeY = logoY + logoHeight + 20;
-  //     doc.setTextColor(0, 0, 0);
-  //     doc.text("Head Office:", headOfficeX, headOfficeY);
-
-  //     // Other text (gray)
-  //     doc.setFont("helvetica", "normal");
-  //     doc.setTextColor(128, 128, 128);
-  //     doc.text(
-  //       "Level 16, City Center, 90/1, Motijheel C/A",
-  //       headOfficeX,
-  //       headOfficeY + 10
-  //     );
-  //     doc.text("Dhaka, Bangladesh", headOfficeX, headOfficeY + 15);
-
-  //     // Add the table
-  //     doc.autoTable({
-  //       html: "#my-table",
-  //       startY: 70,
-  //       headStyles: {
-  //         fillColor: "#F26522",
-  //         textColor: [255, 255, 255],
-  //       },
-  //       margin: { left: 10, right: 10 },
-  //     });
-
-  //     // Save the PDF
-  //     doc.save("dataTable.pdf");
-  //   };
-  // };
 
   const handleTitleButtonClick = (title) => {
     setSearchQuery(title === "All" ? "" : title);
@@ -304,9 +297,7 @@ export default function OrderTable({ AllOrders }) {
           "DELETE"
         );
         if (response) {
-          updatedOrders = updatedOrders.filter(
-            (item) => item._id !== itemId
-          );
+          updatedOrders = updatedOrders.filter((item) => item._id !== itemId);
         } else {
           console.log(`Failed to delete category with ID ${itemId}.`);
         }
@@ -689,13 +680,13 @@ export default function OrderTable({ AllOrders }) {
                           scope="col"
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
-                          Phone 
+                          Phone
                         </th>
                         <th
                           scope="col"
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
-                           paymentMethod
+                          paymentMethod
                         </th>
                         <th
                           scope="col"
@@ -703,7 +694,7 @@ export default function OrderTable({ AllOrders }) {
                         >
                           Order time
                         </th>
-                       
+
                         <th
                           scope="col"
                           className="px-8 lg:px-0 py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
@@ -734,16 +725,16 @@ export default function OrderTable({ AllOrders }) {
                           } hover:bg-gray-100 duration-700`}
                         >
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                              {item.orderId}
+                            {item.orderId}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                              {item.firstName + " " + item.lastName}
+                            {item.firstName + " " + item.lastName}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">                       
-                              {item.phoneNumber}
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
+                            {item.phoneNumber}
                           </td>
-                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">                       
-                              {item.paymentMethod}
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
+                            {item.paymentMethod}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                             {formatDate(item.createdAt)}

@@ -14,9 +14,9 @@ export default function ProductsPage() {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  // console.log(product?.products?.products); 
-
-  const AllProducts = product?.products?.products ? [...product.products.products].reverse() : [];
+  const AllProducts = product?.products?.products
+    ? [...product.products.products].reverse()
+    : [];
 
   const data = AllProducts || [];
 
