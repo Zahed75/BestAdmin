@@ -270,6 +270,7 @@ export default function OrderTable({ AllOrders }) {
       ? `${formatDate(startDate)} to ${formatDate(endDate)}`
       : `${defaultDate}`;
 
+
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
 
@@ -281,7 +282,6 @@ export default function OrderTable({ AllOrders }) {
 
       // Header information
       doc.text("Order Summary Report:", 10, 20);
-
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
       doc.text(`Payment Method: ${paymentMethod}`, 10, 30);
@@ -356,47 +356,44 @@ export default function OrderTable({ AllOrders }) {
       const lineXEnd = rightX + 75; // Length of the underline
 
       const textBlockHeight = 30;
-      const tableStartY = pageHeight - marginBottom - textBlockHeight + 3;
+      const tableStartY = pageHeight - marginBottom - textBlockHeight - 5;
+
+      // Calculate total payments
+      const onlinePayments = data
+        .filter((order) => order.paymentMethod === "Online Payment")
+        .reduce((sum, order) => sum + order.totalPrice, 0);
+      const codPayments = data
+        .filter((order) => order.paymentMethod === "Cash On Delivery")
+        .reduce((sum, order) => sum + order.totalPrice, 0);
+
+      // Calculate total orders for each payment method
+      const totalOnlineOrders = data.filter(
+        (order) => order.paymentMethod === "Online Payment"
+      ).length;
+      const totalCodOrders = data.filter(
+        (order) => order.paymentMethod === "Cash On Delivery"
+      ).length;
+
+      const paymentRatioOnline = totalOnlineOrders
+        ? ((onlinePayments / totalPrice) * 100).toFixed(2) + "%"
+        : "0%";
+      const paymentRatioCod = totalCodOrders
+        ? ((codPayments / totalPrice) * 100).toFixed(2) + "%"
+        : "0%";
 
       // Add text on the right
       doc.setFontSize(15);
       doc.setTextColor(0, 0, 0);
       doc.text(
-        `Total Price: ${totalPrice.toFixed(2)} BDT`,
+        `Online: ${paymentRatioOnline} `,
         rightX,
         pageHeight - marginBottom - 20
       );
       doc.text(
-        `Total Orders: ${totalOrders}`,
+        `Cash On Delivery: ${paymentRatioCod}`,
         rightX,
         pageHeight - marginBottom - 10
       );
-      doc.text(
-        `Total Customers: ${uniqueCustomers}`,
-        rightX,
-        pageHeight - marginBottom
-      );
-
-      // Underline for the text
-      doc.setDrawColor(0, 0, 0); // Black underline
-      doc.line(
-        lineXStart,
-        pageHeight - marginBottom - 18,
-        lineXEnd,
-        pageHeight - marginBottom - 18
-      ); // Underline for Total Price
-      doc.line(
-        lineXStart,
-        pageHeight - marginBottom - 8,
-        lineXEnd,
-        pageHeight - marginBottom - 8
-      ); // Underline for Total Orders
-      doc.line(
-        lineXStart,
-        pageHeight - marginBottom + 2,
-        lineXEnd,
-        pageHeight - marginBottom + 2
-      ); // Underline for Total Customers
 
       // Calculate the percentages for the table data
       const deliveredPercentage =
@@ -407,26 +404,53 @@ export default function OrderTable({ AllOrders }) {
         ((otherCount / totalOrders) * 100).toFixed(0) + "%";
 
       // Create the table on the left, aligned with the text on the right
+      const deliveredCustomers = new Set(
+        data
+          .filter((order) => order.orderStatus === "Delivered")
+          .map((order) => order.customer)
+      ).size;
+
+      const cancelledCustomers = new Set(
+        data
+          .filter((order) => order.orderStatus === "Cancelled")
+          .map((order) => order.customer)
+      ).size;
+
+      const totalCustomers =
+        deliveredCustomers + cancelledCustomers + otherCount;
+
       doc.autoTable({
-        head: [["Status", "Count", "Percentage", "Total Amount (BDT)"]],
+        head: [
+          ["Status", "Orders", "Customers", "Percentage", "Total Amount (BDT)"],
+        ],
         body: [
           [
             `Delivered`,
             deliveredCount,
+            deliveredCustomers,
             `${deliveredPercentage}`,
-            `${deliveredTotalTaka.toFixed(2)}`,
+            `${deliveredTotalTaka.toLocaleString()}`,
           ],
           [
             `Cancelled`,
             cancelledCount,
+            cancelledCustomers,
             `${cancelledPercentage}`,
-            `${cancelledTotalTaka.toFixed(2)}`,
+            `${cancelledTotalTaka.toLocaleString()}`,
           ],
           [
             `Other`,
             otherCount,
+            totalCustomers - deliveredCustomers - cancelledCustomers,
             `${otherPercentage}`,
-            `${otherTotalTaka.toFixed(2)}`,
+            `${otherTotalTaka.toLocaleString()}`,
+          ],
+          [
+            `Total`,
+            totalOrders,
+            totalCustomers,
+            `100%`,
+            `${totalPrice.toLocaleString()}`,
           ],
         ],
         startY: tableStartY, // Align table with the bottom text
@@ -665,7 +689,7 @@ export default function OrderTable({ AllOrders }) {
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
                             <span className="text-md">৳</span>
-                            {item.totalPrice}
+                            {item.totalPrice.toLocaleString()}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
                             {item.channel}
@@ -807,7 +831,7 @@ export default function OrderTable({ AllOrders }) {
                             </span>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                            {item.totalPrice}
+                            {item.totalPrice.toLocaleString()}
                           </td>
                         </tr>
                       ))}
