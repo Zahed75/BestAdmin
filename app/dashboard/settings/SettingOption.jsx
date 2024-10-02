@@ -704,7 +704,7 @@ export default function SettingOption() {
                         type="text"
                         id="sku"
                         defaultValue={"Best Electronics"}
-                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-fit md:w-full"
                       />
                     </div>
                   </div>
@@ -717,7 +717,7 @@ export default function SettingOption() {
                         type="text"
                         id="sku"
                         defaultValue={"Best Electronics"}
-                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-fit md:w-full"
                       />
                     </div>
                   </div>
@@ -735,14 +735,14 @@ export default function SettingOption() {
                         type="text"
                         id="sku"
                         defaultValue={"www.bestlectronics.com/email_logo.png"}
-                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-fit md:w-full"
                       />
                     </div>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 justify-between items-center my-5">
                   <h4 className="text-gray-600 text-sm ">Footer text</h4>
-                  <div className="">
+                  <div className="col-span-2 md:col-span-1">
                     <div className="flex justify-start items-center gap-2">
                       <textarea
                         type="text"
@@ -751,7 +751,7 @@ export default function SettingOption() {
                         defaultValue={
                           "Lorem ipsum dolor sit amet consectetur. Faucibus malesuada luctus netus purus sagittis consequat viverra."
                         }
-                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-fit md:w-full te"
                       />
                     </div>
                   </div>
