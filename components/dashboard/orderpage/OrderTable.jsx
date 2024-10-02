@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { CiMenuFries, CiMenuBurger } from "react-icons/ci";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import { FaCaretDown, FaFilter } from "react-icons/fa";
 import { MdFilterAltOff } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "@/redux/slice/usersSlice";
 
 export default function OrderTable({ AllOrders }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,27 +26,230 @@ export default function OrderTable({ AllOrders }) {
   const [showAction, setShowAction] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("Both Payment Methods");
   const [filterData, setFilterData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [orders, setOrders] = useState(AllOrders || []);
 
   const router = useRouter();
-
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.users.users);
   const data = filterData.length > 0 ? filterData : orders;
 
   useEffect(() => {
     setOrders(AllOrders || []);
   }, [AllOrders]);
 
-  const totalOrders = AllOrders.length;
-  const uniqueCustomers = new Set(AllOrders.map((order) => order.customer))
-    .size;
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  const titleData = [
+    "All",
+    "Received",
+    "Confirmed",
+    "Dispatched",
+    "Delivered",
+    "On-Hold",
+    "Cancelled",
+    "Spammed",
+  ];
+
+  const handleTitleButtonClick = (title) => {
+    setSearchQuery(title === "All" ? "" : title);
+  };
+
+  const filteredData = data?.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        value != null &&
+        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
+
+  const sortedData = filteredData?.sort((a, b) => {
+    if (!sortBy) return 0;
+    const aValue = a[sortBy]?.toString().toLowerCase();
+    const bValue = b[sortBy]?.toString().toLowerCase();
+    return sortDirection === "asc"
+      ? aValue.localeCompare(bValue)
+      : bValue.localeCompare(aValue);
+  });
+
+  const indexOfLastData = currentPage * dataPerPage;
+  const indexOfFirstData = indexOfLastData - dataPerPage;
+  const currentData = sortedData?.slice(indexOfFirstData, indexOfLastData);
+  const pdfData = sortedData;
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const firstItemIndex = (currentPage - 1) * dataPerPage + 1;
+  const lastItemIndex = Math.min(currentPage * dataPerPage, data?.length);
+  const totalItems = data?.length;
+
+  const showingText = `Showing ${firstItemIndex}-${lastItemIndex} of ${totalItems}`;
+
+  const handleSort = (column) => {
+    if (sortBy === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    setSelectedItems(selectAll ? [] : data.map((item) => item._id));
+  };
+
+  const handleSelectItem = (itemId) => {
+    setSelectedItems((prevSelectedItems) =>
+      prevSelectedItems.includes(itemId)
+        ? prevSelectedItems.filter((id) => id !== itemId)
+        : [...prevSelectedItems, itemId]
+    );
+  };
+
+  const handleDeleteOrder = async () => {
+    try {
+      let updatedOrders = [...orders];
+      for (const itemId of selectedItems) {
+        const response = await fetchApi(
+          `/order/deleteOrder/${itemId}`,
+          "DELETE"
+        );
+        if (response) {
+          updatedOrders = updatedOrders.filter((item) => item._id !== itemId);
+        } else {
+          console.log(`Failed to delete category with ID ${itemId}.`);
+        }
+      }
+      setSelectedItems([]);
+      setOrders(updatedOrders);
+      console.log("Selected categories deleted successfully!");
+    } catch (err) {
+      console.log("An error occurred while deleting selected categories.", err);
+    }
+  };
+
+  const handleUpdateOrder = async () => {
+    try {
+      for (const itemId of selectedItems) {
+        router.push(`/dashboard/orders/${itemId}`);
+      }
+    } catch (error) {
+      console.log(
+        "An error occurred while updating selected categories.",
+        error
+      );
+    }
+  };
+
+  function formatDate(dateString) {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    if (isNaN(date)) return "N/A";
+
+    const options = {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    return date.toLocaleDateString(undefined, options);
+  }
+
+  const advanceFilterHandler = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Destructure the form elements
+      const {
+        filterOrderStatus,
+        filterPaymentMethod,
+        filterChannel,
+        filterStartDate,
+        filterEndDate,
+      } = e.target.elements;
+
+      // Retrieve the filter values
+      const status = filterOrderStatus.value;
+      const paymentMethod = filterPaymentMethod.value;
+      const channel = filterChannel.value;
+      const startDate = filterStartDate.value
+        ? new Date(filterStartDate.value)
+        : null;
+      const endDate = filterEndDate.value
+        ? new Date(filterEndDate.value)
+        : null;
+
+      if (startDate && endDate && startDate > endDate) {
+        alert("Start date cannot be greater than end date.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (startDate && endDate) {
+        setStartDate(startDate);
+        setEndDate(endDate);
+      } else {
+        setStartDate(null);
+        setEndDate(null);
+      }
+
+      if (paymentMethod === "Both Payment Methods") {
+        setPaymentMethod("Both Payment Methods");
+      } else {
+        setPaymentMethod(paymentMethod);
+      }
+
+      // Filter orders based on the provided criteria
+      const filteredOrders = AllOrders.filter((order) => {
+        const orderDate = new Date(order.createdAt);
+
+        const statusMatch = !status || order.orderStatus === status;
+        const paymentMethodMatch =
+          " Both Payment Methods" || order.paymentMethod === paymentMethod;
+        const channelMatch = !channel || order.channel === channel;
+        const startDateMatch = !startDate || orderDate >= startDate;
+        const endDateMatch = !endDate || orderDate <= endDate;
+
+        return (
+          statusMatch &&
+          paymentMethodMatch &&
+          channelMatch &&
+          startDateMatch &&
+          endDateMatch
+        );
+      });
+
+      // Update state with the filtered data
+      if (filteredOrders.length === 0) {
+        setFilterData([]);
+      }
+      setFilterData(filteredOrders);
+      setShowFilter(false);
+      console.log("Filtered data:", filteredOrders);
+    } catch (error) {
+      console.log("An error occurred while filtering data.", error);
+    }
+
+    setIsLoading(false);
+  };
+
+  const totalOrders = data?.length;
+  const uniqueCustomers = new Set(data?.map((order) => order?.customer)).size;
   let deliveredCount = 0;
   let cancelledCount = 0;
   let otherCount = 0;
   let deliveredTotalTaka = 0;
   let cancelledTotalTaka = 0;
   let otherTotalTaka = 0;
-  AllOrders.forEach((order) => {
+  data?.forEach((order) => {
     if (order.orderStatus === "Delivered") {
       deliveredCount++;
       deliveredTotalTaka += order.totalPrice;
@@ -57,16 +262,12 @@ export default function OrderTable({ AllOrders }) {
     }
   });
 
-  const titleData = [
-    "All",
-    "Received",
-    "Confirmed",
-    "Dispatched",
-    "Delivered",
-    "On-Hold",
-    "Cancelled",
-    "Spammed",
-  ];
+  const today = new Date();
+  const defaultDate = formatDate(today);
+  const reportDate =
+    startDate && endDate
+      ? `${formatDate(startDate)} to ${formatDate(endDate)}`
+      : `${defaultDate}`;
 
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
@@ -82,15 +283,19 @@ export default function OrderTable({ AllOrders }) {
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
-      doc.text("Payment Method: Online payment", 10, 30);
-      doc.text("Report Generated at 09:42 AM, Jul 01, 2024", 10, 35);
+      doc.text(`Payment Method: ${paymentMethod}`, 10, 30);
+      doc.text(`Report Generated on: ${reportDate}`, 10, 35);
 
       doc.setTextColor(0, 0, 0);
       doc.text("Account Details:", 10, 45);
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
-      doc.text("Account Name: Syed Zaman", 10, 55);
+      doc.text(
+        `Account Name: ${users[0].firstName}  ${users[0].lastName}`,
+        10,
+        55
+      );
       doc.text("Account Address: Head Office", 10, 60);
 
       // Add the company logo
@@ -230,171 +435,6 @@ export default function OrderTable({ AllOrders }) {
 
       doc.save("dataTable.pdf");
     };
-  };
-
-  const handleTitleButtonClick = (title) => {
-    setSearchQuery(title === "All" ? "" : title);
-  };
-
-  const filteredData = data?.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        value != null &&
-        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  );
-
-  const sortedData = filteredData?.sort((a, b) => {
-    if (!sortBy) return 0;
-    const aValue = a[sortBy]?.toString().toLowerCase();
-    const bValue = b[sortBy]?.toString().toLowerCase();
-    return sortDirection === "asc"
-      ? aValue.localeCompare(bValue)
-      : bValue.localeCompare(aValue);
-  });
-
-  const indexOfLastData = currentPage * dataPerPage;
-  const indexOfFirstData = indexOfLastData - dataPerPage;
-  const currentData = sortedData?.slice(indexOfFirstData, indexOfLastData);
-  const pdfData = sortedData;
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const firstItemIndex = (currentPage - 1) * dataPerPage + 1;
-  const lastItemIndex = Math.min(currentPage * dataPerPage, data?.length);
-  const totalItems = data?.length;
-
-  const showingText = `Showing ${firstItemIndex}-${lastItemIndex} of ${totalItems}`;
-
-  const handleSort = (column) => {
-    if (sortBy === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(column);
-      setSortDirection("asc");
-    }
-  };
-
-  const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : data.map((item) => item._id));
-  };
-
-  const handleSelectItem = (itemId) => {
-    setSelectedItems((prevSelectedItems) =>
-      prevSelectedItems.includes(itemId)
-        ? prevSelectedItems.filter((id) => id !== itemId)
-        : [...prevSelectedItems, itemId]
-    );
-  };
-
-  const handleDeleteOrder = async () => {
-    try {
-      let updatedOrders = [...orders];
-      for (const itemId of selectedItems) {
-        const response = await fetchApi(
-          `/order/deleteOrder/${itemId}`,
-          "DELETE"
-        );
-        if (response) {
-          updatedOrders = updatedOrders.filter((item) => item._id !== itemId);
-        } else {
-          console.log(`Failed to delete category with ID ${itemId}.`);
-        }
-      }
-      setSelectedItems([]);
-      setOrders(updatedOrders);
-      console.log("Selected categories deleted successfully!");
-    } catch (err) {
-      console.log("An error occurred while deleting selected categories.", err);
-    }
-  };
-
-  const handleUpdateOrder = async () => {
-    try {
-      for (const itemId of selectedItems) {
-        router.push(`/dashboard/orders/${itemId}`);
-      }
-    } catch (error) {
-      console.log(
-        "An error occurred while updating selected categories.",
-        error
-      );
-    }
-  };
-
-  function formatDate(dateString) {
-    if (!dateString) return "N/A";
-
-    const date = new Date(dateString);
-    if (isNaN(date)) return "N/A";
-
-    const options = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    return date.toLocaleDateString(undefined, options);
-  }
-
-  const advanceFilterHandler = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Destructure the form elements
-      const {
-        filterOrderStatus,
-        filterPaymentMethod,
-        filterChannel,
-        filterStartDate,
-        filterEndDate,
-      } = e.target.elements;
-
-      // Retrieve the filter values
-      const status = filterOrderStatus.value;
-      const paymentMethod = filterPaymentMethod.value;
-      const channel = filterChannel.value;
-      const startDate = filterStartDate.value
-        ? new Date(filterStartDate.value)
-        : null;
-      const endDate = filterEndDate.value
-        ? new Date(filterEndDate.value)
-        : null;
-
-      // Filter orders based on the provided criteria
-      const filteredOrders = AllOrders.filter((order) => {
-        const orderDate = new Date(order.createdAt);
-
-        const statusMatch = !status || order.orderStatus === status;
-        const paymentMethodMatch =
-          !paymentMethod || order.paymentMethod === paymentMethod;
-        const channelMatch = !channel || order.channel === channel;
-        const startDateMatch = !startDate || orderDate >= startDate;
-        const endDateMatch = !endDate || orderDate <= endDate;
-
-        return (
-          statusMatch &&
-          paymentMethodMatch &&
-          channelMatch &&
-          startDateMatch &&
-          endDateMatch
-        );
-      });
-
-      // Update state with the filtered data
-      if (filteredOrders.length === 0) {
-        setFilterData([]);
-      }
-      setFilterData(filteredOrders);
-      setShowFilter(false);
-      console.log("Filtered data:", filteredOrders);
-    } catch (error) {
-      console.log("An error occurred while filtering data.", error);
-    }
-
-    setIsLoading(false);
   };
 
   return (
@@ -686,7 +726,7 @@ export default function OrderTable({ AllOrders }) {
                           scope="col"
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
-                          paymentMethod
+                          PaymentMethod
                         </th>
                         <th
                           scope="col"
@@ -817,12 +857,10 @@ export default function OrderTable({ AllOrders }) {
                 <select
                   name="filterOutlet"
                   id="filterOutlet"
+                  disabled
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
                   <option value="">Select an Outlet</option>
-                  <option value="1">Outlet 1</option>
-                  <option value="2">Outlet 2</option>
-                  <option value="3">Outlet 3</option>
                 </select>
               </div>
             </div>
@@ -863,6 +901,7 @@ export default function OrderTable({ AllOrders }) {
                 <select
                   name="filterChannel"
                   id="filterChannel"
+                  required
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
                   <option value="">Select a Channel</option>
@@ -883,11 +922,14 @@ export default function OrderTable({ AllOrders }) {
                 <select
                   name="filterPaymentMethod"
                   id="filterPaymentMethod"
+                  required
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
-                  <option value="">Select a Method</option>
-                  <option value="Cash">Cash On Delivery</option>
-                  <option value="Card">Card Payment</option>
+                  <option value="Both Payment Methods">
+                    Both Payment Methods
+                  </option>
+                  <option value="Cash On Delivery">Cash On Delivery</option>
+                  <option value=">Online Payment">Online Payment</option>
                 </select>
               </div>
             </div>
@@ -907,6 +949,7 @@ export default function OrderTable({ AllOrders }) {
                     name="filterStartDate"
                     id="filterStartDate"
                     className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                    required
                   />
                 </div>
                 <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
@@ -915,6 +958,7 @@ export default function OrderTable({ AllOrders }) {
                     name="filterEndDate"
                     id="filterEndDate"
                     className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                    required
                   />
                 </div>
               </div>
