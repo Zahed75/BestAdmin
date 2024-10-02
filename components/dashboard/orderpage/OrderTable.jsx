@@ -211,10 +211,10 @@ export default function OrderTable({ AllOrders }) {
       const filteredOrders = AllOrders.filter((order) => {
         const orderDate = new Date(order.createdAt);
 
-        const statusMatch = !status || order.orderStatus === status;
+        const statusMatch = "allStatus" || order.orderStatus === status;
         const paymentMethodMatch =
-          " Both Payment Methods" || order.paymentMethod === paymentMethod;
-        const channelMatch = !channel || order.channel === channel;
+          "Both Payment Methods" || order.paymentMethod === paymentMethod;
+        const channelMatch = "allChannel" || order.channel === channel;
         const startDateMatch = !startDate || orderDate >= startDate;
         const endDateMatch = !endDate || orderDate <= endDate;
 
@@ -243,6 +243,7 @@ export default function OrderTable({ AllOrders }) {
 
   const totalOrders = data?.length;
   const uniqueCustomers = new Set(data?.map((order) => order?.customer)).size;
+
   let deliveredCount = 0;
   let cancelledCount = 0;
   let otherCount = 0;
@@ -407,25 +408,25 @@ export default function OrderTable({ AllOrders }) {
 
       // Create the table on the left, aligned with the text on the right
       doc.autoTable({
-        head: [["Status", "Count", "Percentage", "Total Amount"]],
+        head: [["Status", "Count", "Percentage", "Total Amount (BDT)"]],
         body: [
           [
             `Delivered`,
             deliveredCount,
             `${deliveredPercentage}`,
-            `${deliveredTotalTaka.toFixed(2)} BDT`,
+            `${deliveredTotalTaka.toFixed(2)}`,
           ],
           [
             `Cancelled`,
             cancelledCount,
             `${cancelledPercentage}`,
-            `${cancelledTotalTaka.toFixed(2)} BDT`,
+            `${cancelledTotalTaka.toFixed(2)}`,
           ],
           [
             `Other`,
             otherCount,
             `${otherPercentage}`,
-            `${otherTotalTaka.toFixed(2)} BDT`,
+            `${otherTotalTaka.toFixed(2)}`,
           ],
         ],
         startY: tableStartY, // Align table with the bottom text
@@ -878,7 +879,7 @@ export default function OrderTable({ AllOrders }) {
                   id="filterOrderStatus"
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
-                  <option value="">Select a Status</option>
+                  <option value="allStatus">Select a Status</option>
                   <option value="Received">Received</option>
                   <option value="Dispatched">Dispatched</option>
                   <option value="Confirmed">Confirmed</option>
@@ -904,7 +905,7 @@ export default function OrderTable({ AllOrders }) {
                   required
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
-                  <option value="">Select a Channel</option>
+                  <option value="allChannel">Select a Channel</option>
                   <option value="mobile">Mobile</option>
                   <option value="web">Web</option>
                 </select>
