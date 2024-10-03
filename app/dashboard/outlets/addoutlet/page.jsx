@@ -67,7 +67,7 @@ export default function AddOutlet() {
       outletManager: selectedManager?._id,
       outletManagerEmail: managerEmail,
       outletManagerPhone: managerPhone,
-      outletImage: imageUrl || "",
+      outletImage: "http://service.bestelectronics.com.bd/media/images/user.png",
       cityName: formData.get("city"),
     };
 
@@ -112,14 +112,7 @@ export default function AddOutlet() {
                   />
                 ) : (
                   <div>
-                    <input
-                      type="file"
-                      id="file-upload"
-                      name="file-upload"
-                      required
-                      onChange={handleUserImgFileChange}
-                      className="hidden "
-                    />
+                   
                     <label
                       htmlFor="file-upload"
                       className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md"
