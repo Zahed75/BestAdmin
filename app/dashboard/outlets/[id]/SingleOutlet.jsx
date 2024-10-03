@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "@/redux/slice/usersSlice";
 import { fetchApi } from "@/utils/FetchApi";
 import { useRouter } from "next/navigation";
-import { set } from "date-fns";
 
 export default function SingleOutlet({ outlet }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +17,6 @@ export default function SingleOutlet({ outlet }) {
   const [managerPhone, setManagerPhone] = useState("");
   const [selectedManager, setSelectedManager] = useState(null);
 
-  const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
   const dispatch = useDispatch();
   const users = useSelector((state) => state?.users?.users?.users);
 
@@ -36,20 +34,6 @@ export default function SingleOutlet({ outlet }) {
 
   const OutletManager = users?.filter((user) => user?.role === "BA");
 
-  const handleUserImgFileChange = async (event) => {
-    const file = event.target.files[0];
-    setIsLoading(true);
-
-    try {
-      const uploadedImageUrl = await handleUpload(file);
-
-      setIsLoading(false);
-      console.log(uploadedImageUrl);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      setIsLoading(false);
-    }
-  };
   const handleManagerChange = (event) => {
     const managerId = event.target.value;
     const manager = users?.find((user) => user?._id === managerId);
@@ -128,15 +112,9 @@ export default function SingleOutlet({ outlet }) {
                       />
                     ) : (
                       <div>
-                        <input
-                          type="file"
-                          id="file-upload"
-                          name="file-upload"
-                          onChange={handleUserImgFileChange}
-                          className="hidden "
-                        />
+                      
                         <label
-                          htmlFor="file-upload"
+                          htmlFor=""
                           className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md"
                         >
                           <svg
@@ -239,11 +217,13 @@ export default function SingleOutlet({ outlet }) {
                                 required
                                 className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                               >
-                                <option value={outlet?.outletManager?._id}>
-                                  {outlet?.outletManager?.firstName +
-                                    " " +
-                                    outlet?.outletManager?.lastName}
-                                </option>
+                                {outlet?.outletManager && (
+                                  <option value={outlet?.outletManager?._id}>
+                                    {outlet?.outletManager?.firstName +
+                                      " " +
+                                      outlet?.outletManager?.lastName}
+                                  </option>
+                                )}
                                 {OutletManager?.filter(
                                   (manager) =>
                                     manager._id !== outlet?.outletManager?._id

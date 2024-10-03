@@ -53,7 +53,7 @@ export default function SingleUser({ user }) {
 
       if (response) {
         setIsLoading(false);
-        router.push("/dashboard/usermanagement")
+        router.push("/dashboard/usermanagement");
       }
     } catch (error) {
       console.log(error);
@@ -163,10 +163,10 @@ export default function SingleUser({ user }) {
                       </label>
                       <br />
                       <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                       
                         <select
                           id="outletName"
                           name="outletName"
+                          disabled
                           className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                         >
                           <option value={""}>Choose a Outlet</option>
@@ -187,7 +187,6 @@ export default function SingleUser({ user }) {
                       </label>
                       <br />
                       <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                        
                         <select
                           id="role"
                           name="role"

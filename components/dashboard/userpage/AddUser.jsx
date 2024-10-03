@@ -45,7 +45,7 @@ export default function AddUser() {
       userName:
         formData.get("userName") ||
         formData.get("firstName").replace(/\s/g, "").toLowerCase() +
-        formData.get("lastName").replace(/\s/g, "").toLowerCase(),
+          formData.get("lastName").replace(/\s/g, "").toLowerCase(),
       outletId: "",
       role: formData.get("userRole"),
       firstName: formData.get("firstName"),
@@ -53,7 +53,8 @@ export default function AddUser() {
       phoneNumber: formData.get("phoneNumber"),
       password: formData.get("password"),
       email: formData.get("email"),
-      profilePicture: imageUrl || "",
+      profilePicture:
+        "http://service.bestelectronics.com.bd/media/images/user.png",
     };
 
     try {
@@ -96,14 +97,6 @@ export default function AddUser() {
                   />
                 ) : (
                   <div>
-                    <input
-                      type="file"
-                      id="file-upload"
-                      name="file-upload"
-                      required
-                      onChange={handleUserImgFileChange}
-                      className="hidden "
-                    />
                     <label
                       htmlFor="file-upload"
                       className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md"
@@ -264,7 +257,7 @@ export default function AddUser() {
                       id="email"
                       name="email"
                       required
-                      placeholder="example.best@gmail.com"
+                      defaultValue="@bestelectronics.com.bd"
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
                     />
                   </div>
