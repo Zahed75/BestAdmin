@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 export default function LocationsPage({ initialItems }) {
     const [showAddMenu, setShowAddMenu] = useState(false); // State for toggling the Add New menu
     const [showUpdateMenu, setShowUpdateMenu] = useState(false);
+    const [items, setItems] = useState(initialItems);
     // const [city, setCity] = useState(initialItems || []);
 
 
@@ -23,8 +24,8 @@ export default function LocationsPage({ initialItems }) {
         setShowAddMenu((prev) => !prev);
     };
     const handleErase = (id) => {
-        // Update your state to remove the item with the given id
-        initialItems(prevItems => prevItems.filter(item => item._id !== id));
+        // Remove the item with the given id
+        setItems((prevItems) => prevItems.filter((item) => item.id !== id));
     };
     return (
         <main>
@@ -41,17 +42,34 @@ export default function LocationsPage({ initialItems }) {
                     </button> */}
                 </div>
                 <div className="p-6 w-full mx-auto">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-2xl font-semibold">Location Settings</h1>
-                        <div className="flex items-center space-x-2">
+                    <div className="flex justify-between md:justify-end items-center">
+                        {/* <h1 className="text-2xl font-semibold">Location Settings</h1> */}
+                        <div className="flex items-center space-x-1">
 
-                            <button className="bg-orange-500 text-white px-4 py-2 rounded flex items-center">
+                            {/* <button className="bg-orange-500 text-white px-4 py-2 rounded flex items-center">
                                 Dhaka
                                 <span className="ml-2 text-white">✕</span>
+                            </button> */}
+                            <button className="bg-gray-100 text-gray-500 px-4 py-2 lg:text-md rounded-md hover:bg-black hover:text-white w-auto flex md:ml-auto mt-2">
+                                Dhaka
+                                <svg
+                                    className="ml-3 mt-1 w-4 h-4" // Increased margin to ml-3 for more space
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z"
+                                        fill="white" // Keep fill as white for the icon
+                                    />
+                                </svg>
                             </button>
-                            <button className="border border-gray-300 text-gray-600 px-4 py-2 rounded flex items-center"
-                                onClick={() => setShowAddMenu(true)}>
-                                <span className="mr-2">＋</span> Add New
+
+                            <button
+                                onClick={() => setShowAddMenu(true)}
+                                className="text-white bg-black rounded-md px-4 py-2  w-auto flex md:ml-auto mt-2"
+                            >
+                                + Add Outlet
                             </button>
                         </div>
                     </div>
@@ -61,7 +79,7 @@ export default function LocationsPage({ initialItems }) {
                     <div className="font-bold py-2 rounded"> <h1 className="text-2xl font-semibold">Dhaka</h1></div>
 
 
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
 
                         <div className="relative">
                             <svg
@@ -75,7 +93,7 @@ export default function LocationsPage({ initialItems }) {
                             <input
                                 type="text"
                                 placeholder="Search for location"
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-0"
                             />
                         </div>
 
@@ -83,7 +101,7 @@ export default function LocationsPage({ initialItems }) {
 
 
                         <div className="relative">
-                            <input type="text" placeholder="Enter New location" className="w-full px-4 py-2 border border-gray-300 rounded-md" />
+                            <input type="text" placeholder="Enter New location" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-0" />
                             <button className="absolute inset-y-0 right-3 flex items-center text-orange-500" onClick={() => setShowAddMenu(true)}>＋ Add New</button>
                         </div>
                     </div>
@@ -91,25 +109,25 @@ export default function LocationsPage({ initialItems }) {
 
                     <div className="">
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
                             {initialItems?.map((item, index) => (
-                                <div key={index} className="flex justify-between items-center  w-full px-4 py-2 border border-gray-300 rounded-md">
-                                    <span className="font-semibold">{item?.name}</span>
+                                <div key={index} className="flex justify-between items-center w-full md:w-3/4 px-1 py-2 border border-gray-300 rounded-md">
+                                    <span className="font-semibold mr-2">{item?.name}</span>
                                     <div className="flex space-x-2">
                                         <button className="text-orange-500" onClick={() => setShowUpdateMenu(true)}>
                                             <svg
                                                 fill="#F26522"
                                                 viewBox="0 0 528.899 528.899"
-                                                className="w-5 h-5"
+                                                className="w-3 h-3"
                                             >
                                                 <path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981
                     c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611C532.495,100.753,532.495,77.559,518.113,63.177z
                     M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069L27.473,390.597L0.3,512.69z" />
                                             </svg>
                                         </button>
-                                        <button className="text-red-500" onClick={() => handleErase(index)}>
+                                        <button className="text-red-500" onClick={() => handleErase(item.id)}>
                                             <svg
-                                                className="w-5 h-5"
+                                                className="w-4 h-4"
                                                 viewBox="0 0 24 24"
                                                 fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
