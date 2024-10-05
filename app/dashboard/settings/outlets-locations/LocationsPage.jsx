@@ -162,6 +162,11 @@ export default function LocationsPage({ initialItems }) {
                 </div>
               ))}
             </div>
+            {items?.length <= 0 && (
+              <div className="flex justify-center items-center font-semibold w-full h-full mx-auto my-10">
+                No items found !
+              </div>
+            )}
           </div>
         </div>
       </section>
