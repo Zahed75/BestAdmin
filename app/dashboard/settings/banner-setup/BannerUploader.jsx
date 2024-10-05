@@ -58,12 +58,11 @@ export default function BannerUploader() {
 
   return (
     <div
-      className={`max-w-full mx-auto p-8 bg-white shadow-lg rounded-lg grid grid-cols-2 gap-6`}
+      className={`max-w-full mx-auto p-8 bg-white shadow-lg rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6`}
     >
-      {/* Slider Images Section */}
-      <div className="col-span-2 mb-6">
+      <div className="md:col-span-2 mb-6">
         <h2 className="text-xl font-bold mb-4">All Slider Images</h2>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {sliderImages.length > 0 ? (
             sliderImages.map((image, index) => (
               <div
@@ -128,7 +127,6 @@ export default function BannerUploader() {
         </div>
       </div>
 
-      {/* Uploader Section */}
       <div className="uploader-section">
         <h2 className="text-xl font-bold mb-4">Upload Product Banner</h2>
         <form action="">
@@ -144,7 +142,7 @@ export default function BannerUploader() {
 
           <div className="mb-4">
             <label className="block font-medium mb-2">Position</label>
-            <div className="grid grid-cols-6 gap-4">
+            <div className="grid grid-cols-5 md:grid-cols-6 gap-4">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((position) => (
                 <div
                   key={position}
@@ -171,57 +169,68 @@ export default function BannerUploader() {
             />
           </div>
 
-          <div className="flex items-center mb-6 space-x-5">
-            <div className="flex items-center cursor-pointer">
-              <input
-                id="active"
-                type="checkbox"
-                checked
-                className="h-5 w-5 rounded-lg"
-              />
-              <label htmlFor="active" className="ml-3 text-sm font-medium">
-                Active
-              </label>
+          <div className="flex flex-col md:flex-row items-start md:items-center mb-6 md:space-x-5">
+            <div className="flex flex-shrink items-center space-x-5">
+              <div className="flex items-center cursor-pointer">
+                <input
+                  id="active"
+                  type="checkbox"
+                  checked
+                  className="h-5 w-5 rounded-lg"
+                />
+                <label htmlFor="active" className="ml-3 text-sm font-medium">
+                  Active
+                </label>
+              </div>
+              <div className="flex items-center cursor-pointer">
+                <input
+                  id="always-first"
+                  type="checkbox"
+                  className="h-5 w-5 rounded-lg"
+                />
+                <label
+                  htmlFor="always-first"
+                  className="ml-3 text-sm font-medium"
+                >
+                  Always First
+                </label>
+              </div>
             </div>
-            <div className="flex items-center cursor-pointer">
-              <input
-                id="always-first"
-                type="checkbox"
-                className="h-5 w-5 rounded-lg"
-              />
-              <label
-                htmlFor="always-first"
-                className="ml-3 text-sm font-medium"
-              >
-                Always First
-              </label>
-            </div>
-            <div className="flex items-center cursor-pointer">
-              <input
-                id="both-device"
-                type="checkbox"
-                checked
-                className="h-5 w-5 rounded-lg"
-              />
-              <label htmlFor="both-device" className="ml-3 text-sm font-medium">
-                Both Device
-              </label>
-            </div>
-            <div className="flex items-center cursor-pointer">
-              <input
-                id="mobile"
-                type="checkbox"
-                className="h-5 w-5 rounded-lg"
-              />
-              <label htmlFor="mobile" className="ml-3 text-sm font-medium">
-                Mobile
-              </label>
-            </div>
-            <div className="flex items-center cursor-pointer">
-              <input id="web" type="checkbox" className="h-5 w-5 rounded-lg" />
-              <label htmlFor="web" className="ml-3 text-sm font-medium">
-                Web
-              </label>
+            <div className="flex flex-shrink items-center space-x-5">
+              <div className="flex items-center cursor-pointer">
+                <input
+                  id="both-device"
+                  type="checkbox"
+                  checked
+                  className="h-5 w-5 rounded-lg"
+                />
+                <label
+                  htmlFor="both-device"
+                  className="ml-3 text-sm font-medium"
+                >
+                  Both Device
+                </label>
+              </div>
+              <div className="flex items-center cursor-pointer">
+                <input
+                  id="mobile"
+                  type="checkbox"
+                  className="h-5 w-5 rounded-lg"
+                />
+                <label htmlFor="mobile" className="ml-3 text-sm font-medium">
+                  Mobile
+                </label>
+              </div>
+              <div className="flex items-center cursor-pointer">
+                <input
+                  id="web"
+                  type="checkbox"
+                  className="h-5 w-5 rounded-lg"
+                />
+                <label htmlFor="web" className="ml-3 text-sm font-medium">
+                  Web
+                </label>
+              </div>
             </div>
           </div>
 
@@ -234,8 +243,7 @@ export default function BannerUploader() {
         </form>
       </div>
 
-      {/* Preview Section */}
-      <div className="preview-section">
+      <div className="preview-section hidden md:block">
         <h2 className="text-xl font-bold mb-4">Preview</h2>
         <div className="border rounded-lg p-4 h-96 bg-gray-100 flex items-center justify-center">
           {imagePreview ? (
