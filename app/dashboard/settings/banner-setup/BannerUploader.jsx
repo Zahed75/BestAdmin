@@ -150,7 +150,7 @@ export default function BannerUploader() {
                   className={`p-4 border rounded-lg text-center cursor-pointer 
                   ${
                     selectedPosition === position
-                      ? "bg-[#F26522] text-white"
+                      ? "bg-primary text-white"
                       : "bg-gray-100"
                   } 
                   transition duration-700 ease-in-out transform hover:scale-105`}
@@ -236,7 +236,7 @@ export default function BannerUploader() {
 
           <button
             type="submit"
-            className="w-full bg-[#F26522] text-white py-2 rounded-lg hover:bg-[#f26422eb]"
+            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-[#f26422eb]"
           >
             Submit
           </button>

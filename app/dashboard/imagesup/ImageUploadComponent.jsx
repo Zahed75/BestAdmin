@@ -13,7 +13,7 @@ const ImageUploadComponent = () => {
     <div className="container mx-auto">
       <h1 className="text-2xl font-semibold my-6">Image Manager </h1>
       <button
-        className="bg-[#f26522] text-white py-2 px-4 rounded"
+        className="bg-primary text-white py-2 px-4 rounded"
         onClick={openGalleryModal}
       >
         Open Image Manager

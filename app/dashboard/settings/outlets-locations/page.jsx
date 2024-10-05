@@ -6,28 +6,24 @@ import { fetchApi } from "@/utils/FetchApi";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-    const initialItems = [
-        { id: 1, name: 'Adabor' },
-        { id: 2, name: 'Aftabnagar' },
-        { id: 3, name: 'Agargaon' },
-        { id: 4, name: 'Azimpur' },
-        { id: 5, name: 'Baily Road' },
-    ];
+  const initialItems = [
+    { id: 1, name: "Adabor" },
+    { id: 2, name: "Aftabnagar" },
+    { id: 3, name: "Agargaon" },
+    { id: 4, name: "Azimpur" },
+    { id: 5, name: "Baily Road" },
+  ];
 
-    const [items, setItems] = useState(initialItems);
-
-
-
-    return (
-        <main>
-            {initialItems?.length >= 0 ? (
-                <div>
-                    <PageHead pageHead="Outlets Location Setup" />
-                    <LocationsPage initialItems={initialItems} />
-                </div>
-            ) : (
-                <Skeleton />
-            )}
-        </main>
-    );
+  return (
+    <main>
+      {initialItems?.length >= 0 ? (
+        <div>
+          <PageHead pageHead="Outlets Location Setup" />
+          <LocationsPage initialItems={initialItems} />
+        </div>
+      ) : (
+        <Skeleton />
+      )}
+    </main>
+  );
 }
