@@ -120,22 +120,22 @@ export default function Product({ product }) {
   const getTitleProgressBarColor = () => {
     const progress = calculateTitleProgress(titleInputValue);
     if (progress < 30) {
-      return "bg-[#F26522]";
+      return "bg-primary";
     } else if (progress <= 60) {
       return "bg-[#7AD03A]";
     } else {
-      return "bg-[#F26522]";
+      return "bg-primary";
     }
   };
 
   const getDescriptionProgressBarColor = () => {
     const progress = calculateDescriptionProgress(descriptionInputValue);
     if (progress < 30) {
-      return "bg-[#F26522]";
+      return "bg-primary";
     } else if (progress <= 100) {
       return "bg-[#7AD03A]";
     } else {
-      return "bg-[#F26522]";
+      return "bg-primary";
     }
   };
 

@@ -88,7 +88,7 @@ const GalleryUploadModal = ({ isGalleryOpen, onGalleryClose }) => {
               <button
                 className={`py-2 px-6 text-sm font-semibold ${
                   activeTab === "upload"
-                    ? "text-white bg-[#f26522]"
+                    ? "text-white bg-primary"
                     : "text-gray-700 bg-gray-200"
                 } rounded-l-md focus:outline-none transition duration-700 ease-in-out`}
                 onClick={() => setActiveTab("upload")}
@@ -98,7 +98,7 @@ const GalleryUploadModal = ({ isGalleryOpen, onGalleryClose }) => {
               <button
                 className={`py-2 px-6 text-sm font-semibold ${
                   activeTab === "select"
-                    ? "text-white bg-[#f26522]"
+                    ? "text-white bg-primary"
                     : "text-gray-700 bg-gray-200"
                 } rounded-r-md focus:outline-none transition duration-700 ease-in-out`}
                 onClick={() => setActiveTab("select")}
@@ -163,7 +163,7 @@ const GalleryUploadModal = ({ isGalleryOpen, onGalleryClose }) => {
                 <button
                   type="submit"
                   disabled={isUploading}
-                  className="bg-[#f26522] text-white text-lg py-2 px-4 rounded-lg focus:outline-none transition ease-in-out duration-200 flex ml-auto"
+                  className="bg-primary text-white text-lg py-2 px-4 rounded-lg focus:outline-none transition ease-in-out duration-200 flex ml-auto"
                 >
                   {isUploading ? "Uploading..." : "Upload Images"}
                 </button>
@@ -190,7 +190,7 @@ const GalleryUploadModal = ({ isGalleryOpen, onGalleryClose }) => {
                         onClick={() => handleImageSelect(image)}
                       />
                       {selectedGalleryImages.includes(image.ImageUrl) && (
-                        <div className="absolute top-0 right-0 bg-[#f26522] text-white p-1 h-6 w-6 flex items-center justify-center rounded-full">
+                        <div className="absolute top-0 right-0 bg-primary text-white p-1 h-6 w-6 flex items-center justify-center rounded-full">
                           <span className="text-sm">✔</span>
                         </div>
                       )}
