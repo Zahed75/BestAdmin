@@ -357,6 +357,8 @@ export default function OrderTable({ AllOrders }) {
       const textBlockHeight = 30;
       const tableStartY = pageHeight - marginBottom - textBlockHeight - 5;
 
+      const paymentProportionY = pageHeight - marginBottom - 30;
+
       // Calculate total payments
       const onlinePayments = data
         .filter((order) => order.paymentMethod === "Online Payment")
@@ -392,6 +394,14 @@ export default function OrderTable({ AllOrders }) {
       // Add text on the right
       doc.setFontSize(11);
       doc.setTextColor(0, 0, 0);
+      doc.text(`Payment proportion`, rightX, paymentProportionY);
+      doc.line(
+        lineXStart,
+        paymentProportionY + 2,
+        lineXEnd,
+        paymentProportionY + 2
+      );
+
       doc.text(
         `Online: ${totalOnlineOrdersTaka} BDT (${paymentRatioOnline})`,
         rightX,
