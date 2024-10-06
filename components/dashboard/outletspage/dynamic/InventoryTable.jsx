@@ -4,6 +4,7 @@ import { useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Image from "next/image";
+import Modal from "@/components/global/modal/Modal";
 
 export default function InventoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,6 +13,7 @@ export default function InventoryTable() {
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [showAddMenu, setShowAddMenu] = useState(false);
   const data = [
     {
       id: 1,
@@ -420,9 +422,8 @@ export default function InventoryTable() {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -465,12 +466,35 @@ export default function InventoryTable() {
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           {item.published}
                         </td>
-                        <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
-                          <span
+                        <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap ">
+                          {/* <span
                             className={`${item.bg} ${item.text} px-2 py-1 rounded-full`}
+                          > */}
+                          <div
+                            className={`${item.stock === "In Stock"
+                              ? "bg-green-100 text-green-400"
+                              : "bg-red-100 text-red-400"
+                              } inline-block px-1 py-1 rounded-md mr-2 `}
                           >
-                            {item.stock}
-                          </span>
+
+                            <div className="flex justify-center px-1 space-x-2">
+
+                              <div><span>{item.stock}(15)</span></div>
+                              <button className="bg-white text-red-500 p-1 rounded-full hover:bg-gray-100" onClick={() => setShowAddMenu(true)}>
+                                <svg width="11" height="2" viewBox="0 0 11 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M0.0175781 1L10.5938 1" stroke="#F05252" stroke-width="1.5" />
+                                </svg>
+
+                              </button>
+                              <button className="bg-white text-green-500 p-1 rounded-full hover:bg-gray-100" onClick={() => setShowAddMenu(true)}>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M6.23633 0.711914V11.2882" stroke="#0E9F6E" stroke-width="1.5" />
+                                  <path d="M0.949219 6L11.5255 6" stroke="#0E9F6E" stroke-width="1.5" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                          {/* </span> */}
                         </td>
                         <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                           <button
@@ -554,6 +578,76 @@ export default function InventoryTable() {
           </div>
         </div>
       </div>
+      <Modal addModal={() => setShowAddMenu(false)}>
+        <div
+          id="menu"
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
+            } sticky-0 z-30`}
+        >
+
+          <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+
+            <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+
+              <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold">Add Inventory</h3>
+                <button
+                  onClick={() => setShowAddMenu(false)}
+                  className="text-gray-400 focus:outline-none"
+                  aria-label="close"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18 6L6 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M6 6L18 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+
+              <div class="mt-4">
+
+                <label for="product" class="block text-sm font-medium text-gray-700">Select Product</label>
+                <div class="relative mt-2">
+                  <select id="product" class="block w-full pl-10 pr-10 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option>Walton Television 4k</option>
+
+                  </select>
+                </div>
+
+
+                <label for="quantity" class="block mt-4 text-sm font-medium text-gray-700">Quantity</label>
+                <input type="number" id="quantity" class="mt-2 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter quantity" />
+              </div>
+
+
+              <div class="mt-6">
+                <button class="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  Add Inventory
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </section>
   );
+
 }
