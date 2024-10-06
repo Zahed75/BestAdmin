@@ -270,7 +270,6 @@ export default function OrderTable({ AllOrders }) {
       ? `${formatDate(startDate)} to ${formatDate(endDate)}`
       : `${defaultDate}`;
 
-
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape" });
 
@@ -381,16 +380,25 @@ export default function OrderTable({ AllOrders }) {
         ? ((codPayments / totalPrice) * 100).toFixed(2) + "%"
         : "0%";
 
+      const totalOnlineOrdersTaka = data
+        .filter((order) => order.paymentMethod === "Online Payment")
+        .reduce((sum, order) => sum + order.totalPrice, 0)
+        .toLocaleString();
+      const totalCodOrdersTaka = data
+        .filter((order) => order.paymentMethod === "Cash On Delivery")
+        .reduce((sum, order) => sum + order.totalPrice, 0)
+        .toLocaleString();
+
       // Add text on the right
-      doc.setFontSize(15);
+      doc.setFontSize(11);
       doc.setTextColor(0, 0, 0);
       doc.text(
-        `Online: ${paymentRatioOnline} `,
+        `Online: ${totalOnlineOrdersTaka} BDT (${paymentRatioOnline})`,
         rightX,
         pageHeight - marginBottom - 20
       );
       doc.text(
-        `Cash On Delivery: ${paymentRatioCod}`,
+        `Cash On Delivery: ${totalCodOrdersTaka} BDT (${paymentRatioCod})`,
         rightX,
         pageHeight - marginBottom - 10
       );
