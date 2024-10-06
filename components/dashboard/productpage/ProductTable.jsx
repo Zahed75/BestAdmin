@@ -7,6 +7,7 @@ import Pagination from "@/components/global/pagination/Pagination";
 import { useRouter } from "next/navigation";
 import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
+import Modal from "@/components/global/modal/Modal";
 
 export default function ProductTable({ AllProducts }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,6 +21,7 @@ export default function ProductTable({ AllProducts }) {
   const [showAction, setShowAction] = useState(false);
   const [filter, setFilter] = useState("All");
   const [products, setProducts] = useState(AllProducts || []);
+  const [showAddMenu, setShowAddMenu] = useState(false);
 
   const router = useRouter();
 
@@ -164,9 +166,8 @@ export default function ProductTable({ AllProducts }) {
 
       let newProductName = `${product.productName} copy 1`;
       if (existingProducts.length > 0) {
-        newProductName = `${product.productName} copy ${
-          existingProducts.length + 1
-        }`;
+        newProductName = `${product.productName} copy ${existingProducts.length + 1
+          }`;
       }
 
       const duplicatedProductData = {
@@ -177,7 +178,7 @@ export default function ProductTable({ AllProducts }) {
           product.productImage || "https://i.ibb.co/sqPhfrt/notimgpng.png",
         isTrash: false,
         productGallery: product?.productGallery,
-        productVideos:  [],
+        productVideos: [],
         productSpecification: product?.productSpecification,
         productDescription: product?.productDescription,
         productShortDescription: product?.productShortDescription,
@@ -419,9 +420,8 @@ export default function ProductTable({ AllProducts }) {
                       {currentData?.map((item) => (
                         <tr
                           key={item._id}
-                          className={`${
-                            item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700 `}
+                          className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700 `}
                         >
                           <td scope="col" className="px-6 lg:px-4 py-4">
                             <div className="flex items-center">
@@ -477,41 +477,40 @@ export default function ProductTable({ AllProducts }) {
                             {item?.CreatedAt}
                           </td>
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap">
-                            <Link href={`/dashboard/products/${item._id}`}>
-                              <div
-                                className={`${
-                                  item?.inventory?.stockStatus === "In Stock"
-                                    ? "bg-green-100 text-green-400"
-                                    : "bg-red-100 text-red-400"
+                            {/* <Link href={`/dashboard/products/${item._id}`}> */}
+                            <div
+                              className={`${item?.inventory?.stockStatus === "In Stock"
+                                ? "bg-green-100 text-green-400"
+                                : "bg-red-100 text-red-400"
                                 } inline-block px-1 py-1 rounded-md mr-2 `}
-                              >
-                                <div className="flex justify-center px-1">
-                                  {item?.inventory?.stockStatus}
-                                  <svg
-                                    className="cursor-pointer ml-2"
-                                    width="21"
-                                    height="22"
-                                    viewBox="0 0 21 22"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M11.4863 4.02943L12.4792 3.03652C13.0276 2.48815 13.9167 2.48815 14.465 3.03652C15.0134 3.58489 15.0134 4.47398 14.465 5.02235L13.4721 6.01526M11.4863 4.02943L7.77894 7.73679C7.03854 8.47721 6.66832 8.84738 6.41623 9.29852C6.16413 9.74966 5.9105 10.8149 5.66797 11.8336C6.68662 11.591 7.75189 11.3374 8.20302 11.0853C8.65416 10.8332 9.02434 10.463 9.76476 9.7226L13.4721 6.01526M11.4863 4.02943L13.4721 6.01526"
-                                      stroke="#3E445A"
-                                      strokeWidth="1.0625"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                    <path
-                                      d="M14.875 9.00024C14.875 12.0054 14.875 13.5081 13.9414 14.4417C13.0078 15.3752 11.5052 15.3752 8.5 15.3752C5.4948 15.3752 3.99219 15.3752 3.0586 14.4417C2.125 13.5081 2.125 12.0054 2.125 9.00024C2.125 5.99504 2.125 4.49244 3.0586 3.55884C3.99219 2.62524 5.4948 2.62524 8.5 2.62524"
-                                      stroke="#3E445A"
-                                      strokeWidth="1.0625"
-                                      strokeLinecap="round"
-                                    />
-                                  </svg>
-                                </div>
+                            >
+                              <div className="flex justify-center px-1" onClick={() => setShowAddMenu(true)}>
+                                {item?.inventory?.stockStatus}
+                                <svg
+                                  className="cursor-pointer ml-2"
+                                  width="21"
+                                  height="22"
+                                  viewBox="0 0 21 22"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M11.4863 4.02943L12.4792 3.03652C13.0276 2.48815 13.9167 2.48815 14.465 3.03652C15.0134 3.58489 15.0134 4.47398 14.465 5.02235L13.4721 6.01526M11.4863 4.02943L7.77894 7.73679C7.03854 8.47721 6.66832 8.84738 6.41623 9.29852C6.16413 9.74966 5.9105 10.8149 5.66797 11.8336C6.68662 11.591 7.75189 11.3374 8.20302 11.0853C8.65416 10.8332 9.02434 10.463 9.76476 9.7226L13.4721 6.01526M11.4863 4.02943L13.4721 6.01526"
+                                    stroke="#3E445A"
+                                    strokeWidth="1.0625"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M14.875 9.00024C14.875 12.0054 14.875 13.5081 13.9414 14.4417C13.0078 15.3752 11.5052 15.3752 8.5 15.3752C5.4948 15.3752 3.99219 15.3752 3.0586 14.4417C2.125 13.5081 2.125 12.0054 2.125 9.00024C2.125 5.99504 2.125 4.49244 3.0586 3.55884C3.99219 2.62524 5.4948 2.62524 8.5 2.62524"
+                                    stroke="#3E445A"
+                                    strokeWidth="1.0625"
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
                               </div>
-                            </Link>
+                            </div>
+                            {/* </Link> */}
                           </td>
                           {/* <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <button
@@ -539,6 +538,88 @@ export default function ProductTable({ AllProducts }) {
           </div>
         </div>
       </section>
+      <Modal addModal={() => setShowAddMenu(false)}>
+        <div
+          id="menu"
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
+            } sticky-0 z-30`}
+        >
+          <div class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl">
+
+              <div class="flex items-center justify-between p-4 border-b">
+                <h2 class="text-lg font-semibold">Stock of Walton Television 4k</h2>
+                <button
+                  onClick={() => setShowAddMenu(false)}
+                  className="text-gray-400 focus:outline-none"
+                  aria-label="close"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18 6L6 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M6 6L18 18"
+                      stroke="currentColor"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+
+              <div class="p-4">
+                <input type="text" placeholder="Search" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+              </div>
+
+
+              <div class="overflow-y-auto max-h-80">
+                <table class="w-full table-auto text-left">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="px-4 py-2">OUTLET NAME</th>
+                      <th class="px-4 py-2">ADDRESS</th>
+                      <th class="px-4 py-2">STOCK</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <tr class="border-t">
+                      <td class="px-4 py-2 flex items-center space-x-2">
+                        <img src="https://via.placeholder.com/40" alt="Outlet Logo" class="w-10 h-10 rounded-full" />
+                        <span>BEL Banani</span>
+                      </td>
+                      <td class="px-4 py-2">House-01, Road-02</td>
+                      <td class="px-4 py-2">
+                        <input type="number" value="100" class="w-20 px-2 py-1 border rounded-lg focus:outline-none" />
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+
+              <div class="p-4 border-t flex justify-end">
+                <button class="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800">Save Changes</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </Modal>
     </main>
   );
 }
