@@ -137,7 +137,7 @@ export default function SingleOrderPage({ order }) {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">General</h5>
               <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-col space-y-1">
+                <div className="flex flex-col space-y-1 mb-1">
                   <label
                     htmlFor="orderDate"
                     className="text-sm font-semibold text-gray-600"
@@ -163,6 +163,36 @@ export default function SingleOrderPage({ order }) {
                     type="text"
                     id="customer"
                     defaultValue={order?.firstName + " " + order?.lastName}
+                    readOnly
+                    className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                  />
+                </div>
+                <div className="flex flex-col space-y-1">
+                  <label
+                    htmlFor="orderDate"
+                    className="text-sm font-semibold text-gray-600"
+                  >
+                    Order Type
+                  </label>
+                  <input
+                    type="text"
+                    id="orderDate"
+                    // value={formatDate(order?.updatedAt)}
+                    readOnly
+                    className="border border-gray-300 rounded-md p-2 focus:outline-none "
+                  />
+                </div>
+                <div className="flex flex-col space-y-1">
+                  <label
+                    htmlFor="customer"
+                    className="text-sm font-semibold text-gray-600"
+                  >
+                    Payment Type
+                  </label>
+                  <input
+                    type="text"
+                    id="customer"
+                    // defaultValue={order?.firstName + " " + order?.lastName}
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
