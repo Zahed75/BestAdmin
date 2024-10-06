@@ -127,17 +127,14 @@ export default function SingleOrderPage({ order }) {
       <div>
         <section className="mt-10 flex justify-between items-center">
           <DynamicHead order={order} />
-          {/* <button className="text-sm text-nowrap text-white bg-black rounded-md px-3 py-2">
-          Save Changes
-        </button> */}
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-3 justify-between md:items-start gap-5 w-full my-10">
           <div className="flex flex-col justify-start items-center w-full md:col-span-2 space-y-5">
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">General</h5>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-col space-y-1 mb-1">
+              <div className="grid grid-cols-2 gap-y-5 gap-x-3">
+                <div className="flex flex-col space-y-1">
                   <label
                     htmlFor="orderDate"
                     className="text-sm font-semibold text-gray-600"
@@ -176,8 +173,7 @@ export default function SingleOrderPage({ order }) {
                   </label>
                   <input
                     type="text"
-                    id="orderDate"
-                    // value={formatDate(order?.updatedAt)}
+                    id="orderType"
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
@@ -191,8 +187,8 @@ export default function SingleOrderPage({ order }) {
                   </label>
                   <input
                     type="text"
-                    id="customer"
-                    // defaultValue={order?.firstName + " " + order?.lastName}
+                    id="paymentType"
+                    value={order?.paymentMethod}
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
@@ -330,38 +326,6 @@ export default function SingleOrderPage({ order }) {
                       </td>
                     </tr>
                   ))}
-
-                  {/* <tr className="">
-                  <td className="py-4 px-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                    <div className="flex justify-start items-center text-wrap">
-                      <img
-                        className="w-10 h-10 rounded-xl"
-                        src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
-                        alt="product_images"
-                      />
-                      <div className="ml-2">
-                        <span className="text-sm">
-                          Conion Signature 56inch 4 Blades (Sparkling Blue)
-                          Ceiling Fan
-                        </span>
-                        <p className="text-sm text-gray-500">
-                          SKU: CON-FAN-6006
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-4 px-1 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                    1
-                  </td>
-                  <td className="py-4 px-1 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                    <span className="text-md">৳</span>
-                    <span className="text-md">4000</span>
-                  </td>
-                  <td className="py-4 px-1 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                    <span className="text-md">৳</span>
-                    <span className="text-md">4000</span>
-                  </td>
-                </tr> */}
                 </tbody>
               </table>
               <div className="flex justify-end items-center my-10">
@@ -374,9 +338,7 @@ export default function SingleOrderPage({ order }) {
                   </div>
                   <div className="flex justify-between items-center border-b-2 pb-2 mb-2">
                     <span className="text-gray-600 text-sm">Vat</span>
-                    <span className="ml-24 text-md font-semibold">
-                      5 %
-                    </span>
+                    <span className="ml-24 text-md font-semibold">5 %</span>
                   </div>
                   <div className="flex justify-between items-center border-b-2 pb-2">
                     <span className="text-gray-600 text-sm font-semibold">
@@ -574,3 +536,4 @@ export default function SingleOrderPage({ order }) {
     </main>
   );
 }
+// modify needed
