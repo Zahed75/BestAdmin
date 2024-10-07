@@ -253,26 +253,7 @@ export default function InventoryTable() {
       ]);
     }
   };
-  // make pdf
-  const exportPdf = async () => {
-    const doc = new jsPDF({ orientation: "landscape" });
-
-    doc.autoTable({
-      html: "#joy-bangla",
-      // theme: "grid",
-      // styles: {
-      //   font: "helvetica",
-      //   lineColor: [0, 0, 0],
-      //   lineWidth: 0.5,
-      // },
-      headStyles: {
-        fillColor: "#F26522",
-        textColor: [255, 255, 255],
-      },
-    });
-
-    doc.save("dataTable.pdf");
-  };
+ 
   return (
     <section className="w-full my-5">
       <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
@@ -307,34 +288,9 @@ export default function InventoryTable() {
               placeholder="Search something.."
             />
           </div>
-          <div className="flex justify-between items-center gap-3 w-full">
-            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <button
-                onClick={exportPdf}
-                className="flex mx-auto py-2 text-nowrap px-3"
-              >
-                Export As &#x2193;
-              </button>
-            </div>
-            <div className="mx-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <select className="bg-[#F9FAFB] mx-3 py-2 outline-none ">
-                <option className="bg-[#F9FAFB]" value="30">
-                  Action
-                </option>
-                <option className="bg-[#F9FAFB]" value="15">
-                  Last 15 Days
-                </option>
-                <option className="bg-[#F9FAFB]" value="7">
-                  Last 07 Days
-                </option>
-                <option className="bg-[#F9FAFB]" value="1">
-                  Last 1 Days
-                </option>
-              </select>
-            </div>
-          </div>
+       
           <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md">
-            <select className="bg-[#F9FAFB] mx-3 py-2 outline-none">
+            <select className="bg-[#F9FAFB] mx-3 p-2 outline-none">
               <option className="bg-[#F9FAFB]" value="30">
                 Filter with
               </option>

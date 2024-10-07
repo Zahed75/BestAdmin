@@ -9,7 +9,7 @@ import { fetchApi } from "@/utils/FetchApi";
 
 export default function OutletsTable({ AllOutlets }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [dataPerPage] = useState(10); // Change this value to adjust the number of rows per page
+  const [dataPerPage] = useState(10); 
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);

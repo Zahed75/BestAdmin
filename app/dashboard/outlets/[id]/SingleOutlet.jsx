@@ -112,7 +112,6 @@ export default function SingleOutlet({ outlet }) {
                       />
                     ) : (
                       <div>
-                      
                         <label
                           htmlFor=""
                           className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md"
@@ -180,18 +179,57 @@ export default function SingleOutlet({ outlet }) {
                       </div>
                       <div className="flex flex-col space-y-1 w-full">
                         <label
-                          htmlFor="cityName"
+                          htmlFor="city"
                           className="text-sm font-semibold text-gray-600"
                         >
                           City
                         </label>
-                        <input
-                          type="text"
-                          id="cityName"
-                          name="cityName"
-                          defaultValue={outlet?.cityName}
-                          className="border border-gray-300 rounded-md p-2 focus:outline-none "
-                        />
+                        <div className="">
+                          <div>
+                            <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                              <select
+                                id="city"
+                                name="city"
+                                required
+                                className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                              >
+                                <option>Select City</option>
+                                <option>Dhaka</option>
+                                <option>Chittagong</option>
+                                <option>Sylhet</option>
+                                <option>Rangpur</option>
+                                <option>Khulna</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col space-y-1 w-full">
+                        <label
+                          htmlFor="area"
+                          className="text-sm font-semibold text-gray-600"
+                        >
+                          Area
+                        </label>
+                        <div className="">
+                          <div>
+                            <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
+                              <select
+                                id="area"
+                                name="area"
+                                required
+                                className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                              >
+                                <option>Select Area</option>
+                                <option>Dokkhin Khan Road</option>
+                                <option>Gulshan Avenue</option>
+                                <option>Mohakhali Road</option>
+                                <option>Mohammadpur 2/A</option>
+                                <option>Munshigonj Bazar</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <div className="flex flex-col space-y-1 w-full col-span-2">
                         <label
