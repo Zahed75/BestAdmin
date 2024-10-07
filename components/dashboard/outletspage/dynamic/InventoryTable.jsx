@@ -253,7 +253,7 @@ export default function InventoryTable() {
       ]);
     }
   };
- 
+
   return (
     <section className="w-full my-5">
       <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
@@ -288,7 +288,7 @@ export default function InventoryTable() {
               placeholder="Search something.."
             />
           </div>
-       
+
           <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md">
             <select className="bg-[#F9FAFB] mx-3 p-2 outline-none">
               <option className="bg-[#F9FAFB]" value="30">
@@ -540,13 +540,10 @@ export default function InventoryTable() {
           className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
             } sticky-0 z-30`}
         >
-
-          <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-
-            <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-
-              <div class="flex justify-between items-center">
-                <h3 class="text-xl font-semibold">Add Inventory</h3>
+          <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
+            <div className="w-full md:w-1/2 lg:w-1/2 bg-white p-6 rounded-md shadow-md">
+              <div className="flex justify-between items-center w-full">
+                <h3 className="text-xl font-semibold">Add Inventory</h3>
                 <button
                   onClick={() => setShowAddMenu(false)}
                   className="text-gray-400 focus:outline-none"
@@ -576,26 +573,20 @@ export default function InventoryTable() {
                   </svg>
                 </button>
               </div>
-
-
-              <div class="mt-4">
-
-                <label for="product" class="block text-sm font-medium text-gray-700">Select Product</label>
-                <div class="relative mt-2">
-                  <select id="product" class="block w-full pl-10 pr-10 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700">Select Product</label>
+                <div className="relative mt-2">
+                  <select className="block w-full pl-10 pr-10 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <option>Walton Television 4k</option>
-
                   </select>
                 </div>
-
-
-                <label for="quantity" class="block mt-4 text-sm font-medium text-gray-700">Quantity</label>
-                <input type="number" id="quantity" class="mt-2 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter quantity" />
+                <label className="block mt-4 text-sm font-medium text-gray-700">Quantity</label>
+                <input type="number" className="mt-2 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter quantity" />
               </div>
 
 
-              <div class="mt-6">
-                <button class="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <div className="mt-6">
+                <button className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   Add Inventory
                 </button>
               </div>
