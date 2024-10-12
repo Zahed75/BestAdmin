@@ -308,33 +308,30 @@ export default function SingleCoupon({ coupon }) {
             <button
               type="button"
               onClick={() => setActiveTab("general")}
-              className={`${
-                activeTab === "general"
-                  ? "border-gray-500 text-black"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
+              className={`${activeTab === "general"
+                ? "border-gray-500 text-black"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
             >
               General
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("usage")}
-              className={`${
-                activeTab === "usage"
-                  ? "border-gray-500 text-black"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
+              className={`${activeTab === "usage"
+                ? "border-gray-500 text-black"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
             >
               Usage Restrictions
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("limits")}
-              className={`${
-                activeTab === "limits"
-                  ? "border-gray-500 text-black"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
+              className={`${activeTab === "limits"
+                ? "border-gray-500 text-black"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                } flex items-center py-2 px-4 border-b-2 text-center text-nowrap font-medium focus:outline-none bg-gray-100 w-full rounded-md `}
             >
               Usage Limits
             </button>
@@ -434,6 +431,18 @@ export default function SingleCoupon({ coupon }) {
                   />
                 </div>
               </div>
+              {/* <div className="ml-2">
+                <div className="flex justify-start items-center gap-2">
+                  <input
+                    type="date"
+                    id="couponExpiry"
+                    name="couponExpiry"
+                    defaultValue={formatDate(coupon?.general?.couponExpiry)}
+                    required
+                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                  />
+                </div>
+              </div> */}
             </div>
           </div>
         </section>
@@ -685,6 +694,61 @@ export default function SingleCoupon({ coupon }) {
                       <input
                         type="text"
                         id="excludeCategory"
+                        value={excludeCategoryInputValue}
+                        onChange={handleExcludeSearchCategory}
+                        className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                      />
+                    </div>
+                    {excludeCategorySearchResults.length > 0 && (
+                      <div className="border border-gray-300 rounded-md p-2 max-h-40 overflow-y-auto">
+                        {excludeCategorySearchResults.map((category) => (
+                          <div
+                            key={category?._id}
+                            onClick={() =>
+                              handleExcludeCategoryClick(category._id)
+                            }
+                            className="cursor-pointer hover:bg-gray-100 p-2"
+                          >
+                            {category?.categoryName}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="my-3 flex flex-wrap justify-start items-center gap-2">
+                      {excludeCategoryValueArray.map((tag, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center"
+                        >
+                          <span className="text-md text-black">{tag}</span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleExcludeCategoryRemoveTag(index)
+                            }
+                            className="text-gray-300 font-semibold ml-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
+              <h4 className="text-gray-600 text-sm ">
+                Blocked Accounts
+              </h4>
+              <div className="col-span-2">
+                <div className="flex justify-start items-center gap-2">
+                  <div className="border border-gray-300 rounded-md p-2 w-full">
+                    <div>
+                      <input
+                        type="text"
+                        id="blockedAccounts"
                         value={excludeCategoryInputValue}
                         onChange={handleExcludeSearchCategory}
                         className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
