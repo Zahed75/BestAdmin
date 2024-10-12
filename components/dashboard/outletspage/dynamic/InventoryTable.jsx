@@ -16,10 +16,16 @@ export default function InventoryTable() {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState("Walton Television 4k");
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
-  }
+  };
+
+  const selectItem = (item) => {
+    setSelectedItem(item);
+    setIsOpen(false);
+  };
 
   const data = [
     {
@@ -552,7 +558,10 @@ export default function InventoryTable() {
               <div className="flex justify-between items-center w-full">
                 <h3 className="text-xl font-semibold">Add Inventory</h3>
                 <button
-                  onClick={() => setShowAddMenu(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    setShowAddMenu(false)
+                  }}
                   className="text-gray-400 focus:outline-none"
                   aria-label="close"
                 >
@@ -586,7 +595,7 @@ export default function InventoryTable() {
                   {/* Trigger for dropdown */}
                   <div
                     onClick={toggleDropdown}
-                    className="block w-full pl-10 pr-10 py-2 h-[54px] text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    className="block w-full pl-4 pr-10 py-2 h-[54px] text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                   >
                     <div className="flex items-center justify-start">
                       {/* Image */}
@@ -599,7 +608,7 @@ export default function InventoryTable() {
                       />
                       {/* Text */}
                       <div className="flex flex-col justify-center items-start ml-2">
-                        <h2 className="text-sm font-medium">Walton Television 4k</h2>
+                        <h2 className="text-sm font-medium">{selectedItem}</h2>
                       </div>
                     </div>
                     {/* Dropdown arrow */}
@@ -622,7 +631,8 @@ export default function InventoryTable() {
                   {isOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
                       <ul className="py-1">
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => selectItem("Walton Television 4k_1")}>
                           <div className="flex items-center">
                             <Image
                               className="w-8 h-8 rounded-md"
@@ -631,11 +641,12 @@ export default function InventoryTable() {
                               src="https://i.ibb.co/sqPhfrt/notimgpng.png"
                               alt="Walton Television 4k"
                             />
-                            <span className="ml-2 text-sm">Walton Television 4k</span>
+                            <span className="ml-2 text-sm">Walton Television 4k_1</span>
                           </div>
                         </li>
                         {/* Add more items here */}
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => selectItem("Another Product")}>
                           <div className="flex items-center">
                             <Image
                               className="w-8 h-8 rounded-md"
