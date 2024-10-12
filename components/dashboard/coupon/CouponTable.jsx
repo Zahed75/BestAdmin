@@ -293,9 +293,8 @@ export default function CouponTable({ AllCoupons }) {
                     {currentData?.map((item, i) => (
                       <tr
                         key={item._id}
-                        className={`${
-                          i % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${i % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -339,9 +338,22 @@ export default function CouponTable({ AllCoupons }) {
                         </td>
                         <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <div className="flex justify-center items-center">
-                            <span className="">
+                            {/* <span className="">
                               {item?.usageLimit?.usageLimitPerCoupon ||
                                 "&#8734;"}
+                            </span> */}
+                            <span>
+                              {item?.usageLimit?.usageLimitPerUser || 0}
+                            </span>
+                            /
+                            <span>
+                              {/* {item?.usageLimit?.usageLimitPerCoupon || '\u221E'} */}
+                              {item?.usageLimit?.usageLimitPerCoupon ? (
+                                item.usageLimit.usageLimitPerCoupon
+                              ) : (
+                                // <span className="text-2xl">∞</span>
+                                <span className="text-xl">&#8734;</span>
+                              )}
                             </span>
                           </div>
                         </td>
