@@ -548,7 +548,24 @@ export default function ProductTable({ AllProducts }) {
             <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl">
 
               <div className="flex items-center justify-between p-4">
-                <h2 className="text-lg font-semibold">Stock of Walton Television 4k</h2>
+                <div className="flex justify-start items-center">
+                  <Image
+                    className="w-9 h-9 rounded-md"
+                    width={30}
+                    height={30}
+                    src={noPicture}
+                    alt={"No Image"}
+                  />
+                  <div className="flex flex-col justify-center items-start ml-2 ">
+
+                    {/* <span className="text-wrap">
+                        {item?.productName}
+                      </span> */}
+                    <h2 className="text-lg font-semibold">Stock of Walton Television 4k</h2>
+
+                  </div>
+                </div>
+
                 <button
                   onClick={() => setShowAddMenu(false)}
                   className="text-gray-400 focus:outline-none"
@@ -578,7 +595,7 @@ export default function ProductTable({ AllProducts }) {
                   </svg>
                 </button>
               </div>
-              <div className="flex flex-col items-between justify-between p-4 w-full border rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
+              {/* <div className="flex flex-col items-between justify-between p-4 w-full border rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
 
                 <div className="w-12 text-gray-300">
                   <svg
@@ -605,101 +622,100 @@ export default function ProductTable({ AllProducts }) {
                   placeholder="Search"
                 />
 
-              </div>
+              </div> */}
 
-              <div className="overflow-y-auto max-h-80">
-                <table
-                  className="min-w-full table-fixed dark:divide-gray-700"
-                >
-                  {/* table head */}
-                  <thead className="bg-gray-100 ">
-                    <tr>
-                      <th scope="col" className="px-6 py-6 lg:p-4 w-6">
-                        <div className="flex items-center">
-                          <input
-                            id="checkbox_all"
-                            type="checkbox"
-                            className="w-4 h-4 bg-gray-100 rounded border-gray-300 "
-                            onChange={handleSelectAll}
-                            checked={selectAll}
-                          />
-                          <label htmlFor="checkbox-all" className="sr-only">
-                            checkbox
-                          </label>
-                        </div>
-                      </th>
-                      <th
-                        scope="col"
-                        onClick={() => handleSort("productName")}
-                        className="py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
-                      >
-                        OUTLET NAME &#x21d5;
-                      </th>
-                      <th
-                        scope="col"
-                        onClick={() => handleSort("inventory.sku")}
-                        className="px-8 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
-                      >
-                        ADDRESS &#x21d5;
-                      </th>
-                      <th
-                        scope="col"
-                        onClick={() => handleSort("inventory.stockStatus")}
-                        className="px-3 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
-                      >
-                        STOCK &#x21d5;
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white text-black">
-                    {currentData?.map((item) => (
-                      <tr
-                        key={item._id}
-                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700 `}
-                      >
-                        <td scope="col" className="px-6 lg:px-4 py-4">
-                          <div className="flex items-center">
-                            <input
-                              id={`checkbox_${item._id}`}
-                              type="checkbox"
-                              className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item._id)}
-                              onChange={() => handleSelectItem(item._id)}
-                            />
-                            <label
-                              htmlFor={`checkbox_${item._id}`}
-                              className="sr-only"
-                            >
-                              checkbox
-                            </label>
-                          </div>
-                        </td>
-                        <td className="px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap group">
-                          <div className="flex justify-start items-center">
-                            <Image
-                              className="w-7 h-7 rounded-md"
-                              width={30}
-                              height={30}
-                              src={item?.productImage || noPicture}
-                              alt={item?.productName}
-                            />
-                            <div className="flex flex-col justify-center items-start ml-2 ">
-                              <Link href={`/dashboard/products/${item._id}`}>
+              <div className="px-4">
+                <div className="flex items-center p-2 w-full border rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md">
+                  <div className="w-6 h-6 text-gray-300 mr-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-full h-full"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+
+                  <input
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="peer w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pl-2"
+                    type="text"
+                    id="search"
+                    placeholder="Search"
+                  />
+                </div>
+                <hr className="my-4 border-gray-300" />
+                <div className="overflow-y-auto max-h-80 hide-scrollbar">
+                  <table
+                    className="min-w-full table-fixed dark:divide-gray-700"
+                  >
+                    {/* table head */}
+                    <thead className="bg-gray-100 ">
+                      <tr>
+                        <th
+                          scope="col"
+                          onClick={() => handleSort("productName")}
+                          className="px-6 py-6 lg:p-4 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                        >
+                          OUTLET NAME &#x21d5;
+                        </th>
+                        <th
+                          scope="col"
+                          onClick={() => handleSort("inventory.sku")}
+                          className="px-8 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                        >
+                          ADDRESS
+                        </th>
+                        <th
+                          scope="col"
+                          onClick={() => handleSort("inventory.stockStatus")}
+                          className="px-3 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                        >
+                          STOCK
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white text-black">
+                      {currentData?.map((item) => (
+                        <tr
+                          key={item._id}
+                          className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700 `}
+                        >
+                          <td scope="col" className="px-6 lg:px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap group">
+                            <div className="flex justify-start items-center">
+                              <Image
+                                className="w-9 h-9 rounded-md"
+                                width={30}
+                                height={30}
+                                src={item?.productImage || noPicture}
+                                alt={item?.productName}
+                              />
+                              <div className="flex flex-col justify-center items-start ml-2 ">
+                                {/* <Link href={`/dashboard/products/${item._id}`}> */}
                                 <span className="text-wrap">
-                                  {item?.productName}
+                                  {/* {item?.productName} */}
+                                  BEL Banani
                                 </span>
-                              </Link>
+                                {/* </Link> */}
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item?.inventory?.sku}
-                        </td>
+                          </td>
+                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                            {/* {item?.inventory?.sku} */}
+                            House-01, Road-02
+                          </td>
 
-                        <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap">
-                          {/* <Link href={`/dashboard/products/${item._id}`}> */}
-                          <div
+                          <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap flex justify-center">
+                            {/* <Link href={`/dashboard/products/${item._id}`}> */}
+                            {/* <div
                             className={`${item?.inventory?.stockStatus === "In Stock"
                               ? "bg-green-100 text-green-400"
                               : "bg-red-100 text-red-400"
@@ -730,22 +746,30 @@ export default function ProductTable({ AllProducts }) {
                                 />
                               </svg>
                             </div>
-                          </div>
-                          {/* </Link> */}
-                        </td>
-                        {/* <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
+                          </div> */}
+                            <div className="w-[166px] h-[48px] p-3 border-2 bg-gray-50 border-gray-300 rounded-lg">
+                              <input
+                                type="number"
+                                defaultValue="100"
+                                className="font-inter font-normal w-[142px] h-[24px] bg-gray-50 text-[19px] text-center border-none focus:outline-none"
+                              />
+
+                            </div>
+                            {/* </Link> */}
+                          </td>
+                          {/* <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <button
                               className={`px-2 py-1 rounded-md border border-black`}
                             >
                               {item?.inventory?.inventoryStatus}
                             </button>
                           </td> */}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-
 
               <div class="p-4 border-t flex justify-center">
                 <button class="w-full bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800">Save Changes</button>

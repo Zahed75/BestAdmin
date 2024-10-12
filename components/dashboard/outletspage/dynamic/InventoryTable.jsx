@@ -14,6 +14,13 @@ export default function InventoryTable() {
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  }
+
   const data = [
     {
       id: 1,
@@ -334,41 +341,41 @@ export default function InventoryTable() {
                       <th
                         scope="col"
                         onClick={() => handleSort("productName")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Product name &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("sku")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-8 lg:px-0 py-3  text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         SKU &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("price")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-8 lg:px-0 py-3  text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Price &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("published")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-8 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                       >
                         Published &#x21d5;
                       </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("stock")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-8 lg:px-0 py-3  text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Stock &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="px-8 lg:px-0 py-3  text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Action
                       </th>
@@ -398,7 +405,7 @@ export default function InventoryTable() {
                             </label>
                           </div>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                        <td className="py-4 text-sm font-medium text-gray-900 text-wrap md:whitespace-nowrap">
                           <Link href={`/dashboard/outlets/${item.id}`}>
                             <div className="flex justify-start items-center">
                               <Image
@@ -412,14 +419,14 @@ export default function InventoryTable() {
                             </div>
                           </Link>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                        <td className="pl-10 lg:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                           {item.sku}
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                        <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           <span className="text-md">৳</span>
                           {item.price}
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                        <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           {item.published}
                         </td>
                         <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap ">
@@ -452,7 +459,7 @@ export default function InventoryTable() {
                           </div>
                           {/* </span> */}
                         </td>
-                        <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
+                        <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
                           <button
                             className={` px-2 py-1 rounded-md border border-black`}
                           >
@@ -576,13 +583,84 @@ export default function InventoryTable() {
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700">Select Product</label>
                 <div className="relative mt-2">
-                  <select className="block w-full pl-10 pr-10 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option>Walton Television 4k</option>
-                  </select>
+                  {/* Trigger for dropdown */}
+                  <div
+                    onClick={toggleDropdown}
+                    className="block w-full pl-10 pr-10 py-2 h-[54px] text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                  >
+                    <div className="flex items-center justify-start">
+                      {/* Image */}
+                      <Image
+                        className="w-8 h-8 rounded-md"
+                        width={30}
+                        height={30}
+                        src="https://i.ibb.co/sqPhfrt/notimgpng.png"
+                        alt="Walton Television 4k"
+                      />
+                      {/* Text */}
+                      <div className="flex flex-col justify-center items-start ml-2">
+                        <h2 className="text-sm font-medium">Walton Television 4k</h2>
+                      </div>
+                    </div>
+                    {/* Dropdown arrow */}
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                      <svg
+                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Dropdown list */}
+                  {isOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                      <ul className="py-1">
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <div className="flex items-center">
+                            <Image
+                              className="w-8 h-8 rounded-md"
+                              width={30}
+                              height={30}
+                              src="https://i.ibb.co/sqPhfrt/notimgpng.png"
+                              alt="Walton Television 4k"
+                            />
+                            <span className="ml-2 text-sm">Walton Television 4k</span>
+                          </div>
+                        </li>
+                        {/* Add more items here */}
+                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <div className="flex items-center">
+                            <Image
+                              className="w-8 h-8 rounded-md"
+                              width={30}
+                              height={30}
+                              src="https://i.ibb.co/sqPhfrt/notimgpng.png"
+                              alt="Another Product"
+                            />
+                            <span className="ml-2 text-sm">Another Product</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
+
                 <label className="block mt-4 text-sm font-medium text-gray-700">Quantity</label>
-                <input type="number" className="mt-2 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter quantity" />
+                <input
+                  type="number"
+                  className="mt-2 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:outline-none"
+                  placeholder="Enter quantity"
+                />
               </div>
+
+
 
 
               <div className="mt-6">
@@ -594,7 +672,8 @@ export default function InventoryTable() {
           </div>
         </div>
       </Modal>
-    </section>
+
+    </section >
   );
 
 }
