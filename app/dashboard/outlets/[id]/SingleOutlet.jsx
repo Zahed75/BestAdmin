@@ -10,15 +10,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "@/redux/slice/usersSlice";
 import { fetchApi } from "@/utils/FetchApi";
 import { useRouter } from "next/navigation";
+import { fetchCities } from "@/redux/slice/citiesSlice";
 
 export default function SingleOutlet({ outlet }) {
   const [isLoading, setIsLoading] = useState(false);
   const [managerEmail, setManagerEmail] = useState("");
   const [managerPhone, setManagerPhone] = useState("");
   const [selectedManager, setSelectedManager] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
 
   const dispatch = useDispatch();
   const users = useSelector((state) => state?.users?.users?.users);
+  const cities = useSelector((state) => state.cities);
 
   const router = useRouter();
 
@@ -30,6 +33,7 @@ export default function SingleOutlet({ outlet }) {
 
   useEffect(() => {
     dispatch(fetchUsers());
+    dispatch(fetchCities());
   }, [dispatch]);
 
   const OutletManager = users?.filter((user) => user?.role === "BA");
@@ -60,7 +64,8 @@ export default function SingleOutlet({ outlet }) {
       outletManagerEmail: managerEmail,
       outletManagerPhone: managerPhone,
       outletImage: outlet?.outletImage || imageUrl,
-      cityName: formData.get("cityName"),
+      cityName: selectedCity?.cityName,
+      areaName: formData.get("area"),
     };
 
     try {
@@ -79,7 +84,12 @@ export default function SingleOutlet({ outlet }) {
       setIsLoading(false);
     }
   };
-  //   /outlet/updateOutlet/
+
+  const handleCitiesChange = (event) => {
+    const cityId = event.target.value;
+    const city = cities?.cities?.find((item) => item?._id === cityId);
+    setSelectedCity(city);
+  };
   return (
     <main className="">
       {isLoading ? (
@@ -179,7 +189,7 @@ export default function SingleOutlet({ outlet }) {
                       </div>
                       <div className="flex flex-col space-y-1 w-full">
                         <label
-                          htmlFor="city"
+                          htmlFor="cityName"
                           className="text-sm font-semibold text-gray-600"
                         >
                           City
@@ -188,19 +198,27 @@ export default function SingleOutlet({ outlet }) {
                           <div>
                             <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
                               <select
-                                id="city"
-                                name="city"
+                                id="cityName"
+                                name="cityName"
                                 required
-                                // onChange={handleCitiesChange}
-                                defaultValue={outlet?.city}
+                                onChange={handleCitiesChange}
                                 className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                               >
-                                <option value="">Select City</option>
-                                {/* {cities?.cities?.map((item, i) => (
-                                  <option key={i} value={item?._id}>
-                                    {item?.cityName}
+                                {outlet?.cityName && (
+                                  <option value={outlet?.cityName}>
+                                    {outlet?.cityName}
                                   </option>
-                                ))} */}
+                                )}
+                                {cities?.cities
+                                  ?.filter(
+                                    (item) =>
+                                      item?.cityName !== outlet?.cityName
+                                  )
+                                  .map((item, i) => (
+                                    <option key={item._id} value={item?._id}>
+                                      {item?.cityName}
+                                    </option>
+                                  ))}
                               </select>
                             </div>
                           </div>
@@ -219,18 +237,20 @@ export default function SingleOutlet({ outlet }) {
                               <select
                                 id="area"
                                 name="area"
-                                // disabled={
-                                //   selectedCity === null || selectedCity === ""
-                                // }
+                                disabled={
+                                  selectedCity === null
+                                }
                                 required
                                 className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                               >
-                                <option>Select Area</option>
-                                {/* {selectedCity?.areas?.map((item, i) => (
-                                  <option key={i} value={item?._id}>
+                                {selectedCity?.areas?.find(
+                                  (item) => item?.areaName === outlet?.areaName
+                                )}
+                                {selectedCity?.areas?.map((item, i) => (
+                                  <option key={i} value={item?.areaName}>
                                     {item?.areaName}
                                   </option>
-                                ))} */}
+                                ))}
                               </select>
                             </div>
                           </div>
