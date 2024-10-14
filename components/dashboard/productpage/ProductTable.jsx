@@ -9,7 +9,7 @@ import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import Modal from "@/components/global/modal/Modal";
 
-export default function ProductTable({ AllProducts }) {
+export default function ProductTable({ AllProducts, AllOutlets }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
@@ -21,7 +21,9 @@ export default function ProductTable({ AllProducts }) {
   const [showAction, setShowAction] = useState(false);
   const [filter, setFilter] = useState("All");
   const [products, setProducts] = useState(AllProducts || []);
+  const [outlets, setOutlets] = useState(AllOutlets || []);
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [selectedItem, setSelectedItem] = useState();
 
   const router = useRouter();
 
@@ -33,6 +35,31 @@ export default function ProductTable({ AllProducts }) {
   useEffect(() => {
     setProducts(AllProducts || []);
   }, [AllProducts]);
+
+  useEffect(() => {
+    console.log('AllOutlets:', AllOutlets); // Check the value of AllOutlets
+    setOutlets(AllOutlets || []);
+  }, [AllOutlets]);
+
+  // const data_outlets = outlets;
+  useEffect(() => {
+    if (outlets.length > 0) {
+      console.log('Updated outlets:', outlets);
+    }
+  }, [outlets]);
+
+  useEffect(() => {
+    if (selectedItem) {
+      console.log("Updated selectedItem:", selectedItem); // Log when selectedItem changes
+    }
+  }, [selectedItem]);
+
+
+
+  const selectItem = (item) => {
+    setSelectedItem(item);
+  };
+
 
   const handleTitleButtonClick = (title) => {
     setFilter(title);
@@ -238,6 +265,9 @@ export default function ProductTable({ AllProducts }) {
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
+
+
+
 
   return (
     <main>
@@ -484,10 +514,14 @@ export default function ProductTable({ AllProducts }) {
                                 : "bg-red-100 text-red-400"
                                 } inline-block px-1 py-1 rounded-md mr-2 `}
                             >
-                              <div className="flex justify-center px-1" onClick={() => setShowAddMenu(true)}>
+                              <div className="flex justify-center px-1" onClick={() =>
+                                selectItem({ item })}>
                                 {item?.inventory?.stockStatus}
                                 <svg
-                                  className="cursor-pointer ml-2"
+                                  className="cursor-pointer ml-2" onClick={() => {
+
+                                    setShowAddMenu(true)
+                                  }}
                                   width="21"
                                   height="22"
                                   viewBox="0 0 21 22"
@@ -548,23 +582,25 @@ export default function ProductTable({ AllProducts }) {
             <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl">
 
               <div className="flex items-center justify-between p-4">
-                <div className="flex justify-start items-center">
-                  <Image
-                    className="w-9 h-9 rounded-md"
-                    width={30}
-                    height={30}
-                    src={noPicture}
-                    alt={"No Image"}
-                  />
-                  <div className="flex flex-col justify-center items-start ml-2 ">
+                {selectedItem && (
+                  <div className="flex justify-start items-center">
+                    <Image
+                      className="w-9 h-9 rounded-md"
+                      width={30}
+                      height={30}
+                      src={selectedItem?.item?.productImage || noPicture}
+                      alt={selectedItem?.item?.productImage}
+                    />
+                    <div className="flex flex-col justify-center items-start ml-2 ">
 
-                    {/* <span className="text-wrap">
+                      {/* <span className="text-wrap">
                         {item?.productName}
                       </span> */}
-                    <h2 className="text-lg font-semibold">Stock of Walton Television 4k</h2>
+                      <h2 className="text-lg font-semibold">{selectedItem?.item?.productName}</h2>
 
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <button
                   onClick={() => setShowAddMenu(false)}
@@ -625,7 +661,7 @@ export default function ProductTable({ AllProducts }) {
               </div> */}
 
               <div className="px-4">
-                <div className="flex items-center p-2 w-full border rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md">
+                <div className="flex items-center p-2 w-full border rounded-lg focus-within:shadow-lg bg-[#F9FAFB]">
                   <div className="w-6 h-6 text-gray-300 mr-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -651,8 +687,8 @@ export default function ProductTable({ AllProducts }) {
                     placeholder="Search"
                   />
                 </div>
-                <hr className="my-4 border-gray-300" />
-                <div className="overflow-y-auto max-h-80 hide-scrollbar">
+                {/* <hr className="my-4 border-gray-300" /> */}
+                <div className="overflow-y-auto max-h-80 hide-scrollbar mt-4">
                   <table
                     className="min-w-full table-fixed dark:divide-gray-700"
                   >
@@ -661,21 +697,21 @@ export default function ProductTable({ AllProducts }) {
                       <tr>
                         <th
                           scope="col"
-                          onClick={() => handleSort("productName")}
+                          onClick={() => handleSort("outletName")}
                           className="px-6 py-6 lg:p-4 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           OUTLET NAME &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("inventory.sku")}
+                          onClick={() => handleSort("outletLocation")}
                           className="px-8 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           ADDRESS
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("inventory.stockStatus")}
+                          // onClick={() => handleSort("inventory.stockStatus")}
                           className="px-3 lg:px-0 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
                         >
                           STOCK
@@ -683,10 +719,10 @@ export default function ProductTable({ AllProducts }) {
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {currentData?.map((item) => (
+                      {outlets?.map((outlet) => (
                         <tr
-                          key={item._id}
-                          className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          key={outlet._id}
+                          className={`${outlet.id % 2 !== 0 ? "" : "bg-gray-100"
                             } hover:bg-gray-100 duration-700 `}
                         >
                           <td scope="col" className="px-6 lg:px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap group">
@@ -695,22 +731,22 @@ export default function ProductTable({ AllProducts }) {
                                 className="w-9 h-9 rounded-md"
                                 width={30}
                                 height={30}
-                                src={item?.productImage || noPicture}
-                                alt={item?.productName}
+                                src={outlet?.outletImage || noPicture}
+                                alt={outlet?.outletImage}
                               />
                               <div className="flex flex-col justify-center items-start ml-2 ">
                                 {/* <Link href={`/dashboard/products/${item._id}`}> */}
                                 <span className="text-wrap">
-                                  {/* {item?.productName} */}
-                                  BEL Banani
+                                  {outlet?.outletName}
+                                  {/* BEL Banani */}
                                 </span>
                                 {/* </Link> */}
                               </div>
                             </div>
                           </td>
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {/* {item?.inventory?.sku} */}
-                            House-01, Road-02
+                            {outlet?.outletLocation}
+                            {/* House-01, Road-02 */}
                           </td>
 
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap flex justify-center">

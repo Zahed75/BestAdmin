@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import Image from "next/image";
@@ -16,16 +16,14 @@ export default function InventoryTable() {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState("Walton Television 4k");
+  const [selectedItem, setSelectedItem] = useState();
+
+
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const selectItem = (item) => {
-    setSelectedItem(item);
-    setIsOpen(false);
-  };
 
   const data = [
     {
@@ -34,6 +32,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-695",
       price: "1586",
       published: "18 may 2024",
+      stockQuantity: 10,
       stock: "In Stock",
       bg: "bg-green-100",
       text: "text-green-400",
@@ -44,6 +43,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "985",
       published: "18 may 2024",
+      stockQuantity: 15,
       stock: "In Stock",
       bg: "bg-green-100",
       text: "text-green-400",
@@ -54,6 +54,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-8457",
       price: "4895",
       published: "18 may 2024",
+      stockQuantity: 10,
       stock: "In Stock",
       bg: "bg-green-100",
       text: "text-green-400",
@@ -64,6 +65,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "6951",
       published: "22 jan 2024",
+      stockQuantity: 15,
       stock: "Out of Stock",
       bg: "bg-red-100",
       text: "text-red-400",
@@ -74,6 +76,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "1586",
       published: "18 may 2024",
+      stockQuantity: 12,
       stock: "Out of Stock",
       bg: "bg-red-100",
       text: "text-red-400",
@@ -84,6 +87,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-0184",
       price: "1586",
       published: "18 may 2024",
+      stockQuantity: 10,
       stock: "In Stock",
       bg: "bg-green-100",
       text: "text-green-400",
@@ -94,6 +98,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "985",
       published: "18 may 2024",
+      stockQuantity: 10,
       stock: "In Stock",
       bg: "bg-green-100",
       text: "text-green-400",
@@ -104,6 +109,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "4895",
       published: "18 may 2024",
+      stockQuantity: 20,
       stock: "In Stock",
       bg: "bg-green-100",
       text: "text-green-400",
@@ -114,6 +120,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "6951",
       published: "22 jan 2024",
+      stockQuantity: 10,
       stock: "Out of Stock",
       bg: "bg-red-100",
       text: "text-red-400",
@@ -124,6 +131,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "1586",
       published: "18 may 2024",
+      stockQuantity: 10,
       stock: "Out of Stock",
       bg: "bg-red-100",
       text: "text-red-400",
@@ -134,6 +142,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "1586",
       published: "18 may 2024",
+      stockQuantity: 10,
       stock: "In Stock",
       bg: "bg-green-100",
       text: "text-green-400",
@@ -144,6 +153,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "985",
       published: "18 may 2024",
+      stockQuantity: 10,
       stock: "In Stock",
       bg: "bg-green-100",
       text: "text-green-400",
@@ -219,6 +229,21 @@ export default function InventoryTable() {
       text: "text-red-400",
     },
   ];
+
+  useEffect(() => {
+    if (selectedItem) {
+      console.log("Updated selectedItem:", selectedItem); // Log when selectedItem changes
+    }
+  }, [selectedItem]);
+
+  const selectItem = (item) => {
+    setSelectedItem(item);
+    console.log("Item clicked:", selectedItem);
+    setIsOpen(false);
+  };
+
+
+
   // Sorting function
   const sortedData = data.sort((a, b) => {
     if (!sortBy) return 0;
@@ -317,6 +342,15 @@ export default function InventoryTable() {
                 Outlets Address
               </option>
             </select>
+          </div>
+          <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
+            <button
+              onClick={() => setShowAddMenu(true)}
+              className="flex justify-center items-center px-2 py-1"
+            >
+              <span className="text-xl font-semibold mr-1">+</span>{" "}
+              <span className="text-nowrap">Add Inventory</span>
+            </button>
           </div>
         </div>
       </div>
@@ -448,14 +482,14 @@ export default function InventoryTable() {
 
                             <div className="flex justify-center px-1 space-x-2">
 
-                              <div><span>{item.stock}(15)</span></div>
-                              <button className="bg-white text-red-500 p-1 rounded-full hover:bg-gray-100" onClick={() => setShowAddMenu(true)}>
+                              <div><span>{item.stock}({item.stockQuantity || 0})</span></div>
+                              <button className="bg-white text-red-500 p-1 rounded-full hover:bg-gray-100">
                                 <svg width="11" height="2" viewBox="0 0 11 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M0.0175781 1L10.5938 1" stroke="#F05252" stroke-width="1.5" />
                                 </svg>
 
                               </button>
-                              <button className="bg-white text-green-500 p-1 rounded-full hover:bg-gray-100" onClick={() => setShowAddMenu(true)}>
+                              <button className="bg-white text-green-500 p-1 rounded-full hover:bg-gray-100">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M6.23633 0.711914V11.2882" stroke="#0E9F6E" stroke-width="1.5" />
                                   <path d="M0.949219 6L11.5255 6" stroke="#0E9F6E" stroke-width="1.5" />
@@ -597,20 +631,25 @@ export default function InventoryTable() {
                     onClick={toggleDropdown}
                     className="block w-full pl-4 pr-10 py-2 h-[54px] text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                   >
-                    <div className="flex items-center justify-start">
-                      {/* Image */}
-                      <Image
-                        className="w-8 h-8 rounded-md"
-                        width={30}
-                        height={30}
-                        src="https://i.ibb.co/sqPhfrt/notimgpng.png"
-                        alt="Walton Television 4k"
-                      />
-                      {/* Text */}
-                      <div className="flex flex-col justify-center items-start ml-2">
-                        <h2 className="text-sm font-medium">{selectedItem}</h2>
+                    {selectedItem && (
+                      <div className="flex items-center justify-start">
+                        {/* Image */}
+                        <Image
+                          className="w-8 h-8 rounded-md"
+                          width={30}
+                          height={30}
+                          src="https://i.ibb.co/sqPhfrt/notimgpng.png"
+                          // src={item?.productImage || noPicture}
+                          alt={selectedItem.productName || "No Image"}
+                        />
+                        {/* Text */}
+                        <div className="flex flex-col justify-center items-start ml-2">
+                          <h2 className="text-sm font-medium">{selectedItem.item.productName || "No Product Available"}</h2>
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+
                     {/* Dropdown arrow */}
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                       <svg
@@ -625,40 +664,31 @@ export default function InventoryTable() {
                         />
                       </svg>
                     </div>
+
                   </div>
 
                   {/* Dropdown list */}
                   {isOpen && (
-                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-                      <ul className="py-1">
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => selectItem("Walton Television 4k_1")}>
-                          <div className="flex items-center">
-                            <Image
-                              className="w-8 h-8 rounded-md"
-                              width={30}
-                              height={30}
-                              src="https://i.ibb.co/sqPhfrt/notimgpng.png"
-                              alt="Walton Television 4k"
-                            />
-                            <span className="ml-2 text-sm">Walton Television 4k_1</span>
-                          </div>
-                        </li>
-                        {/* Add more items here */}
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => selectItem("Another Product")}>
-                          <div className="flex items-center">
-                            <Image
-                              className="w-8 h-8 rounded-md"
-                              width={30}
-                              height={30}
-                              src="https://i.ibb.co/sqPhfrt/notimgpng.png"
-                              alt="Another Product"
-                            />
-                            <span className="ml-2 text-sm">Another Product</span>
-                          </div>
-                        </li>
-                      </ul>
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                      {currentData?.map((item, index) => (
+                        <ul key={index} className="py-1">
+                          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            onClick={() => selectItem({ item })}>
+                            <div className="flex items-center">
+                              <Image
+                                className="w-8 h-8 rounded-md"
+                                width={30}
+                                height={30}
+                                src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
+                                alt={item.productName}
+                              />
+                              <span className="ml-2 text-sm">{item.productName}</span>
+                            </div>
+                          </li>
+                          {/* Add more items here */}
+
+                        </ul>
+                      ))}
                     </div>
                   )}
                 </div>
