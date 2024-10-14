@@ -10,6 +10,7 @@ import customersReducer from "@/redux/slice/customersSlice";
 import reportReducer from "@/redux/slice/reportSlice";
 import imagesReducer from "@/redux/slice/imagesSlice";
 import galleryReducer from "@/redux/slice/gallerySlice";
+import citiesReducer from "@/redux/slice/citiesSlice";
 
 const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ const store = configureStore({
     customer: customersReducer,
     images: imagesReducer,
     gallery: galleryReducer,
+    cities: citiesReducer,
   },
 });
 
