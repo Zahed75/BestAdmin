@@ -9,19 +9,23 @@ import { fetchUsers } from "@/redux/slice/usersSlice";
 import { fetchApi } from "@/utils/FetchApi";
 import { useRouter } from "next/navigation";
 import AddOutletDynamicHead from "@/components/dashboard/outletspage/dynamic/AddOutletDynamicHead";
+import { fetchCities } from "@/redux/slice/citiesSlice";
 
 export default function AddOutlet() {
   const [isLoading, setIsLoading] = useState(false);
   const [managerEmail, setManagerEmail] = useState("");
   const [managerPhone, setManagerPhone] = useState("");
   const [selectedManager, setSelectedManager] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
 
   const dispatch = useDispatch();
   const router = useRouter();
   const users = useSelector((state) => state?.users?.users?.users);
+  const cities = useSelector((state) => state.cities);
 
   useEffect(() => {
     dispatch(fetchUsers());
+    dispatch(fetchCities());
   }, [dispatch]);
 
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
@@ -85,6 +89,16 @@ export default function AddOutlet() {
       console.log(error);
       setIsLoading(false);
     }
+  };
+
+  const handleCitiesChange = (event) => {
+    const cityId = event.target.value;
+    if (cityId === "") {
+      setSelectedCity(null);
+      return;
+    }
+    const city = cities?.cities?.find((city) => city?._id === cityId);
+    setSelectedCity(city);
   };
 
   return (
@@ -197,14 +211,15 @@ export default function AddOutlet() {
                             id="city"
                             name="city"
                             required
+                            onChange={handleCitiesChange}
                             className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                           >
-                            <option>Select City</option>
-                            <option>Dhaka</option>
-                            <option>Chittagong</option>
-                            <option>Sylhet</option>
-                            <option>Rangpur</option>
-                            <option>Khulna</option>
+                            <option value="">Select City</option>
+                            {cities?.cities?.map((item, i) => (
+                              <option key={i} value={item?._id}>
+                                {item?.cityName}
+                              </option>
+                            ))}
                           </select>
                         </div>
                       </div>
@@ -223,15 +238,18 @@ export default function AddOutlet() {
                           <select
                             id="area"
                             name="area"
+                            disabled={
+                              selectedCity === null || selectedCity === ""
+                            }
                             required
                             className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                           >
                             <option>Select Area</option>
-                            <option>Dokkhin Khan Road</option>
-                            <option>Gulshan Avenue</option>
-                            <option>Mohakhali Road</option>
-                            <option>Mohammadpur 2/A</option>
-                            <option>Munshigonj Bazar</option>
+                            {selectedCity?.areas?.map((item, i) => (
+                              <option key={i} value={item?._id}>
+                                {item?.areaName}
+                              </option>
+                            ))}
                           </select>
                         </div>
                       </div>
