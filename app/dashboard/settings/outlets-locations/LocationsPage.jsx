@@ -225,10 +225,17 @@ export default function LocationsPage({ initialItems }) {
           <h3 className="text-sm md:text-lg text-black font-extrabold  py-2">
             All Location
           </h3>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "TOGGLE_ADD_MENU" })}
+            className="text-white bg-black rounded-md px-4 py-2  w-auto flex md:ml-auto mt-2"
+          >
+            + Add City
+          </button>
         </div>
         <div className="w-full mx-auto">
-          <div className="flex justify-end items-center">
-            <div className="flex items-center space-x-1">
+          <div className="flex justify-center items-center">
+            <div className="grid grid-cols-2 md:grid-cols-6 items-center space-x-1">
               {state.cites?.length > 0 &&
                 state.cites.map((city, index) => (
                   <button
@@ -261,13 +268,7 @@ export default function LocationsPage({ initialItems }) {
                   </button>
                 ))}
 
-              <button
-                type="button"
-                onClick={() => dispatch({ type: "TOGGLE_ADD_MENU" })}
-                className="text-white bg-black rounded-md px-4 py-2  w-auto flex md:ml-auto mt-2"
-              >
-                + Add City
-              </button>
+
             </div>
           </div>
 
@@ -339,7 +340,7 @@ export default function LocationsPage({ initialItems }) {
 
               <div className="">
                 {Array.isArray(state.selectedCityArea) &&
-                state.selectedCityArea?.length >= 0 ? (
+                  state.selectedCityArea?.length >= 0 ? (
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                     {state.selectedCityArea?.map((item, index) => (
                       <div
@@ -416,9 +417,8 @@ export default function LocationsPage({ initialItems }) {
       <Modal addModal={() => dispatch({ type: "TOGGLE_ADD_MENU" })}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            state.showAddMenu ? "fixed" : "hidden"
-          } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${state.showAddMenu ? "fixed" : "hidden"
+            } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
@@ -488,9 +488,8 @@ export default function LocationsPage({ initialItems }) {
       <Modal updateModal={() => dispatch({ type: "TOGGLE_UPDATE_MENU" })}>
         <div
           id="update-menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            state.showUpdateMenu ? "fixed" : "hidden"
-          } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${state.showUpdateMenu ? "fixed" : "hidden"
+            } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
@@ -560,9 +559,8 @@ export default function LocationsPage({ initialItems }) {
       <Modal deleteModal={() => dispatch({ type: "TOGGLE_DELETE_ALERT" })}>
         <div
           id="delete-alert"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            state.showDeleteAlert ? "fixed" : "hidden"
-          } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${state.showDeleteAlert ? "fixed" : "hidden"
+            } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
@@ -628,9 +626,8 @@ export default function LocationsPage({ initialItems }) {
       <Modal addAreaModal={() => dispatch({ type: "TOGGLE_UPDATE_AREA_MENU" })}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            state.showAreaUpdateMenu ? "fixed" : "hidden"
-          } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${state.showAreaUpdateMenu ? "fixed" : "hidden"
+            } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
@@ -704,9 +701,8 @@ export default function LocationsPage({ initialItems }) {
       >
         <div
           id="delete-area-alert"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            state.showDeleteAreaAlert ? "fixed" : "hidden"
-          } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${state.showDeleteAreaAlert ? "fixed" : "hidden"
+            } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg w-full bg-white p-6 rounded-md shadow-md">
