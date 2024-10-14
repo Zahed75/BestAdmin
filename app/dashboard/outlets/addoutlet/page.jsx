@@ -74,7 +74,7 @@ export default function AddOutlet() {
       outletManagerPhone: managerPhone,
       outletImage:
         "http://service.bestelectronics.com.bd/media/images/user.png",
-      cityName: formData.get("city"),
+      cityName: selectedCity?.cityName,
       areaName: formData.get("area"),
     };
 
@@ -238,15 +238,13 @@ export default function AddOutlet() {
                           <select
                             id="area"
                             name="area"
-                            disabled={
-                              selectedCity === null || selectedCity === ""
-                            }
+                            disabled={selectedCity === null}
                             required
                             className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                           >
                             <option>Select Area</option>
                             {selectedCity?.areas?.map((item, i) => (
-                              <option key={i} value={item?._id}>
+                              <option key={i} value={item?.areaName}>
                                 {item?.areaName}
                               </option>
                             ))}
