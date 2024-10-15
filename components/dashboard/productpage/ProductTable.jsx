@@ -12,12 +12,15 @@ import Modal from "@/components/global/modal/Modal";
 export default function ProductTable({ AllProducts, AllOutlets }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10);
+  const [currentPageOutlet, setCurrentPageOutlet] = useState(1);
+  const [dataPerPageOutlet] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [showButton, setShowButton] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchQueryOutlet, setSearchQueryOutlet] = useState("");
   const [showAction, setShowAction] = useState(false);
   const [filter, setFilter] = useState("All");
   const [products, setProducts] = useState(AllProducts || []);
@@ -65,6 +68,24 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
     setFilter(title);
     setSearchQuery("");
   };
+  // filter function for outlet
+  const filteredData_outlet = outlets?.filter((item) => {
+    if (!item?.outletName) return false; // Check if outletName exists
+
+    const searchWords = searchQueryOutlet.toLowerCase().split(' ');
+    return searchWords.every(word => item.outletName.toLowerCase().includes(word));
+  }
+  );
+
+  // Sorting function for outlet
+  const sortedData_outlet = filteredData_outlet.sort((a, b) => {
+    if (!sortBy) return 0;
+    if (sortDirection === "asc") {
+      return a[sortBy].localeCompare(b[sortBy]);
+    } else {
+      return b[sortBy].localeCompare(a[sortBy]);
+    }
+  });
 
   const filteredData = data
     .filter((item) => {
@@ -108,6 +129,12 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
   const indexOfFirstData = indexOfLastData - dataPerPage;
   const currentData = sortedData.slice(indexOfFirstData, indexOfLastData);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+  //Sorted Outlet List
+  const indexOfLastDataOutlet = currentPageOutlet * dataPerPageOutlet;
+  const indexOfFirstDataOutlet = indexOfLastDataOutlet - dataPerPageOutlet;
+  const currentDataOutput = sortedData_outlet.slice(indexOfFirstDataOutlet, indexOfLastDataOutlet);
 
   const firstItemIndex = (currentPage - 1) * dataPerPage + 1;
   const lastItemIndex = Math.min(currentPage * dataPerPage, data.length);
@@ -266,7 +293,18 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
-
+  const handleUpdateStock = async () => {
+    try {
+      for (const itemId of selectedItem) {
+        router.push(`/dashboard/outlets/${itemId}`);
+      }
+    } catch (error) {
+      console.log(
+        "An error occurred while updating Product Stock.",
+        error
+      );
+    }
+  };
 
 
   return (
@@ -680,11 +718,11 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                   </div>
 
                   <input
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => setSearchQueryOutlet(e.target.value)}
                     className="peer w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pl-2"
                     type="text"
                     id="search"
-                    placeholder="Search"
+                    placeholder="Search something.."
                   />
                 </div>
                 {/* <hr className="my-4 border-gray-300" /> */}
@@ -719,7 +757,7 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {outlets?.map((outlet) => (
+                      {currentDataOutput?.map((outlet) => (
                         <tr
                           key={outlet._id}
                           className={`${outlet.id % 2 !== 0 ? "" : "bg-gray-100"
@@ -807,8 +845,9 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                 </div>
               </div>
 
-              <div class="p-4 border-t flex justify-center">
-                <button class="w-full bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800">Save Changes</button>
+              <div className="p-4 border-t flex justify-center">
+                <button onClick={handleUpdateStock}
+                  className="w-full bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800">Save Changes</button>
               </div>
             </div>
           </div>
