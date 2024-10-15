@@ -65,7 +65,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "6951",
       published: "22 jan 2024",
-      stockQuantity: 15,
+      stockQuantity: 0,
       stock: "Out of Stock",
       bg: "bg-red-100",
       text: "text-red-400",
@@ -76,7 +76,7 @@ export default function InventoryTable() {
       sku: "FAN-CON-1542",
       price: "1586",
       published: "18 may 2024",
-      stockQuantity: 12,
+      stockQuantity: 0,
       stock: "Out of Stock",
       bg: "bg-red-100",
       text: "text-red-400",
@@ -482,7 +482,17 @@ export default function InventoryTable() {
 
                             <div className="flex justify-center px-1 space-x-2">
 
-                              <div><span>{item.stock}({item.stockQuantity || 0})</span></div>
+                              {/* <div><span>{item.stock}({item.stockQuantity || 0})</span></div> */}
+                              <div className="flex items-center">
+                                <span>{item.stock}</span>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={item.stockQuantity || 0} // Editable stock quantity
+                                  // onChange={(e) => handleStockQuantityChange(e.target.value)} // Function to handle stock quantity change
+                                  className="ml-2 w-10 text-center border rounded"
+                                />
+                              </div>
                               <button className="bg-white text-red-500 p-1 rounded-full hover:bg-gray-100">
                                 <svg width="11" height="2" viewBox="0 0 11 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M0.0175781 1L10.5938 1" stroke="#F05252" stroke-width="1.5" />
