@@ -5,11 +5,20 @@ import useImgBBUpload from "@/utils/useImgBBUpload";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
+import { removeImage } from "@/redux/slice/imagesSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SingleCustomer({ customer }) {
   const [districts, setDistricts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCustomerImageDeleted, setIsCustomerImageDeleted] = useState(false);
   const [customerImage, setCustomerImage] = useState("");
+
+  const dispatch = useDispatch();
+  const selectedImages = useSelector((state) => state.images.selectedImages);
+
 
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
 
@@ -116,8 +125,15 @@ export default function SingleCustomer({ customer }) {
   const handleRemoveProductPicture = () => {
     setCustomerImage("");
   };
+  const handleRemoveCustomerPicture = async () => {
+    dispatch(removeImage());
+    setIsCustomerImageDeleted(true);
+  };
 
   console.log("single customer", customer);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
   return (
     <main className="">
       <form onSubmit={handleUpdateCustomer} className="w-full">
@@ -136,7 +152,7 @@ export default function SingleCustomer({ customer }) {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">General</h5>
               <div className="grid grid-cols-1 md:grid-cols-4 justify-between items-start gap-5">
-                {customerImage || imageUrl ? (
+                {/* {customerImage || imageUrl ? (
                   <div className="relative w-[145px] h-[145px] rounded-md">
                     <Image
                       src={customerImage || imageUrl}
@@ -194,7 +210,90 @@ export default function SingleCustomer({ customer }) {
                       </svg>
                     </label>
                   </div>
-                )}
+                )} */}
+                <div className="flex flex-col justify-between items-start space-y-3">
+                  {customerImage && (
+                    <div
+                      className={`flex flex-col w-full ${isCustomerImageDeleted ? "hidden" : "block"
+                        }`}
+                    >
+                      <Image
+                        width={145}
+                        height={145}
+                        src={customerImage}
+                        alt="Uploaded"
+                        className="w-[145px] h-[145px] rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveCustomerPicture}
+                        className="text-sm text-red-500 flex justify-start py-2 underline underline-offset-2"
+                      >
+                        Remove customer Image
+                      </button>
+                    </div>
+                  )}
+                  {isCustomerImageDeleted && (
+                    <div className="flex flex-col w-[145px]">
+                      {selectedImages && (
+                        <div>
+                          <Image
+                            width={145}
+                            height={145}
+                            src={selectedImages}
+                            alt="Uploaded"
+                            className="w-[145px] h-[145px] rounded-md"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleRemoveCustomerPicture}
+                            className="text-sm text-red-500 flex justify-start py-2 underline underline-offset-2"
+                          >
+                            Remove Customer Image
+                          </button>
+                        </div>
+                      )}
+
+                      {!selectedImages ? (
+                        <div onClick={openModal}>
+                          <div className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md">
+                            <svg
+                              width="21"
+                              height="20"
+                              viewBox="0 0 21 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10.0925 2.4917C6.35684 2.4917 4.48901 2.4917 3.32849 3.65177C2.16797 4.81185 2.16797 6.67896 2.16797 10.4132C2.16797 14.1473 2.16797 16.0145 3.32849 17.1746C4.48901 18.3347 6.35684 18.3347 10.0925 18.3347C13.8281 18.3347 15.6959 18.3347 16.8565 17.1746C18.017 16.0145 18.017 14.1473 18.017 10.4132V9.99626"
+                                stroke="black"
+                                strokeWidth="1.25"
+                                strokeLinecap="round"
+                              />
+                              <path
+                                d="M4.66602 17.4913C8.17433 13.5319 12.117 8.28093 17.9993 12.2192"
+                                stroke="black"
+                                strokeWidth="1.25"
+                              />
+                              <path
+                                d="M15.4982 1.66504V8.33847M18.8362 4.98087L12.1602 4.99327"
+                                stroke="black"
+                                strokeWidth="1.25"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
+                          <p className="text-xs text-red-500">
+                            * Upload an image for the Customer
+                          </p>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <div className="md:col-span-3 ">
                   <div className="grid grid-cols-3 justify-between items-center gap-5">
@@ -591,6 +690,9 @@ export default function SingleCustomer({ customer }) {
           </div>
         </section>
       </form>
+      <div className="container mx-auto">
+        <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+      </div>
     </main>
   );
 }
