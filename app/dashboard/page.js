@@ -1,7 +1,6 @@
 "use client"; 
 import ReportingOverView from "@/components/dashboard/reporting/ReportingOverview";
 import DashboardTable from "@/components/dashboard/table/DashboardTable";
-import OverView from "@/components/global/overview/OverView";
 import PageHead from "@/components/global/pageHead/PageHead";
 import { withAuth } from "@/components/withAuth";
 // import withAuth from "@/components/withAuth";
