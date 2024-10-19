@@ -813,8 +813,8 @@ export default function Sidebar() {
             </li>
             <li>
               <Link
-                href="/dashboard/outlets-locations"
-                className={`flex flex-row items-center duration-700 text-black ${pathname == "/dashboard/outlets-locations"
+                href="/dashboard/usermanagement"
+                className={`flex flex-row items-center duration-700 text-black ${pathname == "/dashboard/usermanagement"
                   ? "bg-black text-white"
                   : ""
                   } hover:bg-black rounded-xl my-1 py-0 group`}
@@ -826,7 +826,7 @@ export default function Sidebar() {
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`${pathname == "/dashboard/outlets-locations"
+                    className={`${pathname == "/dashboard/usermanagement"
                       ? "hidden"
                       : "group-hover:hidden duration-700"
                       }`}
