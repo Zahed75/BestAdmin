@@ -1,18 +1,24 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddUserDynamicHead from "./dynamic/AddUserDynamicHead";
 import { fetchApi } from "@/utils/FetchApi";
 import useImgBBUpload from "@/utils/useImgBBUpload";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { removeImage } from "@/redux/slice/imagesSlice";
+import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
 
 export default function AddUser() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+
+  const selectedImages = useSelector((state) => state.images.selectedImages);
   const user = useSelector((state) => state.auth.user);
   const router = useRouter();
 
+  const dispatch = useDispatch();
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
 
   const handleUserImgFileChange = async (event) => {
@@ -45,7 +51,7 @@ export default function AddUser() {
       userName:
         formData.get("userName") ||
         formData.get("firstName").replace(/\s/g, "").toLowerCase() +
-          formData.get("lastName").replace(/\s/g, "").toLowerCase(),
+        formData.get("lastName").replace(/\s/g, "").toLowerCase(),
       outletId: "",
       role: formData.get("userRole"),
       firstName: formData.get("firstName"),
@@ -69,6 +75,12 @@ export default function AddUser() {
       setIsLoading(false);
     }
   };
+  const handleRemoveUserPicture = () => {
+    dispatch(removeImage());
+  };
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div>
@@ -87,7 +99,7 @@ export default function AddUser() {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Personal info</h5>
               <div className="grid grid-cols-3 justify-between items-start gap-5">
-                {imageUrl ? (
+                {/* {imageUrl ? (
                   <Image
                     src={imageUrl}
                     alt="user"
@@ -132,7 +144,74 @@ export default function AddUser() {
                       User image is required *
                     </span>
                   </div>
-                )}
+                )} */}
+                <div className="flex flex-col justify-between items-start space-y-3">
+                  <div className="flex flex-col w-[145px]">
+                    {selectedImages && (
+                      <div className={`flex flex-col w-full`}>
+                        <Image
+                          width={145}
+                          height={145}
+                          src={selectedImages}
+                          alt="Uploaded"
+                          className="w-[145px] h-[145px] object-cover rounded-md"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleRemoveUserPicture}
+                          className="text-sm text-red-500 flex justify-start py-2 underline underline-offset-2"
+                        >
+                          Remove product User
+                        </button>
+                      </div>
+                    )}
+
+                    {!selectedImages ? (
+                      <div
+                        onClick={openModal}
+                        className={` flex flex-col w-full`}
+                      >
+                        <div className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md">
+                          <svg
+                            width="21"
+                            height="20"
+                            viewBox="0 0 21 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.0925 2.4917C6.35684 2.4917 4.48901 2.4917 3.32849 3.65177C2.16797 4.81185 2.16797 6.67896 2.16797 10.4132C2.16797 14.1473 2.16797 16.0145 3.32849 17.1746C4.48901 18.3347 6.35684 18.3347 10.0925 18.3347C13.8281 18.3347 15.6959 18.3347 16.8565 17.1746C18.017 16.0145 18.017 14.1473 18.017 10.4132V9.99626"
+                              stroke="black"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M4.66602 17.4913C8.17433 13.5319 12.117 8.28093 17.9993 12.2192"
+                              stroke="black"
+                              strokeWidth="1.25"
+                            />
+                            <path
+                              d="M15.4982 1.66504V8.33847M18.8362 4.98087L12.1602 4.99327"
+                              stroke="black"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  {!selectedImages && (
+                    <div className="mt-5">
+                      <p className="text-xs text-red-500">
+                        * Upload an image for the User
+                      </p>
+                    </div>
+                  )}
+                </div>
 
                 <div className="col-span-2 grid grid-cols-2 justify-between items-center gap-5">
                   <div className="flex flex-col col-span-2 space-y-1 w-full">
@@ -283,6 +362,9 @@ export default function AddUser() {
           </div>
         </section>
       </form>
+      <div>
+        <ImageUploadModal isOpen={isModalOpen} onClose={closeModal} />
+      </div>
     </div>
   );
 }
