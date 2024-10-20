@@ -181,13 +181,13 @@ export default function SingleOutlet({ outlet }) {
                             alt="Uploaded"
                             className="w-[145px] h-[145px] rounded-md"
                           />
-                          <button
+                          {/* <button
                             type="button"
                             onClick={handleRemoveOutletPicture}
                             className="text-sm text-red-500 flex justify-start py-2 underline underline-offset-2"
                           >
                             Remove outlet Image
-                          </button>
+                          </button> */}
                         </div>
                       )}
                       {isOutletImageDeleted && (
@@ -201,13 +201,13 @@ export default function SingleOutlet({ outlet }) {
                                 alt="Uploaded"
                                 className="w-[145px] h-[145px] rounded-md"
                               />
-                              <button
+                              {/* <button
                                 type="button"
                                 onClick={handleRemoveOutletPicture}
                                 className="text-sm text-red-500 flex justify-start py-2 underline underline-offset-2"
                               >
                                 Remove outlet Image
-                              </button>
+                              </button> */}
                             </div>
                           )}
 
@@ -241,9 +241,9 @@ export default function SingleOutlet({ outlet }) {
                                   />
                                 </svg>
                               </div>
-                              <p className="text-xs text-red-500">
+                              {/* <p className="text-xs text-red-500">
                                 * Upload an image for the Outlet
-                              </p>
+                              </p> */}
                             </div>
                           ) : (
                             <></>
