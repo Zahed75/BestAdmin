@@ -24,7 +24,9 @@ export default function Page({ params }) {
     fetchData();
   }, [id]);
 
-  console.log(outlet);
-
-  return <main className="">{isLoading ? <Loading /> : <SingleOutlet outlet={outlet} />}</main>;
+  return (
+    <main className="">
+      {isLoading ? <Loading /> : <SingleOutlet outlet={outlet} />}
+    </main>
+  );
 }
