@@ -285,9 +285,8 @@ export default function AddProductPage() {
           <AddProductDynamicHead title={"Add New Product"} />
           <button
             type="submit"
-            className={`text-sm text-white bg-black rounded-md px-3 py-2 ${
-              categoryId === "" ? "cursor-not-allowed" : "cursor-pointer"
-            }`}
+            className={`text-sm text-white bg-black rounded-md px-3 py-2 ${categoryId === "" ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
           >
             {isLoading ? "Adding Product..." : "Add Product"}
           </button>
@@ -669,33 +668,30 @@ export default function AddProductPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab("general")}
-                  className={`${
-                    activeTab === "general"
+                  className={`${activeTab === "general"
                       ? "border-gray-500 text-black "
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                 >
                   General
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab("inventory")}
-                  className={`${
-                    activeTab === "inventory"
+                  className={`${activeTab === "inventory"
                       ? "border-gray-500 text-black"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                 >
                   Inventory
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab("shipping")}
-                  className={`${
-                    activeTab === "shipping"
+                  className={`${activeTab === "shipping"
                       ? "border-gray-500 text-black"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                 >
                   Shipping
                 </button>
@@ -1023,22 +1019,20 @@ export default function AddProductPage() {
               <div className="flex justify-between items-center gap-5 mb-5">
                 <button
                   type="button"
-                  className={`${
-                    categoryTab === "all"
+                  className={`${categoryTab === "all"
                       ? "border-gray-500 text-black"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   onClick={() => setCategoryTab("all")}
                 >
                   All
                 </button>
                 <button
                   type="button"
-                  className={`${
-                    categoryTab === "popular"
+                  className={`${categoryTab === "popular"
                       ? "border-gray-500 text-black"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   onClick={() => setCategoryTab("popular")}
                 >
                   Popular
@@ -1046,9 +1040,8 @@ export default function AddProductPage() {
               </div>
               <div
                 className={`
-                ${
-                  categoryTab === "all" ? "block" : "hidden"
-                } h-52 overflow-y-scroll
+                ${categoryTab === "all" ? "block" : "hidden"
+                  } h-52 overflow-y-scroll
                 `}
               >
                 {renderCategoryList(AllCategories)}
@@ -1102,22 +1095,20 @@ export default function AddProductPage() {
               <div className="flex justify-between items-center gap-5 mb-5">
                 <button
                   type="button"
-                  className={`${
-                    brandTab === "brand"
+                  className={`${brandTab === "brand"
                       ? "border-gray-500 text-black"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   onClick={() => setBrandTab("brand")}
                 >
                   Brand
                 </button>
                 <button
                   type="button"
-                  className={`${
-                    brandTab === "new"
+                  className={`${brandTab === "new"
                       ? "border-gray-500 text-black"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   onClick={() => setBrandTab("new")}
                 >
                   Add New Brand

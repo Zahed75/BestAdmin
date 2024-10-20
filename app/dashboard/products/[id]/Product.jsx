@@ -370,7 +370,6 @@ export default function Product({ product }) {
   const closeModal = () => setIsModalOpen(false);
   const openGalleryModal = () => setIsGalleryModalOpen(true);
   const closeGalleryModal = () => setIsGalleryModalOpen(false);
-
   return (
     <main className="">
       {isLoading && <Loading />}
@@ -417,9 +416,8 @@ export default function Product({ product }) {
                     <h5 className="text-md font-bold mb-3">Featured Image</h5>
                     {productPicture && (
                       <div
-                        className={`flex flex-col w-full ${
-                          isProductImageDeleted ? "hidden" : "block"
-                        }`}
+                        className={`flex flex-col w-full ${isProductImageDeleted ? "hidden" : "block"
+                          }`}
                       >
                         <Image
                           width={200}
@@ -709,7 +707,7 @@ export default function Product({ product }) {
                         style={{
                           width: `${calculateDescriptionProgress(
                             product?.seo?.prodDescription ||
-                              descriptionInputValue
+                            descriptionInputValue
                           )}%`,
                         }}
                       ></div>
@@ -850,33 +848,30 @@ export default function Product({ product }) {
                   <button
                     type="button"
                     onClick={() => setActiveTab("general")}
-                    className={`${
-                      activeTab === "general"
-                        ? "border-gray-500 text-black "
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${activeTab === "general"
+                      ? "border-gray-500 text-black "
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   >
                     General
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab("inventory")}
-                    className={`${
-                      activeTab === "inventory"
-                        ? "border-gray-500 text-black"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${activeTab === "inventory"
+                      ? "border-gray-500 text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   >
                     Inventory
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab("shipping")}
-                    className={`${
-                      activeTab === "shipping"
-                        ? "border-gray-500 text-black"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${activeTab === "shipping"
+                      ? "border-gray-500 text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                   >
                     Shipping
                   </button>
@@ -1276,22 +1271,20 @@ export default function Product({ product }) {
                 <div className="flex justify-between items-center gap-5 mb-5">
                   <button
                     type="button"
-                    className={`${
-                      categoryTab === "all"
-                        ? "border-gray-500 text-black"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${categoryTab === "all"
+                      ? "border-gray-500 text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                     onClick={() => setCategoryTab("all")}
                   >
                     All
                   </button>
                   <button
                     type="button"
-                    className={`${
-                      categoryTab === "popular"
-                        ? "border-gray-500 text-black"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${categoryTab === "popular"
+                      ? "border-gray-500 text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                     onClick={() => setCategoryTab("popular")}
                   >
                     Popular
@@ -1299,9 +1292,8 @@ export default function Product({ product }) {
                 </div>
                 <div
                   className={`
-                ${
-                  categoryTab === "all" ? "block" : "hidden"
-                } h-52 overflow-y-scroll
+                ${categoryTab === "all" ? "block" : "hidden"
+                    } h-52 overflow-y-scroll
                 `}
                 >
                   {renderCategoryList(AllCategories)}
@@ -1357,22 +1349,20 @@ export default function Product({ product }) {
                 <div className="flex justify-between items-center gap-5 mb-5">
                   <button
                     type="button"
-                    className={`${
-                      brandTab === "brand"
-                        ? "border-gray-500 text-black"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${brandTab === "brand"
+                      ? "border-gray-500 text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                     onClick={() => setBrandTab("brand")}
                   >
                     Brand
                   </button>
                   <button
                     type="button"
-                    className={`${
-                      brandTab === "new"
-                        ? "border-gray-500 text-black"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
+                    className={`${brandTab === "new"
+                      ? "border-gray-500 text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      } flex items-center py-2 px-4 border-b-2 text-center font-medium focus:outline-none bg-gray-100 w-full rounded-md`}
                     onClick={() => setBrandTab("new")}
                   >
                     Add New Brand

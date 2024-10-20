@@ -65,7 +65,7 @@ export default function SingleCustomer({ customer }) {
       email: form.get("email"),
       phoneNumber: form.get("phoneNumber"),
       city: form.get("city"),
-      profilePicture: customerImage || imageUrl,
+      profilePicture: customerImage || "http://service.bestelectronics.com.bd/media/images/user.png",
       billingInfo: {
         firstName: form.get("billingFirstName"),
         lastName: form.get("billingLastName"),
@@ -152,22 +152,22 @@ export default function SingleCustomer({ customer }) {
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">General</h5>
               <div className="grid grid-cols-1 md:grid-cols-4 justify-between items-start gap-5">
-                {/* {customerImage || imageUrl ? (
+                {customerImage || "http://service.bestelectronics.com.bd/media/images/user.png" ? (
                   <div className="relative w-[145px] h-[145px] rounded-md">
                     <Image
-                      src={customerImage || imageUrl}
+                      src={customerImage || "http://service.bestelectronics.com.bd/media/images/user.png"}
                       alt="customer-profile-picture"
                       width={145}
                       height={145}
                       className="w-[145px] h-[145px] object-cover rounded-md"
                     />
-                    <button
+                    {/* <button
                       type="button"
                       onClick={() => handleRemoveProductPicture()}
                       className="absolute -top-1 -right-1 bg-red-400 w-5 h-5 rounded-full font-bold text-sm text-white flex justify-center items-center pb-1 shadow-md"
                     >
                       x
-                    </button>
+                    </button> */}
                   </div>
                 ) : (
                   <div>
@@ -210,8 +210,8 @@ export default function SingleCustomer({ customer }) {
                       </svg>
                     </label>
                   </div>
-                )} */}
-                <div className="flex flex-col justify-between items-start space-y-3">
+                )}
+                {/* <div className="flex flex-col justify-between items-start space-y-3">
                   {customerImage && (
                     <div
                       className={`flex flex-col w-full ${isCustomerImageDeleted ? "hidden" : "block"
@@ -293,7 +293,7 @@ export default function SingleCustomer({ customer }) {
                       )}
                     </div>
                   )}
-                </div>
+                </div> */}
 
                 <div className="md:col-span-3 ">
                   <div className="grid grid-cols-3 justify-between items-center gap-5">

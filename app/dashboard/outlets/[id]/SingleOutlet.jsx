@@ -70,7 +70,7 @@ export default function SingleOutlet({ outlet }) {
       outletManager: selectedManager?._id,
       outletManagerEmail: managerEmail,
       outletManagerPhone: managerPhone,
-      outletImage: outlet?.outletImage || imageUrl,
+      outletImage: selectedImages ? selectedImages : outletPicture,
       cityName: selectedCity?.cityName,
       areaName: formData.get("area"),
     };

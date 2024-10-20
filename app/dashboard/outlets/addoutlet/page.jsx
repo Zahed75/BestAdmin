@@ -77,7 +77,7 @@ export default function AddOutlet() {
       outletManagerEmail: managerEmail,
       outletManagerPhone: managerPhone,
       outletImage:
-        "http://service.bestelectronics.com.bd/media/images/user.png",
+        selectedImages || "http://service.bestelectronics.com.bd/media/images/user.png",
       cityName: selectedCity?.cityName,
       areaName: formData.get("area"),
     };
@@ -88,6 +88,8 @@ export default function AddOutlet() {
       if (response) {
         setIsLoading(false);
         router.push("/dashboard/outlets");
+        dispatch(removeImage());
+
       }
     } catch (error) {
       console.log(error);

@@ -60,7 +60,7 @@ export default function AddUser() {
       password: formData.get("password"),
       email: formData.get("email"),
       profilePicture:
-        "http://service.bestelectronics.com.bd/media/images/user.png",
+        selectedImages || "http://service.bestelectronics.com.bd/media/images/user.png",
     };
 
     try {
@@ -69,6 +69,7 @@ export default function AddUser() {
       if (response) {
         setIsLoading(false);
         router.push("/dashboard/usermanagement");
+        dispatch(removeImage());
       }
     } catch (error) {
       console.log(error);

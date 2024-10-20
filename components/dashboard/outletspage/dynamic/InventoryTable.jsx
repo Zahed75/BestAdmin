@@ -17,6 +17,7 @@ export default function InventoryTable() {
   const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
 
 
 
@@ -242,10 +243,16 @@ export default function InventoryTable() {
     setIsOpen(false);
   };
 
-
+  const filteredData = data?.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        value != null &&
+        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
 
   // Sorting function
-  const sortedData = data.sort((a, b) => {
+  const sortedData = filteredData.sort((a, b) => {
     if (!sortBy) return 0;
     if (sortDirection === "asc") {
       return a[sortBy].localeCompare(b[sortBy]);

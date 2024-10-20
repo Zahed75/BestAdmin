@@ -58,7 +58,7 @@ export default function SingleUser({ user }) {
       lastName: fromData.get("lastName"),
       phoneNumber: fromData.get("phoneNumber"),
       email: fromData.get("email"),
-      profilePicture: user?.profilePicture || imageUrl,
+      profilePicture: selectedImages || "http://service.bestelectronics.com.bd/media/images/user.png",
     };
 
     try {
@@ -67,6 +67,7 @@ export default function SingleUser({ user }) {
       if (response) {
         setIsLoading(false);
         router.push("/dashboard/usermanagement");
+        dispatch(removeImage());
       }
     } catch (error) {
       console.log(error);

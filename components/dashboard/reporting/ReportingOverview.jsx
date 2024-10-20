@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function ReportingOverView() {
   const [showFilter, setShowFilter] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const dispatch = useDispatch();
   const report = useSelector((state) => state.report.report);
 
