@@ -1,14 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import "jspdf-autotable";
 import Image from "next/image";
 import Modal from "@/components/global/modal/Modal";
 import { fetchProducts } from "@/redux/slice/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 import { fetchApi } from "@/utils/FetchApi";
-import { set } from "date-fns";
 import Pagination from "@/components/global/pagination/Pagination";
 
 export default function InventoryTable() {
@@ -29,7 +27,6 @@ export default function InventoryTable() {
 
   const products = useSelector((state) => state?.products);
   const dispatch = useDispatch();
-  const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -158,6 +155,28 @@ export default function InventoryTable() {
     }
   };
 
+  const handleDeleteInventory = async (productId) => {
+    const data = {
+      outletId: outletId,
+      productId: productId,
+    };
+    console.log("deleted data", data);
+
+    try {
+      const response = await fetchApi(
+        `/inventory/delete-inventory-product`,
+        "DELETE",
+        data
+      );
+
+      if (response) {
+        console.log("Product deleted successfully", response);
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
   return (
     <section className="w-full my-5">
       <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
@@ -268,7 +287,7 @@ export default function InventoryTable() {
                   <tbody className="bg-white text-black">
                     {currentData?.map((item) => (
                       <tr
-                        key={item.id}
+                        key={item?._id}
                         className={`${
                           item.id % 2 !== 0 ? "" : "bg-gray-100"
                         } hover:bg-gray-100 duration-700`}
@@ -276,11 +295,11 @@ export default function InventoryTable() {
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
                             <input
-                              id={`checkbox_${item.id}`}
+                              id={`checkbox_${item?._id}`}
                               type="checkbox"
                               className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item.id)}
-                              onChange={() => handleSelectItem(item.id)}
+                              checked={selectedItems.includes(item?._id)}
+                              onChange={() => handleSelectItem(item?._id)}
                             />
                             <label
                               htmlFor={`checkbox_${item.id}`}
@@ -291,16 +310,16 @@ export default function InventoryTable() {
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 text-wrap md:whitespace-nowrap">
-                          <Link href={`/dashboard/outlets/${item.id}`}>
+                          <Link href={`/dashboard/outlets/${item?._id}`}>
                             <div className="flex justify-start items-center">
                               <Image
                                 width={30}
                                 height={30}
                                 className="w-7 h-7 rounded-md"
-                                src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
-                                alt=""
+                                src={item?.productImage || noPicture}
+                                alt={item?.productName}
                               />
-                              <span className="ml-2">{item.productName}</span>
+                              <span className="ml-2">{item?.productName}</span>
                             </div>
                           </Link>
                         </td>
@@ -330,8 +349,7 @@ export default function InventoryTable() {
                                 <input
                                   type="number"
                                   min="0"
-                                  value={item.quantity || 0} // Editable stock quantity
-                                  // onChange={(e) => handleStockQuantityChange(e.target.value)} // Function to handle stock quantity change
+                                  value={item.quantity || 0}
                                   className="ml-2 w-12 text-center focus:outline-0 rounded"
                                 />
                               </div>
@@ -372,13 +390,12 @@ export default function InventoryTable() {
                               </button>
                             </div>
                           </div>
-                          {/* </span> */}
                         </td>
                         <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
                           <button className={` px-2 py-1 rounded-md borde`}>
                             <svg
                               className="cursor-pointer"
-                              // onClick={() => handleDeleteGrid(item._id)}
+                              onClick={() => handleDeleteInventory(item._id)}
                               width="22"
                               height="22"
                               viewBox="0 0 22 22"
