@@ -9,11 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 import { fetchApi } from "@/utils/FetchApi";
 import { set } from "date-fns";
+import Pagination from "@/components/global/pagination/Pagination";
 
 export default function InventoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [dataPerPage] = useState(5);
+  const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
@@ -24,6 +25,7 @@ export default function InventoryTable() {
   const [selectedItem, setSelectedItem] = useState();
   const [searchQuery, setSearchQuery] = useState("");
   const [outletId, setOutletId] = useState("");
+  const [outletStock, setOutletStock] = useState([]);
 
   const products = useSelector((state) => state?.products);
   const dispatch = useDispatch();
@@ -35,6 +37,23 @@ export default function InventoryTable() {
       const pathParts = pathname.split("/");
       const outletIdFromPath = pathParts[pathParts.length - 1];
       setOutletId(outletIdFromPath);
+
+      const fetchData = async () => {
+        try {
+          const response = await fetchApi(
+            `/inventory/all-products-inventory/${outletIdFromPath}`,
+            "GET"
+          );
+          if (response) {
+            console.log("Fetched inventory data:", response?.inventory);
+            setOutletStock(response?.inventory);
+          }
+        } catch (error) {
+          console.error("Error fetching inventory data:", error);
+        }
+      };
+
+      fetchData();
     }
   }, [pathname]);
 
@@ -42,7 +61,8 @@ export default function InventoryTable() {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const data = products?.products?.products || [];
+  const productsData = products?.products?.products || [];
+  const inStockProducts = outletStock?.products || [];
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -50,11 +70,10 @@ export default function InventoryTable() {
 
   const selectItem = (item) => {
     setSelectedItem(item);
-    console.log("Item clicked:", selectedItem);
     setIsOpen(false);
   };
 
-  const filteredData = data?.filter((item) =>
+  const filteredData = inStockProducts?.filter((item) =>
     Object.values(item).some(
       (value) =>
         value != null &&
@@ -80,8 +99,11 @@ export default function InventoryTable() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const firstItemIndex = (currentPage - 1) * dataPerPage + 1;
-  const lastItemIndex = Math.min(currentPage * dataPerPage, data.length);
-  const totalItems = data.length;
+  const lastItemIndex = Math.min(
+    currentPage * dataPerPage,
+    filteredData.length
+  );
+  const totalItems = filteredData.length;
 
   const showingText = `Showing ${firstItemIndex}-${lastItemIndex} of ${totalItems}`;
 
@@ -122,14 +144,12 @@ export default function InventoryTable() {
       productId: selectedItem?.item?._id,
       quantity: quantity,
     };
-    console.log("create outlet data", data);
 
     try {
       const response = await fetchApi(`/inventory/add-Inventory`, "POST", data);
 
       if (response) {
         setIsLoading(false);
-        // console.log("response", response);
         setShowAddMenu(false);
       }
     } catch (error) {
@@ -229,13 +249,7 @@ export default function InventoryTable() {
                       >
                         Price &#x21d5;
                       </th>
-                      <th
-                        scope="col"
-                        onClick={() => handleSort("published")}
-                        className="px-8 lg:px-0 py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
-                      >
-                        Published &#x21d5;
-                      </th>
+
                       <th
                         scope="col"
                         onClick={() => handleSort("stock")}
@@ -255,8 +269,9 @@ export default function InventoryTable() {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                        className={`${
+                          item.id % 2 !== 0 ? "" : "bg-gray-100"
+                        } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -290,24 +305,23 @@ export default function InventoryTable() {
                           </Link>
                         </td>
                         <td className="pl-10 lg:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.sku}
+                          {item?.inventory?.sku}
                         </td>
                         <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           <span className="text-md">৳</span>
-                          {item.price}
+                          {item?.general?.salePrice}
                         </td>
-                        <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.published}
-                        </td>
+
                         <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap ">
                           {/* <span
                             className={`${item.bg} ${item.text} px-2 py-1 rounded-full`}
                           > */}
                           <div
-                            className={`${item.stock === "In Stock"
-                              ? "bg-green-100 text-green-400"
-                              : "bg-red-100 text-red-400"
-                              } inline-block px-1 py-1 rounded-md mr-2 `}
+                            className={`${
+                              item.stock === "In Stock"
+                                ? "bg-green-100 text-green-400"
+                                : "bg-red-100 text-red-400"
+                            } inline-block px-1 py-1 rounded-md mr-2 `}
                           >
                             <div className="flex justify-center px-1 space-x-2">
                               {/* <div><span>{item.stock}({item.stockQuantity || 0})</span></div> */}
@@ -316,9 +330,9 @@ export default function InventoryTable() {
                                 <input
                                   type="number"
                                   min="0"
-                                  value={item.stockQuantity || 0} // Editable stock quantity
+                                  value={item.quantity || 0} // Editable stock quantity
                                   // onChange={(e) => handleStockQuantityChange(e.target.value)} // Function to handle stock quantity change
-                                  className="ml-2 w-10 text-center border rounded"
+                                  className="ml-2 w-12 text-center focus:outline-0 rounded"
                                 />
                               </div>
                               <button className="bg-white text-red-500 p-1 rounded-full hover:bg-gray-100">
@@ -361,9 +375,7 @@ export default function InventoryTable() {
                           {/* </span> */}
                         </td>
                         <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
-                          <button
-                            className={` px-2 py-1 rounded-md borde`}
-                          >
+                          <button className={` px-2 py-1 rounded-md borde`}>
                             <svg
                               className="cursor-pointer"
                               // onClick={() => handleDeleteGrid(item._id)}
@@ -407,79 +419,23 @@ export default function InventoryTable() {
               </div>
             </div>
           </div>
-          {/* page footer */}
-          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-y-3 my-10">
-            {/* page number */}
-            <div className="flex justify-start items-center font-semibold">
-              {showingText}
-            </div>
-            {/* Pagination */}
-            <div className="flex justify-end items-center">
-              <nav aria-label="Pagination">
-                <ul className="inline-flex border rounded-sm shadow-md">
-                  <li>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      &#x2190;
-                    </button>
-                  </li>
 
-                  <li>
-                    <button
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage - 1}
-                    </button>
-                    <button
-                      className={`py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none`}
-                    >
-                      {currentPage}
-                    </button>
-                    <button
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                      onClick={() => paginate(currentPage + 1)}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage + 1}
-                    </button>
-                    <span
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none cursor-not-allowed`}
-                    >
-                      ...
-                    </span>
-                    <button
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {Math.ceil(data.length / dataPerPage)}
-                    </button>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                    >
-                      &#x2192;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            dataPerPage={dataPerPage}
+            totalItems={sortedData.length}
+            paginate={paginate}
+            showingText={showingText}
+            data={sortedData}
+          />
         </div>
       </div>
       <Modal addModal={() => setShowAddMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
-            } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+            showAddMenu ? "fixed" : "hidden"
+          } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <form
@@ -552,8 +508,9 @@ export default function InventoryTable() {
                     {/* Dropdown arrow */}
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                       <svg
-                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
-                          }`}
+                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -568,7 +525,7 @@ export default function InventoryTable() {
 
                   {isOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                      {data?.map((item, index) => (
+                      {productsData?.map((item, index) => (
                         <ul key={index} className="py-1">
                           <li
                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
