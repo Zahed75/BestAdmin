@@ -100,6 +100,7 @@ export default function InventoryTable() {
     currentPage * dataPerPage,
     filteredData.length
   );
+  
   const totalItems = filteredData.length;
 
   const showingText = `Showing ${firstItemIndex}-${lastItemIndex} of ${totalItems}`;
@@ -112,6 +113,7 @@ export default function InventoryTable() {
       setSortDirection("asc");
     }
   };
+
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
     setSelectedItems(selectAll ? [] : [...data.map((item) => item.id)]);
@@ -160,7 +162,7 @@ export default function InventoryTable() {
       outletId: outletId,
       productId: productId,
     };
-    console.log("deleted data", data);
+    console.log("deleted data", data); 
 
     try {
       const response = await fetchApi(
@@ -176,6 +178,8 @@ export default function InventoryTable() {
       console.error("Error deleting product:", error);
     }
   };
+
+  
 
   return (
     <section className="w-full my-5">
