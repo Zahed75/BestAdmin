@@ -40,7 +40,6 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
   }, [AllProducts]);
 
   useEffect(() => {
-    console.log('AllOutlets:', AllOutlets); // Check the value of AllOutlets
     setOutlets(AllOutlets || []);
   }, [AllOutlets]);
 

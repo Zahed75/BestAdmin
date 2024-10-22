@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Modal from "@/components/global/modal/Modal";
+import { FaCaretDown } from "react-icons/fa";
 import { fetchProducts } from "@/redux/slice/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,6 +13,7 @@ import Pagination from "@/components/global/pagination/Pagination";
 export default function InventoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAction, setShowAction] = useState(false);
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
@@ -100,7 +102,7 @@ export default function InventoryTable() {
     currentPage * dataPerPage,
     filteredData.length
   );
-  
+
   const totalItems = filteredData.length;
 
   const showingText = `Showing ${firstItemIndex}-${lastItemIndex} of ${totalItems}`;
@@ -162,7 +164,7 @@ export default function InventoryTable() {
       outletId: outletId,
       productId: productId,
     };
-    console.log("deleted data", data); 
+    console.log("deleted data", data);
 
     try {
       const response = await fetchApi(
@@ -179,7 +181,7 @@ export default function InventoryTable() {
     }
   };
 
-  
+
 
   return (
     <section className="w-full my-5">
@@ -214,6 +216,42 @@ export default function InventoryTable() {
               id="search"
               placeholder="Search something.."
             />
+          </div>
+          <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
+            <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
+              <button
+                onClick={() => setShowAction(!showAction)}
+                className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
+              >
+                Action <FaCaretDown className="ml-3" />
+              </button>
+            </div>
+            <div
+              onMouseLeave={() => setShowAction(false)}
+              className={`
+              ${showAction ? "block" : "hidden"}
+              absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
+              id="dropdown"
+            >
+              <ul className="py-1" aria-labelledby="dropdown">
+                <li>
+                  <button
+                    // onClick={handleUpdateProduct}
+                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                  >
+                    Update
+                  </button>
+                </li>
+                <li>
+                  <button
+                    // onClick={handleDeleteProduct}
+                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                  >
+                    Delete
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
@@ -292,9 +330,8 @@ export default function InventoryTable() {
                     {currentData?.map((item) => (
                       <tr
                         key={item?._id}
-                        className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -340,11 +377,10 @@ export default function InventoryTable() {
                             className={`${item.bg} ${item.text} px-2 py-1 rounded-full`}
                           > */}
                           <div
-                            className={`${
-                              item.stock === "In Stock"
-                                ? "bg-green-100 text-green-400"
-                                : "bg-red-100 text-red-400"
-                            } inline-block px-1 py-1 rounded-md mr-2 `}
+                            className={`${item.stock === "In Stock"
+                              ? "bg-green-100 text-green-400"
+                              : "bg-red-100 text-red-400"
+                              } inline-block px-1 py-1 rounded-md mr-2 `}
                           >
                             <div className="flex justify-center px-1 space-x-2">
                               {/* <div><span>{item.stock}({item.stockQuantity || 0})</span></div> */}
@@ -454,9 +490,8 @@ export default function InventoryTable() {
       <Modal addModal={() => setShowAddMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            showAddMenu ? "fixed" : "hidden"
-          } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
+            } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <form
@@ -529,9 +564,8 @@ export default function InventoryTable() {
                     {/* Dropdown arrow */}
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                       <svg
-                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
+                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+                          }`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
