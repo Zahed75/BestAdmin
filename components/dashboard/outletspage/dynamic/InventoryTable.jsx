@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Modal from "@/components/global/modal/Modal";
-import { FaCaretDown } from "react-icons/fa";
 import { fetchProducts } from "@/redux/slice/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
@@ -17,8 +16,6 @@ export default function InventoryTable() {
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
-  const [selectAll, setSelectAll] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
   const [isOpen, setIsOpen] = useState(false);
@@ -32,33 +29,30 @@ export default function InventoryTable() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (pathname) {
-      const pathParts = pathname.split("/");
-      const outletIdFromPath = pathParts[pathParts.length - 1];
-      setOutletId(outletIdFromPath);
-
-      const fetchData = async () => {
-        try {
-          const response = await fetchApi(
-            `/inventory/all-products-inventory/${outletIdFromPath}`,
-            "GET"
-          );
-          if (response) {
-            console.log("Fetched inventory data:", response?.inventory);
-            setOutletStock(response?.inventory);
-          }
-        } catch (error) {
-          console.error("Error fetching inventory data:", error);
-        }
-      };
-
-      fetchData();
-    }
-  }, [pathname]);
-
-  useEffect(() => {
+    fetchData();
     dispatch(fetchProducts());
-  }, [dispatch]);
+  }, []);
+
+  const fetchData = async () => {
+    const pathParts = pathname.split("/");
+    const outletIdFromPath = pathParts[pathParts.length - 1];
+    setOutletId(outletIdFromPath);
+    try {
+      const response = await fetchApi(
+        `/inventory/all-products-inventory/${outletIdFromPath}`,
+        "GET"
+      );
+      if (response) {
+        console.log("Fetched inventory data:", response?.inventory);
+        setOutletStock(response?.inventory || []);
+      } else {
+        console.log("No inventory data found");
+        setOutletStock([]);
+      }
+    } catch (error) {
+      console.error("Error fetching inventory data:", error);
+    }
+  };
 
   const productsData = products?.products?.products || [];
   const inStockProducts = outletStock?.products || [];
@@ -116,23 +110,6 @@ export default function InventoryTable() {
     }
   };
 
-  const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : [...data.map((item) => item.id)]);
-  };
-
-  const handleSelectItem = (itemId) => {
-    const selectedIndex = selectedItems.indexOf(itemId);
-    if (selectedIndex === -1) {
-      setSelectedItems([...selectedItems, itemId]);
-    } else {
-      setSelectedItems([
-        ...selectedItems.slice(0, selectedIndex),
-        ...selectedItems.slice(selectedIndex + 1),
-      ]);
-    }
-  };
-
   const handleAddInventory = async (event) => {
     event.preventDefault();
     setIsLoading(true);
@@ -152,6 +129,7 @@ export default function InventoryTable() {
       if (response) {
         setIsLoading(false);
         setShowAddMenu(false);
+        fetchData();
       }
     } catch (error) {
       console.log(error);
@@ -173,15 +151,109 @@ export default function InventoryTable() {
         data
       );
 
+      console.log("inventory product response", response);
+
       if (response) {
         console.log("Product deleted successfully", response);
+        fetchData();
       }
     } catch (error) {
       console.error("Error deleting product:", error);
     }
   };
 
+  const handleUpdateInventory = async (e, productId) => {
+    e.preventDefault();
+    setIsLoading(true);
 
+    const quantity = e.target.value;
+
+    const data = {
+      outletId: outletId,
+      productId: productId,
+      newQuantity: quantity,
+    };
+
+    try {
+      const response = await fetchApi(
+        `/inventory/update-inventory`,
+        "PUT",
+        data
+      );
+
+      if (response) {
+        setIsLoading(false);
+        setShowAddMenu(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+
+  const incrementQuantity = async (productId, oldQuantity) => {
+    const updatedQuantity = oldQuantity + 1;
+    const updatedStock = outletStock?.products?.map((item) =>
+      item.productId === productId
+        ? { ...item, quantity: updatedQuantity }
+        : item
+    );
+    setOutletStock(updatedStock); // Optimistically update state
+
+    const data = {
+      outletId: outletId,
+      productId: productId,
+      newQuantity: updatedQuantity,
+    };
+
+    try {
+      const response = await fetchApi(
+        `/inventory/update-inventory`,
+        "PUT",
+        data
+      );
+      if (response) {
+        console.log("Product quantity incremented successfully", response);
+        fetchData(); // Re-fetch to sync with backend
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const decrementQuantity = async (productId, oldQuantity) => {
+    if (oldQuantity <= 0) return; // Prevent negative quantities
+
+    const updatedQuantity = oldQuantity - 1;
+    const updatedStock = outletStock?.products?.map((item) =>
+      item.productId === productId
+        ? { ...item, quantity: updatedQuantity }
+        : item
+    );
+    setOutletStock(updatedStock); // Optimistically update state
+
+    const data = {
+      outletId: outletId,
+      productId: productId,
+      newQuantity: updatedQuantity,
+    };
+
+    try {
+      const response = await fetchApi(
+        `/inventory/update-inventory`,
+        "PUT",
+        data
+      );
+      if (response) {
+        console.log("Product quantity decremented successfully", response);
+        fetchData(); // Re-fetch to sync with backend
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log("outlet stock ::", outletStock);
 
   return (
     <section className="w-full my-5">
@@ -190,7 +262,6 @@ export default function InventoryTable() {
           <h5 className="text-lg md:text-2xl font-bold">Inventory</h5>
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
-          {/* search bar */}
           <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
             <div className="grid place-items-center h-full w-12 text-gray-300">
               <svg
@@ -217,42 +288,6 @@ export default function InventoryTable() {
               placeholder="Search something.."
             />
           </div>
-          <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
-            <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
-              <button
-                onClick={() => setShowAction(!showAction)}
-                className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
-              >
-                Action <FaCaretDown className="ml-3" />
-              </button>
-            </div>
-            <div
-              onMouseLeave={() => setShowAction(false)}
-              className={`
-              ${showAction ? "block" : "hidden"}
-              absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
-              id="dropdown"
-            >
-              <ul className="py-1" aria-labelledby="dropdown">
-                <li>
-                  <button
-                    // onClick={handleUpdateProduct}
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                  >
-                    Update
-                  </button>
-                </li>
-                <li>
-                  <button
-                    // onClick={handleDeleteProduct}
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                  >
-                    Delete
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
 
           <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
             <button
@@ -272,27 +307,12 @@ export default function InventoryTable() {
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden ">
                 <table className="min-w-full table-fixed dark:divide-gray-700">
-                  {/* table head */}
                   <thead className="bg-gray-100 ">
                     <tr>
-                      <th scope="col" className="p-4 w-6">
-                        <div className="flex items-center">
-                          <input
-                            id="checkbox_all"
-                            type="checkbox"
-                            className="w-4 h-4 bg-gray-100 rounded border-gray-300 "
-                            onChange={handleSelectAll}
-                            checked={selectAll}
-                          />
-                          <label htmlFor="checkbox-all" className="sr-only">
-                            checkbox
-                          </label>
-                        </div>
-                      </th>
                       <th
                         scope="col"
                         onClick={() => handleSort("productName")}
-                        className="py-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        className="p-3 text-[12px] lg:text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Product name &#x21d5;
                       </th>
@@ -330,27 +350,11 @@ export default function InventoryTable() {
                     {currentData?.map((item) => (
                       <tr
                         key={item?._id}
-                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                        className={`${
+                          item.id % 2 !== 0 ? "" : "bg-gray-100"
+                        } hover:bg-gray-100 duration-700`}
                       >
-                        <td scope="col" className="p-4">
-                          <div className="flex items-center">
-                            <input
-                              id={`checkbox_${item?._id}`}
-                              type="checkbox"
-                              className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item?._id)}
-                              onChange={() => handleSelectItem(item?._id)}
-                            />
-                            <label
-                              htmlFor={`checkbox_${item.id}`}
-                              className="sr-only"
-                            >
-                              checkbox
-                            </label>
-                          </div>
-                        </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 text-wrap md:whitespace-nowrap">
+                        <td className="p-4 text-sm font-medium text-gray-900 text-wrap md:whitespace-nowrap">
                           <Link href={`/dashboard/outlets/${item?._id}`}>
                             <div className="flex justify-start items-center">
                               <Image
@@ -373,27 +377,35 @@ export default function InventoryTable() {
                         </td>
 
                         <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap ">
-                          {/* <span
-                            className={`${item.bg} ${item.text} px-2 py-1 rounded-full`}
-                          > */}
                           <div
-                            className={`${item.stock === "In Stock"
-                              ? "bg-green-100 text-green-400"
-                              : "bg-red-100 text-red-400"
-                              } inline-block px-1 py-1 rounded-md mr-2 `}
+                            className={`${
+                              item.stock === "In Stock"
+                                ? "bg-green-100 text-green-400"
+                                : "bg-red-100 text-red-400"
+                            } inline-block px-1 py-1 rounded-md mr-2 `}
                           >
                             <div className="flex justify-center px-1 space-x-2">
-                              {/* <div><span>{item.stock}({item.stockQuantity || 0})</span></div> */}
                               <div className="flex items-center">
                                 <span>{item.stock}</span>
                                 <input
                                   type="number"
                                   min="0"
-                                  value={item.quantity || 0}
+                                  id="newQuantity"
+                                  name="newQuantity"
+                                  defaultValue={item.quantity || 0}
+                                  onChange={(e) =>
+                                    handleUpdateInventory(e, item?._id)
+                                  }
                                   className="ml-2 w-12 text-center focus:outline-0 rounded"
                                 />
                               </div>
-                              <button className="bg-white text-red-500 p-1 rounded-full hover:bg-gray-100">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  decrementQuantity(item._id, item?.quantity)
+                                }
+                                className="bg-white text-red-500 p-1 rounded-full hover:bg-gray-100"
+                              >
                                 <svg
                                   width="11"
                                   height="2"
@@ -408,7 +420,13 @@ export default function InventoryTable() {
                                   />
                                 </svg>
                               </button>
-                              <button className="bg-white text-green-500 p-1 rounded-full hover:bg-gray-100">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  incrementQuantity(item?._id, item?.quantity)
+                                }
+                                className="bg-white text-green-500 p-1 rounded-full hover:bg-gray-100"
+                              >
                                 <svg
                                   width="12"
                                   height="12"
@@ -490,8 +508,9 @@ export default function InventoryTable() {
       <Modal addModal={() => setShowAddMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
-            } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
+            showAddMenu ? "fixed" : "hidden"
+          } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <form
@@ -564,8 +583,9 @@ export default function InventoryTable() {
                     {/* Dropdown arrow */}
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                       <svg
-                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
-                          }`}
+                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
