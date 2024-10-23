@@ -12,7 +12,6 @@ import Pagination from "@/components/global/pagination/Pagination";
 export default function InventoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [showAction, setShowAction] = useState(false);
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
@@ -29,33 +28,46 @@ export default function InventoryTable() {
   const pathname = usePathname();
 
   useEffect(() => {
-    fetchData();
     dispatch(fetchProducts());
   }, []);
 
-  const fetchData = async () => {
-    const pathParts = pathname.split("/");
-    const outletIdFromPath = pathParts[pathParts.length - 1];
-    setOutletId(outletIdFromPath);
-    try {
-      const response = await fetchApi(
-        `/inventory/all-products-inventory/${outletIdFromPath}`,
-        "GET"
-      );
-      if (response) {
-        console.log("Fetched inventory data:", response?.inventory);
-        setOutletStock(response?.inventory || []);
-      } else {
-        console.log("No inventory data found");
+  useEffect(() => {
+    const fetchData = async () => {
+      const pathParts = pathname?.split("/") || [];
+      const outletIdFromPath = pathParts[pathParts.length - 1];
+
+      if (!outletIdFromPath) {
+        console.error("No outletId found in path");
+        return;
+      }
+
+      setOutletId(outletIdFromPath);
+
+      try {
+        const response = await fetchApi(
+          `/inventory/all-products-inventory/${outletIdFromPath}`,
+          "GET"
+        );
+
+        if (response && response.inventory) {
+          console.log("Fetched inventory data:", response.inventory);
+          setOutletStock(response.inventory.products || []);
+        } else {
+          console.log("No inventory data found");
+          setOutletStock([]);
+        }
+      } catch (error) {
+        console.error("Error fetching inventory data:", error);
+
         setOutletStock([]);
       }
-    } catch (error) {
-      console.error("Error fetching inventory data:", error);
-    }
-  };
+    };
+
+    fetchData();
+  }, [pathname]);
 
   const productsData = products?.products?.products || [];
-  const inStockProducts = outletStock?.products || [];
+  const inStockProducts = outletStock || [];
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -191,14 +203,77 @@ export default function InventoryTable() {
     }
   };
 
+  // const incrementQuantity = async (productId, oldQuantity) => {
+  //   const updatedQuantity = ++oldQuantity;
+
+  //   const data = {
+  //     outletId: outletId,
+  //     productId: productId,
+  //     newQuantity: updatedQuantity,
+  //   };
+
+  //   try {
+  //     const response = await fetchApi(
+  //       `/inventory/update-inventory`,
+  //       "PUT",
+  //       data
+  //     );
+  //     if (response) {
+  //       console.log("Product quantity incremented successfully", response);
+  //       setOutletStock((prevStock) =>
+  //         prevStock.map((item) =>
+  //           item._id === productId
+  //             ? { ...item, quantity: updatedQuantity }
+  //             : item
+  //         )
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const decrementQuantity = async (productId, oldQuantity) => {
+  //   if (oldQuantity <= 0) return;
+  //   const updatedQuantity = --oldQuantity;
+
+  //   const data = {
+  //     outletId: outletId,
+  //     productId: productId,
+  //     newQuantity: updatedQuantity,
+  //   };
+
+  //   try {
+  //     const response = await fetchApi(
+  //       `/inventory/update-inventory`,
+  //       "PUT",
+  //       data
+  //     );
+  //     if (response) {
+  //       console.log("Product quantity decremented successfully", response);
+
+  //       setOutletStock((prevStock) =>
+  //         prevStock.map((item) =>
+  //           item._id === productId
+  //             ? { ...item, quantity: updatedQuantity }
+  //             : item
+  //         )
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   const incrementQuantity = async (productId, oldQuantity) => {
     const updatedQuantity = oldQuantity + 1;
-    const updatedStock = outletStock?.products?.map((item) =>
-      item.productId === productId
-        ? { ...item, quantity: updatedQuantity }
-        : item
+
+    // Optimistically update the UI
+    setOutletStock((prevStock) =>
+      prevStock.map((item) =>
+        item._id === productId ? { ...item, quantity: updatedQuantity } : item
+      )
     );
-    setOutletStock(updatedStock); // Optimistically update state
 
     const data = {
       outletId: outletId,
@@ -212,25 +287,37 @@ export default function InventoryTable() {
         "PUT",
         data
       );
-      if (response) {
-        console.log("Product quantity incremented successfully", response);
-        fetchData(); // Re-fetch to sync with backend
+      if (!response || !response.success) {
+        // Rollback UI changes in case of failure
+        setOutletStock((prevStock) =>
+          prevStock.map((item) =>
+            item._id === productId ? { ...item, quantity: oldQuantity } : item
+          )
+        );
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error incrementing quantity:", error);
+
+      // Rollback UI changes in case of error
+      setOutletStock((prevStock) =>
+        prevStock.map((item) =>
+          item._id === productId ? { ...item, quantity: oldQuantity } : item
+        )
+      );
     }
   };
 
   const decrementQuantity = async (productId, oldQuantity) => {
-    if (oldQuantity <= 0) return; // Prevent negative quantities
+    if (oldQuantity <= 0) return;
 
     const updatedQuantity = oldQuantity - 1;
-    const updatedStock = outletStock?.products?.map((item) =>
-      item.productId === productId
-        ? { ...item, quantity: updatedQuantity }
-        : item
+
+    // Optimistically update the UI
+    setOutletStock((prevStock) =>
+      prevStock.map((item) =>
+        item._id === productId ? { ...item, quantity: updatedQuantity } : item
+      )
     );
-    setOutletStock(updatedStock); // Optimistically update state
 
     const data = {
       outletId: outletId,
@@ -244,12 +331,23 @@ export default function InventoryTable() {
         "PUT",
         data
       );
-      if (response) {
-        console.log("Product quantity decremented successfully", response);
-        fetchData(); // Re-fetch to sync with backend
+      if (!response || !response.success) {
+        // Rollback UI changes in case of failure
+        setOutletStock((prevStock) =>
+          prevStock.map((item) =>
+            item._id === productId ? { ...item, quantity: oldQuantity } : item
+          )
+        );
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error decrementing quantity:", error);
+
+      // Rollback UI changes in case of error
+      setOutletStock((prevStock) =>
+        prevStock.map((item) =>
+          item._id === productId ? { ...item, quantity: oldQuantity } : item
+        )
+      );
     }
   };
 
@@ -347,7 +445,7 @@ export default function InventoryTable() {
                     </tr>
                   </thead>
                   <tbody className="bg-white text-black">
-                    {currentData?.map((item) => (
+                    {outletStock?.map((item) => (
                       <tr
                         key={item?._id}
                         className={`${
@@ -386,7 +484,6 @@ export default function InventoryTable() {
                           >
                             <div className="flex justify-center px-1 space-x-2">
                               <div className="flex items-center">
-                                <span>{item.stock}</span>
                                 <input
                                   type="number"
                                   min="0"
