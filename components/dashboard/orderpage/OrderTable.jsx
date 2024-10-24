@@ -45,15 +45,16 @@ export default function OrderTable({ AllOrders }) {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const titleData = [
-    "All",
-    "Received",
-    "Confirmed",
-    "Dispatched",
-    "Delivered",
-    "On-Hold",
-    "Cancelled",
-    "Spammed",
+  const titleDataOptions = [
+    { value: "All", label: "All" },
+    { value: "Received", label: "Received" },
+    { value: "Order Placed", label: "Placed" },
+    { value: "Order Confirmed", label: "Confirmed" },
+    { value: "Order Processing", label: "Processing" },
+    { value: "Ready for Delivery", label: "Ready" },
+    { value: "Order Dispatched", label: "Dispatched" },
+    { value: "Cancelled", label: "Cancelled" },
+    { value: "Order Delivered", label: "Delivered" },
   ];
 
   const handleTitleButtonClick = (title) => {
@@ -251,7 +252,7 @@ export default function OrderTable({ AllOrders }) {
   let cancelledTotalTaka = 0;
   let otherTotalTaka = 0;
   data?.forEach((order) => {
-    if (order.orderStatus === "Delivered") {
+    if (order.orderStatus === "Order Delivered") {
       deliveredCount++;
       deliveredTotalTaka += order.totalPrice;
     } else if (order.orderStatus === "Cancelled") {
@@ -424,7 +425,7 @@ export default function OrderTable({ AllOrders }) {
       // Create the table on the left, aligned with the text on the right
       const deliveredCustomers = new Set(
         data
-          .filter((order) => order.orderStatus === "Delivered")
+          .filter((order) => order.orderStatus === "Order Delivered")
           .map((order) => order.customer)
       ).size;
 
@@ -599,13 +600,13 @@ export default function OrderTable({ AllOrders }) {
       ${showButton ? "flex" : "hidden"}
        flex-col md:flex-row gap-2 pb-5 border-b-2 justify-start items-center mt-5 `}
       >
-        {titleData.map((title, index) => (
+        {titleDataOptions?.map((title, index) => (
           <button
             key={index}
-            onClick={() => handleTitleButtonClick(title)}
+            onClick={() => handleTitleButtonClick(title?.value)}
             className="bg-gray-100 text-gray-500 px-3 py-2 text-sm lg:text-md rounded-md hover:bg-black hover:text-white duration-700 shadow-md w-full"
           >
-            {title}
+            {title?.label}
           </button>
         ))}
       </div>
@@ -718,18 +719,20 @@ export default function OrderTable({ AllOrders }) {
                               className={`${
                                 item.orderStatus === "Received"
                                   ? "bg-yellow-200 text-yellow-800"
-                                  : item.orderStatus === "Confirmed"
+                                  : item.orderStatus === "Order Confirmed"
                                   ? "bg-blue-200 text-blue-800"
-                                  : item.orderStatus === "Delivered"
+                                  : item.orderStatus === "Order Delivered"
                                   ? "bg-green-200 text-green-800"
-                                  : item.orderStatus === "On-Hold"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Spammed"
-                                  ? "bg-red-200 text-red-800"
+                                  : item.orderStatus === "Order Placed"
+                                  ? "bg-cyan-200 text-cyan-800"
+                                  : item.orderStatus === "Order Processing"
+                                  ? "bg-fuchsia-200 text-fuchsia-800"
+                                  : item.orderStatus === "Ready for Delivery"
+                                  ? "bg-teal-200 text-teal-800"
                                   : item.orderStatus === "Cancelled"
                                   ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Dispatched"
-                                  ? "bg-orange-200 text-orange-600"
+                                  : item.orderStatus === "Order Dispatched"
+                                  ? "bg-orange-200 text-orange-800"
                                   : ""
                               } px-2 py-1 rounded-full`}
                             >

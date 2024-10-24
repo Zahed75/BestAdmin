@@ -375,12 +375,15 @@ export default function SingleOrderPage({ order }) {
                     className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                   >
                     <option value="Received">Received</option>
-                    <option value="Dispatched">Dispatched</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="On-Hold">On-Hold</option>
+                    <option value="Order Placed">Order Placed</option>
+                    <option value="Order Confirmed">Order Confirmed</option>
+                    <option value="Order Processing">Order Processing</option>
+                    <option value="Ready for Delivery">
+                      Ready for Delivery
+                    </option>
+                    <option value="Order Dispatched">Order Dispatched</option>
                     <option value="Cancelled">Cancelled</option>
-                    <option value="Spammed">Spammed</option>
+                    <option value="Order Delivered">Order Delivered</option>
                   </select>
                 </div>
               </div>
