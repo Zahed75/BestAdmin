@@ -46,7 +46,14 @@ export default function LocationsPage({ initialItems }) {
       case "TOGGLE_UPDATE_AREA_MENU":
         return { ...state, showAreaUpdateMenu: !state.showAreaUpdateMenu };
       case "SET_SELECTED_CITY_AREA":
-        return { ...state, selectedCityArea: action.payload };
+        return {
+          ...state,
+          selectedCity: {
+            ...state.selectedCity,
+            areas: action.payload, 
+          },
+          selectedCityArea: action.payload, 
+        };
       case "UPDATE_SELECTED_CITY_AREA":
         return { ...state, selectedCityArea: action.payload };
       case "RESET_SELECTED_CITY_AREA":
@@ -238,7 +245,10 @@ export default function LocationsPage({ initialItems }) {
             <div className="flex flex-grow items-center justify-between space-x-1">
               {state.cites?.length > 0 &&
                 state.cites.map((city, index) => (
-                  <div key={index} className="bg-gray-100 text-gray-500 px-4 py-2 lg:text-md rounded-md hover:bg-gray-200 hover:text-gray-600 w-auto flex md:ml-auto mt-2 justify-between">
+                  <div
+                    key={index}
+                    className="bg-gray-100 text-gray-500 px-4 py-2 lg:text-md rounded-md hover:bg-gray-200 hover:text-gray-600 w-auto flex md:ml-auto mt-2 justify-between"
+                  >
                     <button
                       type="button"
                       onClick={() =>
