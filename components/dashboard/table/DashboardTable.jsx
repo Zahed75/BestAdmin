@@ -65,6 +65,12 @@ export default function DashboardTable() {
                         scope="col"
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
+                        Outlet
+                      </th>
+                      <th
+                        scope="col"
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                      >
                         Amount
                       </th>
                       <th
@@ -97,6 +103,11 @@ export default function DashboardTable() {
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                           {formatDate(item.createdAt)}
                         </td>
+                        <td className="py-4 px-3 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
+                          <Link href={`/dashboard/orders/${item._id}`}>
+                            {item.outlet}
+                          </Link>
+                        </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           <span className="text-md">৳</span>
                           {item.totalPrice}
@@ -109,19 +120,21 @@ export default function DashboardTable() {
                           <span
                             className={`${item.orderStatus === "Received"
                               ? "bg-yellow-200 text-yellow-800"
-                              : item.orderStatus === "Confirmed"
+                              : item.orderStatus === "Order Confirmed"
                                 ? "bg-blue-200 text-blue-800"
-                                : item.orderStatus === "Delivered"
+                                : item.orderStatus === "Order Delivered"
                                   ? "bg-green-200 text-green-800"
-                                  : item.orderStatus === "On-Hold"
-                                    ? "bg-red-200 text-red-800"
-                                    : item.orderStatus === "Spammed"
-                                      ? "bg-red-200 text-red-800"
-                                      : item.orderStatus === "Cancelled"
-                                        ? "bg-red-200 text-red-800"
-                                        : item.orderStatus === "Dispatched"
-                                          ? "bg-orange-200 text-orange-600"
-                                          : ""
+                                  : item.orderStatus === "Order Placed"
+                                    ? "bg-cyan-200 text-cyan-800"
+                                    : item.orderStatus === "Order Processing"
+                                      ? "bg-fuchsia-200 text-fuchsia-800"
+                                      : item.orderStatus === "Ready for Delivery"
+                                        ? "bg-teal-200 text-teal-800"
+                                        : item.orderStatus === "Cancelled"
+                                          ? "bg-red-200 text-red-800"
+                                          : item.orderStatus === "Order Dispatched"
+                                            ? "bg-orange-200 text-orange-800"
+                                            : ""
                               } px-2 py-1 rounded-full`}
                           >
                             {item.orderStatus}
