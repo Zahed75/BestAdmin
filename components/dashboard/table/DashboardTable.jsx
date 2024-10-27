@@ -3,17 +3,25 @@ import { fetchOrders } from "@/redux/slice/orderSlice";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchOutlets } from "@/redux/slice/outletSlice";
 
 export default function DashboardTable() {
   const dispatch = useDispatch();
   const orders = useSelector((state) => state?.orders);
+  const outlets = useSelector((state) => state.outlets);
 
   useEffect(() => {
     dispatch(fetchOrders());
+    dispatch(fetchOutlets());
   }, [dispatch]);
 
   const allOrders = orders?.orders?.orders || [];
   const latestOrders = allOrders.slice().reverse().slice(0, 10);
+
+  const getOutletName = (outletId) => {
+    const outlet = outlets?.outlets?.outlet?.find((outlet) => outlet?._id === outletId);
+    return outlet ? outlet.outletName : null;
+  };
 
   function formatDate(dateString) {
     if (!dateString) return "N/A";
@@ -103,10 +111,8 @@ export default function DashboardTable() {
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                           {formatDate(item.createdAt)}
                         </td>
-                        <td className="py-4 px-3 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                          <Link href={`/dashboard/orders/${item._id}`}>
-                            {item.outlet}
-                          </Link>
+                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap" key={item?._id}>
+                          {getOutletName(item.outlet)}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           <span className="text-md">৳</span>
