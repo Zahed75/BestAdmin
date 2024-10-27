@@ -13,6 +13,7 @@ import { MdFilterAltOff } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "@/redux/slice/usersSlice";
+import { fetchOutlets } from "@/redux/slice/outletSlice";
 
 export default function OrderTable({ AllOrders }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,6 +36,7 @@ export default function OrderTable({ AllOrders }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.users.users);
+  const outlets = useSelector((state) => state.outlets);
   const data = filterData.length > 0 ? filterData : orders;
 
   useEffect(() => {
@@ -43,6 +45,7 @@ export default function OrderTable({ AllOrders }) {
 
   useEffect(() => {
     dispatch(fetchUsers());
+    dispatch(fetchOutlets());
   }, [dispatch]);
 
   const titleDataOptions = [
@@ -98,6 +101,11 @@ export default function OrderTable({ AllOrders }) {
       setSortBy(column);
       setSortDirection("asc");
     }
+  };
+
+  const getOutletName = (outletId) => {
+    const outlet = outlets?.outlets?.outlet?.find((outlet) => outlet?._id === outletId);
+    return outlet ? outlet.outletName : null;
   };
 
   const handleSelectAll = () => {
@@ -709,11 +717,11 @@ export default function OrderTable({ AllOrders }) {
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                             {formatDate(item.createdAt)}
                           </td>
-                          <td className="py-4 text-sm text-center font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                            <Link href={`/dashboard/orders/${item._id}`}>
-                              {item.outlet}
-                            </Link>
+
+                          <td className="py-4 text-sm text-center font-medium text-gray-900 whitespace-nowrap" key={item?._id}>
+                            {getOutletName(item.outlet)}
                           </td>
+
                           <td className="py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
                             <span className="text-md">৳</span>
                             {item.totalPrice.toLocaleString()}
@@ -1025,6 +1033,6 @@ export default function OrderTable({ AllOrders }) {
           </form>
         </div>
       </div>
-    </main>
+    </main >
   );
 }
