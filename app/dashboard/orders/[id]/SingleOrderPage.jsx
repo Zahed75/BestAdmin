@@ -423,7 +423,7 @@ export default function SingleOrderPage({ order }) {
                   <span className="text-sm text-gray-600">Device Type</span>
                   <br />
                   <span className="text-md text-black font-semibold">
-                    Mobile
+                    {order?.channel}
                   </span>
                 </div>
                 <div>
@@ -453,8 +453,8 @@ export default function SingleOrderPage({ order }) {
                     onChange={handleUpdateOutlet}
                     className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                   >
-                    {!outlet && (
-                      <option value="" disabled>
+                    {!order?.outlet && (
+                      <option value="" >
                         Select outlet
                       </option>
                     )}
