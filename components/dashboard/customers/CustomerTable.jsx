@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import "jspdf-autotable";
 import Image from "next/image";
 import { FaCaretDown, FaFilter } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
-import { MdFilterAltOff } from "react-icons/md";
 import Pagination from "@/components/global/pagination/Pagination";
 import { useRouter } from "next/navigation";
 
@@ -20,6 +18,7 @@ export default function CustomersTable({ AllCustomers }) {
   const [showAction, setShowAction] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [customers, setCustomers] = useState(AllCustomers || []);
+  const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
 
   const data = customers;
 
@@ -188,7 +187,7 @@ export default function CustomersTable({ AllCustomers }) {
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden ">
                 <table className="min-w-full dark:divide-gray-700">
-                  {/* table head */}
+
                   <thead className="bg-gray-100 ">
                     <tr>
                       <th scope="col" className="p-4 w-6">
@@ -280,8 +279,8 @@ export default function CustomersTable({ AllCustomers }) {
                                 width={28}
                                 height={28}
                                 className="w-7 h-7 rounded-md"
-                                src={item?.profilePicture}
-                                alt=""
+                                src={item?.profilePicture || noPicture}
+                                alt={item?.userName}
                               />
                               <span className="ml-2">
                                 {item?.firstName + " " + item?.lastName}
