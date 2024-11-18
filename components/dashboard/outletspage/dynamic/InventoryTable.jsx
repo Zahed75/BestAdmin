@@ -448,12 +448,11 @@ export default function InventoryTable() {
                     {outletStock?.map((item) => (
                       <tr
                         key={item?._id}
-                        className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td className="p-4 text-sm font-medium text-gray-900 text-wrap md:whitespace-nowrap">
-                          <Link href={`/dashboard/outlets/${item?._id}`}>
+                          <Link href={`/dashboard/products/${item?._id}`}>
                             <div className="flex justify-start items-center">
                               <Image
                                 width={30}
@@ -476,11 +475,10 @@ export default function InventoryTable() {
 
                         <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap ">
                           <div
-                            className={`${
-                              item.stock === "In Stock"
+                            className={`${item.stock === "In Stock"
                                 ? "bg-green-100 text-green-400"
                                 : "bg-red-100 text-red-400"
-                            } inline-block px-1 py-1 rounded-md mr-2 `}
+                              } inline-block px-1 py-1 rounded-md mr-2 `}
                           >
                             <div className="flex justify-center px-1 space-x-2">
                               <div className="flex items-center">
@@ -605,9 +603,8 @@ export default function InventoryTable() {
       <Modal addModal={() => setShowAddMenu(false)}>
         <div
           id="menu"
-          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-            showAddMenu ? "fixed" : "hidden"
-          } sticky-0 z-30`}
+          className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${showAddMenu ? "fixed" : "hidden"
+            } sticky-0 z-30`}
         >
           <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
             <form
@@ -680,9 +677,8 @@ export default function InventoryTable() {
                     {/* Dropdown arrow */}
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                       <svg
-                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
+                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+                          }`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
