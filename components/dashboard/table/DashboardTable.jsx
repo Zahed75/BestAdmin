@@ -20,7 +20,7 @@ export default function DashboardTable() {
 
   const getOutletName = (outletId) => {
     const outlet = outlets?.outlets?.outlet?.find((outlet) => outlet?._id === outletId);
-    return outlet ? outlet.outletName : null;
+    return outlet ? outlet.outletName : outletId;
   };
 
   function formatDate(dateString) {
