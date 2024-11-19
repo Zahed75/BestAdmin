@@ -174,6 +174,7 @@ export default function SingleOrderPage({ order }) {
                   <input
                     type="text"
                     id="orderType"
+                    value={order?.orderType}
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
