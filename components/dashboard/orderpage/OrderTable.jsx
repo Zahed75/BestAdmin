@@ -664,6 +664,12 @@ export default function OrderTable({ AllOrders }) {
                         </th>
                         <th
                           scope="col"
+                          className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer text-nowrap"
+                        >
+                          Order Type
+                        </th>
+                        <th
+                          scope="col"
                           className="px-3 py-3 text-sm font-medium tracking-wider text-center text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Amount
@@ -721,7 +727,9 @@ export default function OrderTable({ AllOrders }) {
                           <td className="py-4 text-sm text-center font-medium text-gray-900 whitespace-nowrap" key={item?._id}>
                             {getOutletName(item.outlet)}
                           </td>
-
+                          <td className="py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
+                            {item.orderType}
+                          </td>
                           <td className="py-4 text-sm font-medium text-gray-900 text-center whitespace-nowrap ">
                             <span className="text-md">৳</span>
                             {item.totalPrice.toLocaleString()}
