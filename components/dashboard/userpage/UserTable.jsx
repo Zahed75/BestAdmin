@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
 import { FaCaretDown } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function UsersTable({ AllUsers }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,15 +20,47 @@ export default function UsersTable({ AllUsers }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAction, setShowAction] = useState(false);
   const [users, setUsers] = useState(AllUsers || []);
+  const [user, setUser] = useState([]);
+  const dispatch = useDispatch();
+
+
 
   let data = users;
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+  }, []);
 
   useEffect(() => {
     setUsers(AllUsers);
   }, [AllUsers]);
 
+
+
+  console.log(user);
+
+
   const router = useRouter();
   const titleData = ["All", "HQ", "AD", "BA", "MGR"];
+  // const userInfo = useSelector((state) => state?.user);
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (!(user?.userId)) return;
+
+      try {
+        const res = await fetchApi(
+          `/auth/users/${user?.userId}`,
+          "GET"
+        );
+        const data = res?.user;
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchSingleUser();
+  }, [user]);
 
   const handleTitleButtonClick = (title) => {
     if (title === "All") {
@@ -304,7 +337,7 @@ export default function UsersTable({ AllUsers }) {
                     </tr>
                   </thead>
                   <tbody className="bg-white text-black">
-                    {currentData?.map((item) => (
+                    {/* {currentData?.map((item) => (
                       <tr
                         key={item.id}
                         className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
@@ -356,7 +389,106 @@ export default function UsersTable({ AllUsers }) {
                           {item?.phoneNumber}
                         </td>
                       </tr>
-                    ))}
+                    ))} */}
+                    {user?.role === "HQ" || user?.role === "AD" ? (
+                      currentData?.map((item) => (
+                        <tr
+                          key={item.id}
+                          className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"} hover:bg-gray-100 duration-700`}
+                        >
+                          <td scope="col" className="p-4">
+                            <div className="flex items-center">
+                              <input
+                                id={`checkbox_${item._id}`}
+                                type="checkbox"
+                                className="w-4 h-4 bg-gray-100 rounded border-gray-300"
+                                checked={selectedItems.includes(item._id)}
+                                onChange={() => handleSelectItem(item._id)}
+                              />
+                              <label htmlFor={`checkbox_${item._id}`} className="sr-only">
+                                checkbox
+                              </label>
+                            </div>
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap underline underline-offset-2 cursor-pointer">
+                            <Link href={`/dashboard/usermanagement/${item?._id}`}>
+                              {item?.userName}
+                            </Link>
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            <div className="flex justify-start items-center">
+                              <Image
+                                width={30}
+                                height={30}
+                                className="w-7 h-7 rounded-md"
+                                src={item?.profilePicture || ""}
+                                alt=""
+                              />
+                              <span className="ml-2">{item?.firstName + item?.lastName}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                            {item?.role}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            {item?.email}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            {item?.phoneNumber}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      user && (
+                        <tr
+                          key={user?.userId}
+                          className="bg-gray-100 hover:bg-gray-100 duration-700"
+                        >
+                          <td scope="col" className="p-4">
+                            <div className="flex items-center">
+                              <input
+                                id={`checkbox_${user?.userId}`}
+                                type="checkbox"
+                                className="w-4 h-4 bg-gray-100 rounded border-gray-300"
+                              // checked={selectedItems.includes(user?.userId)}
+                              // onChange={() => handleSelectItem(user?.userId)}
+                              />
+                              <label htmlFor={`checkbox_${user?.userId}`} className="sr-only">
+                                checkbox
+                              </label>
+                            </div>
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap  ">
+                            {/* <Link href={`/dashboard/usermanagement/${user?.userId}`}> */}
+                            {user?.userName}
+                            {/* {user?.userId} */}
+                            {/* </Link> */}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            <div className="flex justify-start items-center">
+                              <Image
+                                width={30}
+                                height={30}
+                                className="w-7 h-7 rounded-md"
+                                src={user?.profilePicture || ""}
+                                alt=""
+                              />
+                              <span className="ml-2">{user?.firstName + user?.lastName}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                            {user?.role}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            {user?.email}
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            {user?.phoneNumber}
+                          </td>
+                        </tr>
+                      )
+                    )}
+
                   </tbody>
                 </table>
               </div>
