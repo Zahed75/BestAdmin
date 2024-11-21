@@ -27,6 +27,7 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
   const [outlets, setOutlets] = useState(AllOutlets || []);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
+  const [user, setUser] = useState([]);
 
   const router = useRouter();
 
@@ -55,6 +56,29 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
       console.log("Updated selectedItem:", selectedItem); // Log when selectedItem changes
     }
   }, [selectedItem]);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+  }, []);
+
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (!(user?.userId)) return;
+
+      try {
+        const res = await fetchApi(
+          `/auth/users/${user?.userId}`,
+          "GET"
+        );
+        const data = res?.user;
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchSingleUser();
+  }, [user]);
 
 
 
@@ -517,11 +541,17 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                                 alt={item?.productName}
                               />
                               <div className="flex flex-col justify-center items-start ml-2 ">
-                                <Link href={`/dashboard/products/${item._id}`}>
+                                {user?.role === "HQ" || user?.role === "AD" ? (
+                                  <Link href={`/dashboard/products/${item._id}`}>
+                                    <span className="text-wrap">
+                                      {item?.productName}
+                                    </span>
+                                  </Link>
+                                ) : (
                                   <span className="text-wrap">
                                     {item?.productName}
                                   </span>
-                                </Link>
+                                )}
                                 <button
                                   type="button"
                                   onClick={() => handleDuplicateProduct(item)}
@@ -529,6 +559,7 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                                 >
                                   Duplicate
                                 </button>
+
                               </div>
                             </div>
                           </td>

@@ -9,7 +9,7 @@ import { fetchApi } from "@/utils/FetchApi";
 
 export default function OutletsTable({ AllOutlets }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [dataPerPage] = useState(10); 
+  const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
@@ -17,6 +17,8 @@ export default function OutletsTable({ AllOutlets }) {
   const [showAction, setShowAction] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [outlets, setOutlets] = useState(AllOutlets || []);
+  const [filterData, setFilterData] = useState([]);
+  const [user, setUser] = useState([]);
 
   const router = useRouter();
 
@@ -24,15 +26,50 @@ export default function OutletsTable({ AllOutlets }) {
     setOutlets(AllOutlets || []);
   }, [AllOutlets]);
 
-  const data = outlets;
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+  }, []);
 
-  const filteredData = data?.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        value != null &&
-        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  );
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (!(user?.userId)) return;
+
+      try {
+        const res = await fetchApi(
+          `/auth/users/${user?.userId}`,
+          "GET"
+        );
+        const data = res?.user;
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchSingleUser();
+  }, [user]);
+
+  // const data = outlets;
+  const data = filterData.length > 0 ? filterData : outlets;
+
+  // const filteredData = data?.filter((item) =>
+  //   Object.values(item).some(
+  //     (value) =>
+  //       value != null &&
+  //       value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+  //   )
+  // );
+
+  const filteredData =
+    user?.role === "HQ" || user?.role === "AD"
+      ? data?.filter((item) =>
+        Object.values(item).some(
+          (value) =>
+            value != null &&
+            value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      )
+      : data.filter((item) => user?._id === item?.outletManager);
 
   // Sorting function
   const sortedData = filteredData.sort((a, b) => {
@@ -259,9 +296,8 @@ export default function OutletsTable({ AllOutlets }) {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">

@@ -18,6 +18,7 @@ export default function CustomersTable({ AllCustomers }) {
   const [showAction, setShowAction] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [customers, setCustomers] = useState(AllCustomers || []);
+  const [user, setUser] = useState([]);
   const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
 
   const data = customers;
@@ -25,6 +26,29 @@ export default function CustomersTable({ AllCustomers }) {
   useEffect(() => {
     setCustomers(AllCustomers);
   }, [AllCustomers]);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+  }, []);
+
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (!(user?.userId)) return;
+
+      try {
+        const res = await fetchApi(
+          `/auth/users/${user?.userId}`,
+          "GET"
+        );
+        const data = res?.user;
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchSingleUser();
+  }, [user]);
 
   const router = useRouter();
 
@@ -247,33 +271,68 @@ export default function CustomersTable({ AllCustomers }) {
                           } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
-                          <div className="flex items-center">
-                            <input
-                              id={`checkbox_${item._id}`}
-                              type="checkbox"
-                              className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                              checked={selectedItems.includes(item._id)}
-                              onChange={() => handleSelectItem(item._id)}
-                            />
-                            <label
-                              htmlFor={`checkbox_${item._id}`}
-                              className="sr-only"
-                            >
-                              checkbox
-                            </label>
-                          </div>
+                          {user?.role === "HQ" || user?.role === "AD" ? (
+                            <div className="flex items-center">
+                              <input
+                                id={`checkbox_${item._id}`}
+                                type="checkbox"
+                                className="w-4 h-4  bg-gray-100 rounded border-gray-300"
+                                checked={selectedItems.includes(item._id)}
+                                onChange={() => handleSelectItem(item._id)}
+                              />
+                              <label
+                                htmlFor={`checkbox_${item._id}`}
+                                className="sr-only"
+                              >
+                                checkbox
+                              </label>
+                            </div>
+                          ) : (
+                            <div className="flex items-center">
+                              <input
+                                id={`checkbox_${item._id}`}
+                                type="checkbox"
+                                className="w-4 h-4  bg-gray-100 rounded border-gray-300"
+                              />
+                              <label
+                                htmlFor={`checkbox_${item._id}`}
+                                className="sr-only"
+                              >
+                                checkbox
+                              </label>
+                            </div>
+                          )}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <div className="flex justify-start items-center">
-                            <Link href={`/dashboard/customers/${item?._id}`}>
-                              <span className="underline underline-offset-2">
-                                {item?.userName}
-                              </span>
-                            </Link>
-                          </div>
+                          {user?.role === "HQ" || user?.role === "AD" ? (
+                            <div className="flex justify-start items-center">
+                              <Link href={`/dashboard/customers/${item?._id}`}>
+                                <span className="underline underline-offset-2">
+                                  {item?.userName}
+                                </span>
+                              </Link>
+                            </div>
+                          ) : (
+                            <span>{item?.userName}</span>
+                          )}
                         </td>
                         <td className="px-6 md:px-0 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <Link href={`/dashboard/customers/${item?._id}`}>
+                          {user?.role === "HQ" || user?.role === "AD" ? (
+                            <Link href={`/dashboard/customers/${item?._id}`}>
+                              <div className="flex justify-start items-center">
+                                <Image
+                                  width={28}
+                                  height={28}
+                                  className="w-7 h-7 rounded-md"
+                                  src={item?.profilePicture || noPicture}
+                                  alt={item?.userName}
+                                />
+                                <span className="ml-2">
+                                  {item?.firstName + " " + item?.lastName}
+                                </span>
+                              </div>
+                            </Link>
+                          ) : (
                             <div className="flex justify-start items-center">
                               <Image
                                 width={28}
@@ -286,7 +345,24 @@ export default function CustomersTable({ AllCustomers }) {
                                 {item?.firstName + " " + item?.lastName}
                               </span>
                             </div>
-                          </Link>
+                          )}
+
+
+
+                          {/* <Link href={`/dashboard/customers/${item?._id}`}>
+                            <div className="flex justify-start items-center">
+                              <Image
+                                width={28}
+                                height={28}
+                                className="w-7 h-7 rounded-md"
+                                src={item?.profilePicture || noPicture}
+                                alt={item?.userName}
+                              />
+                              <span className="ml-2">
+                                {item?.firstName + " " + item?.lastName}
+                              </span>
+                            </div>
+                          </Link> */}
                         </td>
                         <td className="px-6 md:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                           {item?.email}
