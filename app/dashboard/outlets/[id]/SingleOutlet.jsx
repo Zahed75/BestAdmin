@@ -137,9 +137,8 @@ export default function SingleOutlet({ outlet }) {
                     <div className="flex flex-col justify-between items-start space-y-3">
                       {outletPicture && (
                         <div
-                          className={`flex flex-col w-full ${
-                            isOutletImageDeleted ? "hidden" : "block"
-                          }`}
+                          className={`flex flex-col w-full ${isOutletImageDeleted ? "hidden" : "block"
+                            }`}
                         >
                           <Image
                             width={145}
@@ -290,7 +289,7 @@ export default function SingleOutlet({ outlet }) {
                               {selectedCity?.areas
                                 ?.filter(
                                   (item) => item?.areaName !== outlet?.areaName
-                                ) 
+                                )
                                 ?.map((item) => (
                                   <option
                                     key={item?.areaName}
