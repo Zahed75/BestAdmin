@@ -159,7 +159,7 @@ export default function OutletsTable({ AllOutlets }) {
     <section className="w-full my-5">
       <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
         <div className="flex justify-between md:justify-start items-center w-full">
-          <h5 className="text-lg md:text-2xl font-bold">All Products</h5>
+          <h5 className="text-lg md:text-2xl font-bold">All Outlets</h5>
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
           {/* search bar */}

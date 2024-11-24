@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import logo from "@/public/image/logo.svg";
+import { fetchApi } from "@/utils/FetchApi";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

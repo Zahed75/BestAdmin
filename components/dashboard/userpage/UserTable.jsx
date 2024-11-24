@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
 import { FaCaretDown } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+const noPicture = "https://i.ibb.co/sqPhfrt/notimgpng.png";
 
 export default function UsersTable({ AllUsers }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -421,7 +422,7 @@ export default function UsersTable({ AllUsers }) {
                                 width={30}
                                 height={30}
                                 className="w-7 h-7 rounded-md"
-                                src={item?.profilePicture || ""}
+                                src={item?.profilePicture || noPicture}
                                 alt=""
                               />
                               <span className="ml-2">{item?.firstName + item?.lastName}</span>
