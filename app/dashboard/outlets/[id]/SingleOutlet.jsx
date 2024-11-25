@@ -48,7 +48,8 @@ export default function SingleOutlet({ outlet }) {
     dispatch(fetchCities());
   }, [dispatch]);
 
-  const OutletManager = users?.filter((user) => user?.role === "BA");
+  const OutletManager = users?.filter((user) => user?.role === "BA" || user?.role === "MGR");
+
 
   const handleManagerChange = (event) => {
     const managerId = event.target.value;
@@ -323,15 +324,14 @@ export default function SingleOutlet({ outlet }) {
                               <select
                                 id="outletName"
                                 name="outletName"
+                                value={outlet?.outletManager?._id || ''}
                                 onChange={handleManagerChange}
                                 required
                                 className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                               >
                                 {outlet?.outletManager && (
-                                  <option value={outlet?.outletManager?._id}>
-                                    {outlet?.outletManager?.firstName +
-                                      " " +
-                                      outlet?.outletManager?.lastName}
+                                  <option value={outlet.outletManager._id}>
+                                    {outlet?.outletManager?.firstName + " " + outlet?.outletManager?.lastName}
                                   </option>
                                 )}
                                 {OutletManager?.filter(
