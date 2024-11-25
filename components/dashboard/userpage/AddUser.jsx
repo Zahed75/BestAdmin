@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { removeImage } from "@/redux/slice/imagesSlice";
 import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
+import { fetchOutlets } from "@/redux/slice/outletSlice";
 
 export default function AddUser() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,10 +17,17 @@ export default function AddUser() {
 
   const selectedImages = useSelector((state) => state.images.selectedImages);
   const user = useSelector((state) => state.auth.user);
+  const outlets = useSelector((state) => state?.outlets?.outlets?.outlet);
   const router = useRouter();
 
   const dispatch = useDispatch();
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
+
+  useEffect(() => {
+    dispatch(fetchOutlets());
+  }, [dispatch]);
+
+  const AllOutlets = outlets || [];
 
   const handleUserImgFileChange = async (event) => {
     const file = event.target.files[0];
@@ -52,7 +60,7 @@ export default function AddUser() {
         formData.get("userName") ||
         formData.get("firstName").replace(/\s/g, "").toLowerCase() +
         formData.get("lastName").replace(/\s/g, "").toLowerCase(),
-      outletId: "",
+      outletId: formData.get("outletName"),
       role: formData.get("userRole"),
       firstName: formData.get("firstName"),
       lastName: formData.get("lastName"),
@@ -242,15 +250,25 @@ export default function AddUser() {
                       <select
                         id="outletName"
                         name="outletName"
-                        disabled
                         required
                         className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                       >
-                        <option value={"Banani"}>Banani</option>
+                        {/* <option value={"Banani"}>Banani</option>
                         <option value={"Gulshan"}>Gulshan</option>
                         <option value={"Motizhill"}>Motizhill</option>
                         <option value={"Merul"}>Merul</option>
-                        <option value={"Demra"}>Demra</option>
+                        <option value={"Demra"}>Demra</option> */}
+                        <option value="" disabled selected>
+                          Choose an Outlet
+                        </option>
+                        {AllOutlets.map((outlet) => (
+                          <option
+                            key={outlet?.outletName}
+                            value={outlet?.outletName}
+                          >
+                            {outlet?.outletName}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>

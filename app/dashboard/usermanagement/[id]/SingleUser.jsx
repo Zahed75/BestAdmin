@@ -11,15 +11,18 @@ import { useRouter } from "next/navigation";
 import ImageUploadModal from "@/components/global/modal/ImageUploadModal ";
 import { removeImage } from "@/redux/slice/imagesSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchOutlets } from "@/redux/slice/outletSlice";
 
 export default function SingleUser({ user }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isUserImageDeleted, setIsUserImageDeleted] = useState(false);
   const [userImage, setUserImage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [outlet, setOutlet] = useState([]);
 
   const dispatch = useDispatch();
   const selectedImages = useSelector((state) => state.images.selectedImages);
+  const outlets = useSelector((state) => state?.outlets?.outlets?.outlet);
 
   const { error, handleUpload, imageUrl, uploading } = useImgBBUpload();
 
@@ -28,6 +31,23 @@ export default function SingleUser({ user }) {
   useEffect(() => {
     setUserImage(user?.profilePicture);
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchOutlets());
+  }, [dispatch]);
+
+  const AllOutlets = outlets || [];
+
+  const handleOutletChange = (event) => {
+    const outlet = event.target.value;
+    console.log("Outlet", outlet)
+
+    if (outlet) {
+      setOutlet(outlet);
+    } else {
+      setOutlet("");
+    }
+  };
 
   const handleUserImgFileChange = async (event) => {
     const file = event.target.files[0];
@@ -52,7 +72,8 @@ export default function SingleUser({ user }) {
 
     const data = {
       userName: fromData.get("userName"),
-      outletId: fromData.get("outletName"),
+      // outletId: fromData.get("outletName"),
+      outletId: outlet,
       role: fromData.get("role"),
       firstName: fromData.get("firstName"),
       lastName: fromData.get("lastName"),
@@ -67,7 +88,7 @@ export default function SingleUser({ user }) {
       if (response) {
         setIsLoading(false);
         router.push("/dashboard/usermanagement");
-        dispatch(removeImage());
+        // dispatch(removeImage());
       }
     } catch (error) {
       console.log(error);
@@ -270,15 +291,31 @@ export default function SingleUser({ user }) {
                         <select
                           id="outletName"
                           name="outletName"
-                          disabled
+                          // defaultValue={user?.outlet}
+                          onChange={handleOutletChange}
+                          required
                           className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                         >
-                          <option value={""}>Choose a Outlet</option>
+                          {/* <option value={""}>Choose a Outlet</option>
                           <option>Banani</option>
                           <option>Gulshan</option>
                           <option>Motizhill</option>
                           <option>Merul</option>
-                          <option>Demra</option>
+                          <option>Demra</option> */}
+                          <option value={user?.outlet}>
+                            {user?.outlet}
+                          </option>
+                          {AllOutlets.filter(
+                            (outlet) =>
+                              outlet?.outletName !== user?.outlet
+                          ).map((outlet) => (
+                            <option
+                              key={outlet?.outletName}
+                              value={outlet?.outletName}
+                            >
+                              {outlet?.outletName}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
