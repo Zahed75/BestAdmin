@@ -240,15 +240,17 @@ export default function UsersTable({ AllUsers }) {
                 </ul>
               </div>
             </div>
-            <div className="text-white border border-black bg-black rounded-lg shadow-md">
-              <Link
-                href="/dashboard/usermanagement/adduser"
-                className="flex justify-center items-center px-2 py-1"
-              >
-                <span className="text-xl font-semibold mr-1">+</span>{" "}
-                <span className="text-nowrap">Add Users</span>
-              </Link>
-            </div>
+            {(user?.role === "HQ" || user?.role === "AD") && (
+              <div className="text-white border border-black bg-black rounded-lg shadow-md">
+                <Link
+                  href="/dashboard/usermanagement/adduser"
+                  className="flex justify-center items-center px-2 py-1"
+                >
+                  <span className="text-xl font-semibold mr-1">+</span>{" "}
+                  <span className="text-nowrap">Add Users</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

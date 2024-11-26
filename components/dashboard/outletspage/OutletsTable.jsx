@@ -226,15 +226,17 @@ export default function OutletsTable({ AllOutlets }) {
                 </ul>
               </div>
             </div>
-            <div className="text-white border border-black bg-black rounded-lg shadow-md">
-              <Link
-                href="/dashboard/outlets/addoutlet"
-                className="flex justify-center items-center px-2 py-1"
-              >
-                <span className="text-xl font-semibold mr-1">+</span>{" "}
-                <span className="text-nowrap">Add Outlet</span>
-              </Link>
-            </div>
+            {(user?.role === "HQ" || user?.role === "AD") && (
+              <div className="text-white border border-black bg-black rounded-lg shadow-md">
+                <Link
+                  href="/dashboard/outlets/addoutlet"
+                  className="flex justify-center items-center px-2 py-1"
+                >
+                  <span className="text-xl font-semibold mr-1">+</span>{" "}
+                  <span className="text-nowrap">Add Outlet</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

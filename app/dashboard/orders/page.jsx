@@ -21,7 +21,7 @@ export default function OrdersPage() {
     const fetchOrders = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
 
-      if (user?.role === "BA") {
+      if ((user?.role === "BA" || user?.role === "MGR")) {
         setIsBranchAdmin(true);
         try {
           const response = await fetchApi(

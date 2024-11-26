@@ -16,12 +16,37 @@ export default function CouponTable({ AllCoupons }) {
   const [showAction, setShowAction] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [coupons, setCoupons] = useState(AllCoupons || []);
+  const [user, setUser] = useState([]);
 
   const data = coupons;
 
   useEffect(() => {
     setCoupons(AllCoupons);
   }, [AllCoupons]);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+  }, []);
+
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (!(user?.userId)) return;
+
+      try {
+        const res = await fetchApi(
+          `/auth/users/${user?.userId}`,
+          "GET"
+        );
+        const data = res?.user;
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchSingleUser();
+  }, [user]);
+
 
   const router = useRouter();
 
@@ -214,16 +239,17 @@ export default function CouponTable({ AllCoupons }) {
                 </ul>
               </div>
             </div>
-
-            <div className="text-white border border-black bg-black rounded-lg shadow-md">
-              <Link
-                href="/dashboard/coupon/addcoupon"
-                className="flex justify-center items-center px-2 py-1"
-              >
-                <span className="text-xl font-semibold mr-1">+</span>{" "}
-                <span className="text-nowrap">Add Coupon</span>
-              </Link>
-            </div>
+            {(user?.role === "HQ" || user?.role === "AD") && (
+              <div className="text-white border border-black bg-black rounded-lg shadow-md">
+                <Link
+                  href="/dashboard/coupon/addcoupon"
+                  className="flex justify-center items-center px-2 py-1"
+                >
+                  <span className="text-xl font-semibold mr-1">+</span>{" "}
+                  <span className="text-nowrap">Add Coupon</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
