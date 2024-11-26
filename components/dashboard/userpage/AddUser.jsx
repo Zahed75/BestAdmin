@@ -250,7 +250,7 @@ export default function AddUser() {
                       <select
                         id="outletName"
                         name="outletName"
-                        required
+                        // required
                         className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                       >
                         {/* <option value={"Banani"}>Banani</option>
@@ -263,7 +263,7 @@ export default function AddUser() {
                         </option>
                         {AllOutlets.map((outlet) => (
                           <option
-                            key={outlet?.outletName}
+                            key={outlet?._id}
                             value={outlet?.outletName}
                           >
                             {outlet?.outletName}

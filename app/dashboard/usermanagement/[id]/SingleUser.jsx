@@ -18,7 +18,7 @@ export default function SingleUser({ user }) {
   const [isUserImageDeleted, setIsUserImageDeleted] = useState(false);
   const [userImage, setUserImage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [outlet, setOutlet] = useState([]);
+  const [outlet, setOutlet] = useState("");
 
   const dispatch = useDispatch();
   const selectedImages = useSelector((state) => state.images.selectedImages);
@@ -40,12 +40,15 @@ export default function SingleUser({ user }) {
 
   const handleOutletChange = (event) => {
     const outlet = event.target.value;
+    setIsLoading(true);
     console.log("Outlet", outlet)
 
     if (outlet) {
       setOutlet(outlet);
+      setIsLoading(false);
     } else {
       setOutlet("");
+      setIsLoading(false);
     }
   };
 
@@ -73,7 +76,7 @@ export default function SingleUser({ user }) {
     const data = {
       userName: fromData.get("userName"),
       // outletId: fromData.get("outletName"),
-      outletId: outlet,
+      outlet: outlet,
       role: fromData.get("role"),
       firstName: fromData.get("firstName"),
       lastName: fromData.get("lastName"),
@@ -88,7 +91,7 @@ export default function SingleUser({ user }) {
       if (response) {
         setIsLoading(false);
         router.push("/dashboard/usermanagement");
-        // dispatch(removeImage());
+        dispatch(removeImage());
       }
     } catch (error) {
       console.log(error);
@@ -293,7 +296,7 @@ export default function SingleUser({ user }) {
                           name="outletName"
                           // defaultValue={user?.outlet}
                           onChange={handleOutletChange}
-                          required
+                          // required
                           className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                         >
                           {/* <option value={""}>Choose a Outlet</option>
@@ -310,7 +313,7 @@ export default function SingleUser({ user }) {
                               outlet?.outletName !== user?.outlet
                           ).map((outlet) => (
                             <option
-                              key={outlet?.outletName}
+                              key={outlet?._id}
                               value={outlet?.outletName}
                             >
                               {outlet?.outletName}

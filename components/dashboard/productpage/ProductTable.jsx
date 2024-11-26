@@ -409,15 +409,17 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
               </ul>
             </div>
           </div>
-          <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
-            <Link
-              href="/dashboard/addproduct"
-              className="flex justify-center items-center px-2 py-1"
-            >
-              <span className="text-xl font-semibold mr-1">+</span>{" "}
-              <span className="text-nowrap">Add Product</span>
-            </Link>
-          </div>
+          {(user?.role === "HQ" || user?.role === "AD") && (
+            <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
+              <Link
+                href="/dashboard/addproduct"
+                className="flex justify-center items-center px-2 py-1"
+              >
+                <span className="text-xl font-semibold mr-1">+</span>{" "}
+                <span className="text-nowrap">Add Product</span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
       {/* button component */}
