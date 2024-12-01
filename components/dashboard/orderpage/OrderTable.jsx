@@ -38,6 +38,7 @@ export default function OrderTable({ AllOrders }) {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.users.users);
   const outlets = useSelector((state) => state.outlets);
+  const allOutlets = outlets?.outlets?.outlet || [];
   const data = filterData.length > 0 ? filterData : orders;
 
   useEffect(() => {
@@ -69,7 +70,7 @@ export default function OrderTable({ AllOrders }) {
     fetchData();
   }, [user]);
 
-  console.log("User_Details", user);
+  // console.log("User_Details", user);
 
   const titleDataOptions = [
     { value: "All", label: "All" },
@@ -201,6 +202,7 @@ export default function OrderTable({ AllOrders }) {
     try {
       // Destructure the form elements
       const {
+        filterOutlet,
         filterOrderStatus,
         filterPaymentMethod,
         filterChannel,
@@ -209,6 +211,7 @@ export default function OrderTable({ AllOrders }) {
       } = e.target.elements;
 
       // Retrieve the filter values
+      const outlet = filterOutlet.value;
       const status = filterOrderStatus.value;
       const paymentMethod = filterPaymentMethod.value;
       const channel = filterChannel.value;
@@ -243,6 +246,7 @@ export default function OrderTable({ AllOrders }) {
       const filteredOrders = AllOrders.filter((order) => {
         const orderDate = new Date(order.createdAt);
 
+        const outletMatch = "allOutlets" || order.outlet === outlet;
         const statusMatch = "allStatus" || order.orderStatus === status;
         const paymentMethodMatch =
           "Both Payment Methods" || order.paymentMethod === paymentMethod;
@@ -251,6 +255,7 @@ export default function OrderTable({ AllOrders }) {
         const endDateMatch = !endDate || orderDate <= endDate;
 
         return (
+          outletMatch &&
           statusMatch &&
           paymentMethodMatch &&
           channelMatch &&
@@ -949,10 +954,20 @@ export default function OrderTable({ AllOrders }) {
                 <select
                   name="filterOutlet"
                   id="filterOutlet"
-                  disabled
+                  // disabled
+                  // defaultValue={}
+                  //  onChange={handleFilterOutlet}
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
                   <option value="">Select an Outlet</option>
+                  {allOutlets.map((outlet) => (
+                    <option
+                      key={outlet?._id}
+                      value={outlet?.outletName}
+                    >
+                      {outlet?.outletName}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
