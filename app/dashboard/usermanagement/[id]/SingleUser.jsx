@@ -76,13 +76,17 @@ export default function SingleUser({ user }) {
     const data = {
       userName: fromData.get("userName"),
       // outletId: fromData.get("outletName"),
-      outlet: outlet,
+      // outlet: outlet,
+      outlet: fromData.get("outletName"),
       role: fromData.get("role"),
       firstName: fromData.get("firstName"),
       lastName: fromData.get("lastName"),
       phoneNumber: fromData.get("phoneNumber"),
       email: fromData.get("email"),
-      profilePicture: selectedImages || "http://service.bestelectronics.com.bd/media/images/user.png",
+      // profilePicture: selectedImages || "http://service.bestelectronics.com.bd/media/images/user.png",
+      profilePicture: user?.profilePicture
+        ? user?.profilePicture
+        : (selectedImages || "http://service.bestelectronics.com.bd/media/images/user.png"),
     };
 
     try {
