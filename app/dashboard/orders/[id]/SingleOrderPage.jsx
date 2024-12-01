@@ -62,6 +62,11 @@ export default function SingleOrderPage({ order }) {
     }
   };
 
+  const getOutletName = (outletId) => {
+    const outlet = AllOutlets.find((outlet) => outlet?._id === outletId);
+    return outlet ? outlet.outletName : outletId;
+  };
+
   const handleUpdateOrderNote = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -450,18 +455,25 @@ export default function SingleOrderPage({ order }) {
                   <select
                     name="orderOutlet"
                     id="orderOutlet"
-                    defaultValue={order?.outlet}
+                    // defaultValue={order?.outlet}
                     onChange={handleUpdateOutlet}
                     className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                   >
-                    {!order?.outlet && (
+                    {!order?.outlet ? (
                       <option value="" >
                         Select outlet
                       </option>
+                    ) : (
+                      <option value={order?.outlet} >
+                        {getOutletName(order?.outlet)}
+                      </option>
                     )}
-                    {AllOutlets.map((outlet) => (
+                    {AllOutlets.filter(
+                      (outlet) =>
+                        outlet?.outletName !== order?.outlet
+                    ).map((outlet) => (
                       <option
-                        key={outlet?.outletName}
+                        key={outlet?._id}
                         value={outlet?.outletName}
                       >
                         {outlet?.outletName}
