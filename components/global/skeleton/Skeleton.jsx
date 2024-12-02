@@ -13,7 +13,7 @@ export default function Skeleton() {
               <div className="ml-4 bg-ternary w-12 h-5 animate-pulse"></div>
             </div>
             <div className="bg-gray-200 border border-gray-200 w-36 h-5 animate-pulse"></div>
-            <div className="bg-gray-200 border border-gray-200 w-full h-44 animate-pulse"><p className="text-lg text-center">Data Unavailable</p></div>
+            <div className="bg-gray-200 border border-gray-200 w-full h-44 animate-pulse"></div>
           </div>
         </div>
 

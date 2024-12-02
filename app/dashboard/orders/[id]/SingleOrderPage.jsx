@@ -17,6 +17,7 @@ export default function SingleOrderPage({ order }) {
 
   const dispatch = useDispatch();
   const outlets = useSelector((state) => state?.outlets?.outlets?.outlet);
+  console.log("order_id", order?._id);
 
   useEffect(() => {
     dispatch(fetchOutlets());
@@ -474,7 +475,7 @@ export default function SingleOrderPage({ order }) {
                     ).map((outlet) => (
                       <option
                         key={outlet?._id}
-                        value={outlet?.outletName}
+                        value={outlet?._id}
                       >
                         {outlet?.outletName}
                       </option>
