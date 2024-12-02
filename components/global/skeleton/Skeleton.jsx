@@ -1,6 +1,9 @@
 export default function Skeleton() {
   return (
     <div className="w-full mx-auto my-10">
+      {/* <div className="flex flex-col items-center justify-center h-64 bg-gray-100 rounded-md">
+        <p className="text-gray-500 text-lg">No Data Found</p>
+      </div> */}
       <div className="p-4 bg-white rounded-md">
         <div className="flex">
           <div className="mr-4 bg-gray-200 border border-gray-200 h-16 w-16 rounded animate-pulse"></div>
@@ -10,7 +13,7 @@ export default function Skeleton() {
               <div className="ml-4 bg-ternary w-12 h-5 animate-pulse"></div>
             </div>
             <div className="bg-gray-200 border border-gray-200 w-36 h-5 animate-pulse"></div>
-            <div className="bg-gray-200 border border-gray-200 w-full h-44 animate-pulse"></div>
+            <div className="bg-gray-200 border border-gray-200 w-full h-44 animate-pulse"><p className="text-lg text-center">Data Unavailable</p></div>
           </div>
         </div>
 
