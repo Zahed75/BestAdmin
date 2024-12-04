@@ -17,7 +17,7 @@ export default function SingleOrderPage({ order }) {
 
   const dispatch = useDispatch();
   const outlets = useSelector((state) => state?.outlets?.outlets?.outlet);
-  console.log("order_id", order?._id);
+
 
   useEffect(() => {
     dispatch(fetchOutlets());

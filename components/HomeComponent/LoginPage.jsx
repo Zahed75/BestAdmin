@@ -22,10 +22,14 @@ export default function LoginPage() {
         email,
         password,
       });
-      setShowError(false);
-      localStorage.setItem("user", JSON.stringify(response.user));
-      Cookies.set("token", response.user.accessToken, { expires: 7 });
-      router.push("/dashboard");
+      if (response && response.user && response.user.accessToken) {
+        setShowError(false);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        Cookies.set("token", response.user.accessToken, { expires: 7 });
+        router.push("/dashboard");
+      } else {
+        throw new Error("Invalid response structure");
+      }
     } catch (error) {
       console.error(error);
       setShowError(true);
@@ -63,9 +67,8 @@ export default function LoginPage() {
                 className="border border-gray-300 rounded-md p-2 focus:outline-none "
               />
               <span
-                className={`text-xs text-red-500 ${
-                  showError ? "block" : "hidden"
-                }`}
+                className={`text-xs text-red-500 ${showError ? "block" : "hidden"
+                  }`}
               >
                 Invalid email address
               </span>
@@ -83,9 +86,8 @@ export default function LoginPage() {
                 className="border border-gray-300 rounded-md p-2 focus:outline-none "
               />
               <span
-                className={`text-xs text-red-500 ${
-                  showError ? "block" : "hidden"
-                }`}
+                className={`text-xs text-red-500 ${showError ? "block" : "hidden"
+                  }`}
               >
                 Invalid password
               </span>
