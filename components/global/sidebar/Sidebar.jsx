@@ -36,7 +36,7 @@ export default function Sidebar() {
   }, [user]);
 
 
-  console.log("User", user.role);
+  // console.log("User", user.role);
 
 
   const handleLogout = () => {
