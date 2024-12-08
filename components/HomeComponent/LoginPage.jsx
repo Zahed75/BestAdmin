@@ -22,7 +22,8 @@ export default function LoginPage() {
         email,
         password,
       });
-      if (response && response.user && response.user.accessToken) {
+      if (response && response.user &&
+        response.user.accessToken) {
         setShowError(false);
         localStorage.setItem("user", JSON.stringify(response.user));
         Cookies.set("token", response.user.accessToken, { expires: 7 });
