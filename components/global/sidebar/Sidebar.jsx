@@ -1301,7 +1301,7 @@ export default function Sidebar() {
                   </span>
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/dashboard/customers"
                   className={`flex flex-row items-center duration-700 text-black ${pathname == "/dashboard/customers"
@@ -1362,9 +1362,9 @@ export default function Sidebar() {
                     Customers
                   </span>
                 </Link>
-              </li>
+              </li> */}
 
-              <li>
+              {/* <li>
                 <Link
                   href="/dashboard/coupon"
                   className={`flex flex-row items-center duration-700 text-black ${pathname == "/dashboard/coupon" ? "bg-black text-white" : ""
@@ -1442,7 +1442,7 @@ export default function Sidebar() {
                     Coupon
                   </span>
                 </Link>
-              </li>
+              </li> */}
 
               <li>
                 <div className="w-full border border-[#C3DDFD] my-5"></div>

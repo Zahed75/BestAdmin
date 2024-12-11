@@ -13,6 +13,7 @@ export default function SingleOrderPage({ order }) {
   const [customerHistory, setCustomerHistory] = useState(null);
   const customerId = order?.customer?._id;
   const [outlet, setOutlet] = useState("");
+  const [user, setUser] = useState([]);
   const router = useRouter();
 
   const dispatch = useDispatch();
@@ -28,6 +29,29 @@ export default function SingleOrderPage({ order }) {
       setOutlet(order?.outlet);
     }
   }, [order]);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+  }, []);
+
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (!(user?.userId)) return;
+
+      try {
+        const res = await fetchApi(
+          `/auth/users/${user?.userId}`,
+          "GET"
+        );
+        const data = res?.user;
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchSingleUser();
+  }, [user]);
 
   const AllOutlets = outlets || [];
 
@@ -126,6 +150,7 @@ export default function SingleOrderPage({ order }) {
 
     fetchCustomerHistory();
   }, [customerId]);
+
 
   return (
     <main className="">
@@ -389,8 +414,8 @@ export default function SingleOrderPage({ order }) {
                       Ready for Delivery
                     </option>
                     <option value="Order Dispatched">Order Dispatched</option>
-                    <option value="Cancelled">Cancelled</option>
                     <option value="Order Delivered">Order Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
                   </select>
                 </div>
               </div>
@@ -453,34 +478,39 @@ export default function SingleOrderPage({ order }) {
                 </label>{" "}
                 <br />
                 <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                  <select
-                    name="orderOutlet"
-                    id="orderOutlet"
-                    // defaultValue={order?.outlet}
-                    onChange={handleUpdateOutlet}
-                    className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
-                  >
-                    {!order?.outlet ? (
-                      <option value="" >
-                        Select outlet
-                      </option>
-                    ) : (
-                      <option value={order?.outlet} >
-                        {getOutletName(order?.outlet)}
-                      </option>
-                    )}
-                    {AllOutlets.filter(
-                      (outlet) =>
-                        outlet?.outletName !== order?.outlet
-                    ).map((outlet) => (
-                      <option
-                        key={outlet?._id}
-                        value={outlet?._id}
-                      >
-                        {outlet?.outletName}
-                      </option>
-                    ))}
-                  </select>
+                  {(user?.role === "HQ" || user?.role === "AD") ? (
+                    <select
+                      name="orderOutlet"
+                      id="orderOutlet"
+                      // defaultValue={order?.outlet}
+                      onChange={handleUpdateOutlet}
+                      className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
+                    >
+                      {!order?.outlet ? (
+                        <option value="" >
+                          Select outlet
+                        </option>
+                      ) : (
+                        <option value={order?.outlet} >
+                          {getOutletName(order?.outlet)}
+                        </option>
+                      )}
+                      {AllOutlets.filter(
+                        (outlet) =>
+                          outlet?.outletName !== order?.outlet
+                      ).map((outlet) => (
+                        <option
+                          key={outlet?._id}
+                          value={outlet?._id}
+                        >
+                          {outlet?.outletName}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span className="text-gray-600 h-10 pl-5 pr-10 w-full flex items-center justify-center focus:outline-none appearance-none">{getOutletName(order?.outlet)}</span>
+
+                  )}
                 </div>
               </div>
             </div>

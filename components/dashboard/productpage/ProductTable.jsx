@@ -28,6 +28,9 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
   const [user, setUser] = useState([]);
+  // const [productId, setProductId] = useState();
+  // const [productStock, setProductStock] = useState();
+  // const [selectedOutlet, setSelectedOutlet] = useState();
 
   const router = useRouter();
 
@@ -91,6 +94,33 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
     setFilter(title);
     setSearchQuery("");
   };
+
+  // const handleUpdateProductStock = async (itemId) => {
+  //   try {
+
+
+
+  //     const response = await fetchApi(
+  //       `/inventory/all-products-inventory/${itemId}`,
+  //       "GET"
+  //     );
+  //     console.log(response);
+
+  //     // const selectedOutlet = inventory.outletId === itemId ? inventory : null;
+  //     // setSelectedOutlet(response?.inventory?.outletId);
+  //     const selectedProduct = response?.inventory?.products
+  //       .find(product => product._id === productId);
+  //     console.log(selectedProduct);
+  //     // Display the quantity if the product is found, otherwise show 0
+  //     const quantity = selectedProduct ? selectedProduct.quantity : 0;
+
+  //     setProductStock(quantity);
+
+  //   } catch (err) {
+  //     console.log("An error occurred products quantity.", err);
+  //   }
+  // };
+
   // filter function for outlet
   const filteredData_outlet = outlets?.filter((item) => {
     if (!item?.outletName) return false; // Check if outletName exists
@@ -373,42 +403,44 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
               placeholder="Search something.."
             />
           </div>
-          <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
-            <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
-              <button
-                onClick={() => setShowAction(!showAction)}
-                className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
-              >
-                Action <FaCaretDown className="ml-3" />
-              </button>
-            </div>
-            <div
-              onMouseLeave={() => setShowAction(false)}
-              className={`
+          {(user?.role === "HQ" || user?.role === "AD") && (
+            <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
+              <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
+                <button
+                  onClick={() => setShowAction(!showAction)}
+                  className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
+                >
+                  Action <FaCaretDown className="ml-3" />
+                </button>
+              </div>
+              <div
+                onMouseLeave={() => setShowAction(false)}
+                className={`
               ${showAction ? "block" : "hidden"}
               absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
-              id="dropdown"
-            >
-              <ul className="py-1" aria-labelledby="dropdown">
-                <li>
-                  <button
-                    onClick={handleUpdateProduct}
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                  >
-                    Update
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={handleDeleteProduct}
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                  >
-                    Delete
-                  </button>
-                </li>
-              </ul>
+                id="dropdown"
+              >
+                <ul className="py-1" aria-labelledby="dropdown">
+                  <li>
+                    <button
+                      onClick={handleUpdateProduct}
+                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                    >
+                      Update
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleDeleteProduct}
+                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
           {(user?.role === "HQ" || user?.role === "AD") && (
             <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
               <Link
@@ -544,23 +576,24 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                               />
                               <div className="flex flex-col justify-center items-start ml-2 ">
                                 {user?.role === "HQ" || user?.role === "AD" ? (
-                                  <Link href={`/dashboard/products/${item._id}`}>
+                                  <><Link href={`/dashboard/products/${item._id}`}>
                                     <span className="text-wrap">
                                       {item?.productName}
                                     </span>
                                   </Link>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDuplicateProduct(item)}
+                                      className="text-xs cursor-pointer text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-[#f16521] duration-700"
+                                    >
+                                      Duplicate
+                                    </button>
+                                  </>
                                 ) : (
                                   <span className="text-wrap">
                                     {item?.productName}
                                   </span>
                                 )}
-                                <button
-                                  type="button"
-                                  onClick={() => handleDuplicateProduct(item)}
-                                  className="text-xs cursor-pointer text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-[#f16521] duration-700"
-                                >
-                                  Duplicate
-                                </button>
 
                               </div>
                             </div>
@@ -590,7 +623,9 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                                 <svg
                                   className="cursor-pointer ml-2" onClick={() => {
 
-                                    setShowAddMenu(true)
+                                    // setProductId(item?._id);
+                                    // handleUpdateProductStock(item?._id);
+                                    setShowAddMenu(true);
                                   }}
                                   width="21"
                                   height="22"
@@ -794,6 +829,12 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                           key={outlet._id}
                           className={`${outlet.id % 2 !== 0 ? "" : "bg-gray-100"
                             } hover:bg-gray-100 duration-700 `}
+                        //  onClick={() => {
+
+
+                        //   handleUpdateProductStock(outlet?._id)
+
+                        // }}
                         >
                           <td scope="col" className="px-6 lg:px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap group">
                             <div className="flex justify-start items-center">
@@ -856,7 +897,9 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                             <div className="w-[166px] h-[48px] p-3 border-2 bg-gray-50 border-gray-300 rounded-lg">
                               <input
                                 type="number"
+                                // type="text"
                                 defaultValue="100"
+                                // defaultValue={productStock}
                                 className="font-inter font-normal w-[142px] h-[24px] bg-gray-50 text-[19px] text-center border-none focus:outline-none"
                               />
 
