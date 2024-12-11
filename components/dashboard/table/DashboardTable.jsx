@@ -9,11 +9,35 @@ export default function DashboardTable() {
   const dispatch = useDispatch();
   const orders = useSelector((state) => state?.orders);
   const outlets = useSelector((state) => state.outlets);
+  const [user, setUser] = useState([]);
 
   useEffect(() => {
     dispatch(fetchOrders());
     dispatch(fetchOutlets());
   }, [dispatch]);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+  }, []);
+
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (!(user?.userId)) return;
+
+      try {
+        const res = await fetchApi(
+          `/auth/users/${user?.userId}`,
+          "GET"
+        );
+        const data = res?.user;
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchSingleUser();
+  }, [user]);
 
   const allOrders = orders?.orders?.orders || [];
   const latestOrders = allOrders.slice().reverse().slice(0, 10);
@@ -42,9 +66,11 @@ export default function DashboardTable() {
     <section className="mb-10">
       <div className="flex justify-between items-center">
         <h5 className="text-2xl font-bold">Recent Orders</h5>
-        <Link href="/dashboard/orders" className="text-md font-bold">
-          View All
-        </Link>
+        {(user?.role === "HQ" || user?.role === "AD") && (
+          <Link href="/dashboard/orders" className="text-md font-bold">
+            View All
+          </Link>
+        )}
       </div>
 
       {/* table component*/}
@@ -104,9 +130,13 @@ export default function DashboardTable() {
                           } hover:bg-gray-100 duration-700`}
                       >
                         <td className="py-4 px-3 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                          <Link href={`/dashboard/orders/${item._id}`}>
-                            {item.orderId}
-                          </Link>
+                          {(user?.role === "HQ" || user?.role === "AD") ? (
+                            <Link href={`/dashboard/orders/${item._id}`}>
+                              {item.orderId}
+                            </Link>
+                          ) : (
+                            item.orderId
+                          )}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                           {formatDate(item.createdAt)}

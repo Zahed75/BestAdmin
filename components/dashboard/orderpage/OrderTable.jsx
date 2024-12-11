@@ -70,6 +70,25 @@ export default function OrderTable({ AllOrders }) {
     fetchData();
   }, [user]);
 
+  useEffect(() => {
+    const fetchSingleUser = async () => {
+      if (!(user?.userId)) return;
+
+      try {
+        const res = await fetchApi(
+          `/auth/users/${user?.userId}`,
+          "GET"
+        );
+        const data = res?.user;
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchSingleUser();
+  }, [user]);
+
+
   // console.log("User_Details", user);
 
   const titleDataOptions = [
@@ -334,7 +353,7 @@ export default function OrderTable({ AllOrders }) {
         55
       );
       // doc.text("Account Address: Head Office", 10, 60);
-      doc.text(`Account Address: ${user.role === "HQ" || user.role === "AD" ? "Head Office" : "Branch"}`, 10, 60);
+      doc.text(`Account Address: ${user.role === "HQ" || user.role === "AD" ? "Head Office" : `${user.outlet} Branch`}`, 10, 60);
 
 
 
@@ -601,14 +620,16 @@ export default function OrderTable({ AllOrders }) {
                         Update
                       </button>
                     </li>
-                    <li>
-                      <button
-                        onClick={handleDeleteOrder}
-                        className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                      >
-                        Delete
-                      </button>
-                    </li>
+                    {(user?.role === "HQ" || user?.role === "AD") && (
+                      <li>
+                        <button
+                          onClick={handleDeleteOrder}
+                          className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
+                        >
+                          Delete
+                        </button>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
