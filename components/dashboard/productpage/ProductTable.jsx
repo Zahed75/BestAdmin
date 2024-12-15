@@ -213,9 +213,9 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
 
 
   //Sorted Outlet List
-  const indexOfLastDataOutlet = currentPageOutlet * dataPerPageOutlet;
-  const indexOfFirstDataOutlet = indexOfLastDataOutlet - dataPerPageOutlet;
-  const currentDataOutput = sortedData_outlet.slice(indexOfFirstDataOutlet, indexOfLastDataOutlet);
+  // const indexOfLastDataOutlet = currentPageOutlet * dataPerPageOutlet;
+  // const indexOfFirstDataOutlet = indexOfLastDataOutlet - dataPerPageOutlet;
+  const currentDataOutput = sortedData_outlet.slice();
 
   const firstItemIndex = (currentPage - 1) * dataPerPage + 1;
   const lastItemIndex = Math.min(currentPage * dataPerPage, data.length);
