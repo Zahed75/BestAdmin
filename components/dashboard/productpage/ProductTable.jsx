@@ -28,6 +28,7 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
   const [user, setUser] = useState([]);
+  const [productDetails, setProductDetails] = useState([]);
   // const [productId, setProductId] = useState();
   // const [productStock, setProductStock] = useState();
   // const [selectedOutlet, setSelectedOutlet] = useState();
@@ -83,7 +84,24 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
     fetchSingleUser();
   }, [user]);
 
+  useEffect(() => {
+    const fetchProductOutletDetails = async () => {
+      if (!(productDetails?._id)) return;
 
+      try {
+        const res = await fetchApi(
+          `/product/quantity/${productDetails?._id}`,
+          "GET"
+        );
+        const data = res?.data?.data?.outletQuantities;
+        console.log(data);
+        setProductDetails(data);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchProductOutletDetails();
+  }, [productDetails]);
 
   const selectItem = (item) => {
     setSelectedItem(item);
@@ -347,16 +365,17 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
   };
 
   const handleUpdateStock = async () => {
-    try {
-      for (const itemId of selectedItem) {
-        router.push(`/dashboard/outlets/${itemId}`);
-      }
-    } catch (error) {
-      console.log(
-        "An error occurred while updating Product Stock.",
-        error
-      );
-    }
+    // try {
+    //   for (const itemId of selectedItem) {
+    //     router.push(`/dashboard/outlets/${itemId}`);
+    //   }
+    // } catch (error) {
+    //   console.log(
+    //     "An error occurred while updating Product Stock.",
+    //     error
+    //   );
+    // }
+    setShowAddMenu(false);
   };
 
 
@@ -625,6 +644,7 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
 
                                     // setProductId(item?._id);
                                     // handleUpdateProductStock(item?._id);
+                                    setProductDetails(item);
                                     setShowAddMenu(true);
                                   }}
                                   width="21"
@@ -824,18 +844,22 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {currentDataOutput?.map((outlet) => (
+                      {/* try another Way */}
+                      {/* Remove Comment
+                      {Array.isArray(productDetails) && productDetails.map((outlet) => (
                         <tr
                           key={outlet._id}
                           className={`${outlet.id % 2 !== 0 ? "" : "bg-gray-100"
                             } hover:bg-gray-100 duration-700 `}
-                        //  onClick={() => {
+                        Finish Comment      */}
+                      {/* //  onClick={() => {
 
 
                         //   handleUpdateProductStock(outlet?._id)
 
                         // }}
-                        >
+                        > */}
+                      {/* Remove Comment
                           <td scope="col" className="px-6 lg:px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap group">
                             <div className="flex justify-start items-center">
                               <Image
@@ -846,23 +870,32 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                                 alt={outlet?.outletImage}
                               />
                               <div className="flex flex-col justify-center items-start ml-2 ">
-                                {/* <Link href={`/dashboard/products/${item._id}`}> */}
+                                Finish Comment */}
+                      {/* <Link href={`/dashboard/products/${item._id}`}> */}
+                      {/* Remove Comment
                                 <span className="text-wrap">
                                   {outlet?.outletName}
-                                  {/* BEL Banani */}
+                                  Finish Comment */}
+                      {/* BEL Banani */}
+                      {/* Remove Comment
                                 </span>
-                                {/* </Link> */}
+                                Finish Comment */}
+                      {/* </Link> */}
+                      {/* Remove Comment
                               </div>
                             </div>
                           </td>
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                             {outlet?.outletLocation}
-                            {/* House-01, Road-02 */}
+                            finish Comment */}
+                      {/* House-01, Road-02 */}
+                      {/* Remove Comment
                           </td>
 
                           <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap flex justify-center">
-                            {/* <Link href={`/dashboard/products/${item._id}`}> */}
-                            {/* <div
+finish Comment */}
+                      {/* <Link href={`/dashboard/products/${item._id}`}> */}
+                      {/* <div
                             className={`${item?.inventory?.stockStatus === "In Stock"
                               ? "bg-green-100 text-green-400"
                               : "bg-red-100 text-red-400"
@@ -894,27 +927,138 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
                               </svg>
                             </div>
                           </div> */}
+                      {/* finish Comment
                             <div className="w-[166px] h-[48px] p-3 border-2 bg-gray-50 border-gray-300 rounded-lg">
                               <input
                                 type="number"
                                 // type="text"
-                                defaultValue="100"
+                                defaultValue={outlet?.quantity}
                                 // defaultValue={productStock}
                                 className="font-inter font-normal w-[142px] h-[24px] bg-gray-50 text-[19px] text-center border-none focus:outline-none"
                               />
 
                             </div>
-                            {/* </Link> */}
+                            finish comment */}
+                      {/* </Link> */}
+                      {/* Remove Comment
                           </td>
-                          {/* <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
+                          finish Comment */}
+                      {/* <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <button
                               className={`px-2 py-1 rounded-md border border-black`}
                             >
                               {item?.inventory?.inventoryStatus}
                             </button>
                           </td> */}
+                      {/* Remove Comment
                         </tr>
-                      ))}
+                      ))} */}
+                      {/* finish Point for Try */}
+                      {Array.isArray(productDetails) && productDetails.length > 0 ? (productDetails.map((outlet) => {
+                        // Find the matching outlet in allOutlets by comparing _id
+
+                        // const matchedOutlet = outlets.find((allOutlet) => allOutlet._id === outlet._id);
+                        const matchedOutlet = outlets.find((allOutlet) => allOutlet.outletName === outlet.outletName);
+
+                        return (
+
+                          <tr
+                            key={outlet._id}
+                            className={`
+                               hover:bg-gray-100 duration-700`}
+                          //  onClick={() => {
+
+
+                          //   handleUpdateProductStock(outlet?._id)
+
+                          // }}
+                          >
+                            <td scope="col" className="px-6 lg:px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap group">
+                              <div className="flex justify-start items-center">
+                                <Image
+                                  className="w-9 h-9 rounded-md"
+                                  width={30}
+                                  height={30}
+                                  src={matchedOutlet?.outletImage || noPicture}
+                                  alt={outlet?.outletImage}
+                                />
+                                <div className="flex flex-col justify-center items-start ml-2 ">
+                                  {/* <Link href={/dashboard/products/${item._id}}> */}
+                                  <span className="text-wrap">
+                                    {outlet?.outletName}
+                                    {/* BEL Banani */}
+                                  </span>
+                                  {/* </Link> */}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 lg:px-0 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                              {outlet?.outletLocation}
+                              {/* House-01, Road-02 */}
+                            </td>
+
+                            <td className="px-6 lg:px-0 py-4 text-sm font-medium text-center whitespace-nowrap flex justify-center">
+                              {/* <Link href={/dashboard/products/${item._id}}> */}
+                              {/* <div
+                            className={${item?.inventory?.stockStatus === "In Stock"
+                              ? "bg-green-100 text-green-400"
+                              : "bg-red-100 text-red-400"
+                              } inline-block px-1 py-1 rounded-md mr-2 }
+                          >
+                            <div className="flex justify-center px-1" onClick={() => setShowAddMenu(true)}>
+                              {item?.inventory?.stockStatus}
+                              <svg
+                                className="cursor-pointer ml-2"
+                                width="21"
+                                height="22"
+                                viewBox="0 0 21 22"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M11.4863 4.02943L12.4792 3.03652C13.0276 2.48815 13.9167 2.48815 14.465 3.03652C15.0134 3.58489 15.0134 4.47398 14.465 5.02235L13.4721 6.01526M11.4863 4.02943L7.77894 7.73679C7.03854 8.47721 6.66832 8.84738 6.41623 9.29852C6.16413 9.74966 5.9105 10.8149 5.66797 11.8336C6.68662 11.591 7.75189 11.3374 8.20302 11.0853C8.65416 10.8332 9.02434 10.463 9.76476 9.7226L13.4721 6.01526M11.4863 4.02943L13.4721 6.01526"
+                                  stroke="#3E445A"
+                                  strokeWidth="1.0625"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M14.875 9.00024C14.875 12.0054 14.875 13.5081 13.9414 14.4417C13.0078 15.3752 11.5052 15.3752 8.5 15.3752C5.4948 15.3752 3.99219 15.3752 3.0586 14.4417C2.125 13.5081 2.125 12.0054 2.125 9.00024C2.125 5.99504 2.125 4.49244 3.0586 3.55884C3.99219 2.62524 5.4948 2.62524 8.5 2.62524"
+                                  stroke="#3E445A"
+                                  strokeWidth="1.0625"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            </div>
+                          </div> */}
+                              <div className="w-[166px] h-[48px] p-3 border-2 bg-gray-50 border-gray-300 rounded-lg">
+                                <input
+                                  type="number"
+                                  // type="text"
+                                  defaultValue={outlet?.quantity}
+                                  // defaultValue={productStock}
+                                  className="font-inter font-normal w-[142px] h-[24px] bg-gray-50 text-[19px] text-center border-none focus:outline-none"
+                                />
+
+                              </div>
+                              {/* </Link> */}
+                            </td>
+                            {/* <td className="px-6 lg:px-0 py-4 text-[12px] font-medium  whitespace-nowrap ">
+                            <button
+                              className={px-2 py-1 rounded-md border border-black}
+                            >
+                              {item?.inventory?.inventoryStatus}
+                            </button>
+                          </td> */}
+                          </tr>
+                        );
+                      })
+                      ) : (
+                        <tr>
+                          <td colSpan={3} className="text-center py-4">No product details available.</td>
+                        </tr>
+                      )}
+
                     </tbody>
                   </table>
                 </div>
