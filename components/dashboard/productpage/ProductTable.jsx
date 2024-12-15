@@ -140,13 +140,23 @@ export default function ProductTable({ AllProducts, AllOutlets }) {
   // };
 
   // filter function for outlet
-  const filteredData_outlet = outlets?.filter((item) => {
-    if (!item?.outletName) return false; // Check if outletName exists
+  // const filteredData_outlet = productDetails?.filter((item) => {
+  //   if (!item?.outletName) return false; // Check if outletName exists
 
-    const searchWords = searchQueryOutlet.toLowerCase().split(' ');
-    return searchWords.every(word => item.outletName.toLowerCase().includes(word));
-  }
-  );
+  //   const searchWords = searchQueryOutlet.toLowerCase().split(' ');
+  //   return searchWords.every(word => item.outletName.toLowerCase().includes(word));
+  // }
+  // );
+
+  const filteredData_outlet = Array.isArray(productDetails)
+    ? productDetails.filter((item) => {
+      if (!item?.outletName) return false; // Check if outletName exists
+
+      const searchWords = searchQueryOutlet.toLowerCase().split(' ');
+      return searchWords.every(word => item.outletName.toLowerCase().includes(word));
+    })
+    : [];
+
 
   // Sorting function for outlet
   const sortedData_outlet = filteredData_outlet.sort((a, b) => {
@@ -954,7 +964,7 @@ finish Comment */}
                         </tr>
                       ))} */}
                       {/* finish Point for Try */}
-                      {Array.isArray(productDetails) && productDetails.length > 0 ? (productDetails.map((outlet) => {
+                      {Array.isArray(productDetails) && productDetails.length > 0 ? (currentDataOutput.map((outlet) => {
                         // Find the matching outlet in allOutlets by comparing _id
 
                         // const matchedOutlet = outlets.find((allOutlet) => allOutlet._id === outlet._id);
