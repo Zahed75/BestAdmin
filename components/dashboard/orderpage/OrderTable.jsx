@@ -347,13 +347,19 @@ export default function OrderTable({ AllOrders }) {
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
+      doc.text(`Outlet Name: ${user.role === "HQ" || user.role === "AD" ? "Head Office" : `${user.outlet}`}`, 10, 60);
+      // doc.text(
+      //   `Account Name: ${user.firstName}  ${user.lastName}`,
+      //   10,
+      //   55
+      // );
       doc.text(
-        `Account Name: ${user.firstName}  ${user.lastName}`,
+        `Outlet ${user.role === "MGR" ? "Manager" : "Authorized Person"}: ${user.firstName}  ${user.lastName}`,
         10,
         55
       );
       // doc.text("Account Address: Head Office", 10, 60);
-      doc.text(`Account Address: ${user.role === "HQ" || user.role === "AD" ? "Head Office" : `${user.outlet} Branch`}`, 10, 60);
+      // doc.text(`Account Address: ${user.role === "HQ" || user.role === "AD" ? "Head Office" : `${user.outlet} Branch`}`, 10, 60);
 
 
 
