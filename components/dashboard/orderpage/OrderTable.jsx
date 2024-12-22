@@ -129,6 +129,17 @@ export default function OrderTable({ AllOrders }) {
   const currentData = sortedData?.slice(indexOfFirstData, indexOfLastData);
   const pdfData = sortedData;
 
+  const sortedData_filter = filterData?.sort((a, b) => {
+    if (!sortBy) return 0;
+    const aValue = a[sortBy]?.toString().toLowerCase();
+    const bValue = b[sortBy]?.toString().toLowerCase();
+    return sortDirection === "asc"
+      ? aValue.localeCompare(bValue)
+      : bValue.localeCompare(aValue);
+  });
+
+  const currentData_filter = sortedData_filter?.slice(indexOfFirstData, indexOfLastData);
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const firstItemIndex = (currentPage - 1) * dataPerPage + 1;
@@ -265,21 +276,31 @@ export default function OrderTable({ AllOrders }) {
       const filteredOrders = AllOrders.filter((order) => {
         const orderDate = new Date(order.createdAt);
 
-        const outletMatch = "allOutlets" || order.outlet === outlet;
-        const statusMatch = "allStatus" || order.orderStatus === status;
-        const paymentMethodMatch =
-          "Both Payment Methods" || order.paymentMethod === paymentMethod;
-        const channelMatch = "allChannel" || order.channel === channel;
+        // const outletMatch = outlet === "allOutlets" || order.outlet === outlet;
+        // const statusMatch = status === "allStatus" || order.orderStatus === status;
+        // const paymentMethodMatch = paymentMethod ===
+        //   "Both Payment Methods" || order.paymentMethod === paymentMethod;
+        // const channelMatch = channel === "allChannel" || order.channel === channel;
+        // const startDateMatch = !startDate || orderDate >= startDate;
+        // const endDateMatch = !endDate || orderDate <= endDate;
         const startDateMatch = !startDate || orderDate >= startDate;
         const endDateMatch = !endDate || orderDate <= endDate;
+        const outletMatch = order.outlet === outlet;
+        const paymentMethodMatch = order.paymentMethod === paymentMethod;
+        const channelMatch = order.channel === channel;
+        const statusMatch = order.orderStatus === status;
 
         return (
+          // outletMatch &&
+          // statusMatch &&
+          // paymentMethodMatch &&
+          // channelMatch &&
+          startDateMatch &&
+          endDateMatch &&
           outletMatch &&
-          statusMatch &&
           paymentMethodMatch &&
           channelMatch &&
-          startDateMatch &&
-          endDateMatch
+          statusMatch
         );
       });
 
@@ -750,7 +771,8 @@ export default function OrderTable({ AllOrders }) {
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {currentData?.map((item) => (
+                      {/* {currentData?.map((item) => ( */}
+                      {(currentData_filter && currentData_filter.length > 0 ? currentData_filter : currentData)?.map((item) => (
                         <tr
                           key={item._id}
                           className={`${item._id % 2 !== 0 ? "" : "bg-gray-100"
@@ -981,12 +1003,13 @@ export default function OrderTable({ AllOrders }) {
                 <select
                   name="filterOutlet"
                   id="filterOutlet"
+                  required
                   // disabled
                   // defaultValue={}
                   //  onChange={handleFilterOutlet}
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
-                  <option value="">Select an Outlet</option>
+                  <option value="allOutlets">Select an Outlet</option>
                   {allOutlets.map((outlet) => (
                     <option
                       key={outlet?._id}
@@ -1010,6 +1033,7 @@ export default function OrderTable({ AllOrders }) {
                 <select
                   name="filterOrderStatus"
                   id="filterOrderStatus"
+                  required
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
                   <option value="allStatus">Select a Status</option>

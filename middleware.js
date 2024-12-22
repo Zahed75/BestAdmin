@@ -6,9 +6,14 @@ export function middleware(req) {
 
   // Protect specific routes
   if (pathname.startsWith('/dashboard')) {
+    // if (!token) {
+    //   return NextResponse.redirect(new URL('/', req.url));
+    // }
     if (!token) {
-      return NextResponse.redirect(new URL('/', req.url));
+        console.error('Token missing in middleware');
+        return NextResponse.redirect(new URL('/', req.url));
     }
+
   }
 
   // Proceed as normal if token is present or route doesn't need protection
