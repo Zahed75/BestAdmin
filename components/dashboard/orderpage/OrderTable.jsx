@@ -285,10 +285,10 @@ export default function OrderTable({ AllOrders }) {
         // const endDateMatch = !endDate || orderDate <= endDate;
         const startDateMatch = !startDate || orderDate >= startDate;
         const endDateMatch = !endDate || orderDate <= endDate;
-        const outletMatch = order.outlet === outlet;
-        const paymentMethodMatch = order.paymentMethod === paymentMethod;
         const channelMatch = order.channel === channel;
-        const statusMatch = order.orderStatus === status;
+        const paymentMethodMatch = order.paymentMethod === paymentMethod;
+        const statusMatch = "allStatus" === status || order.orderStatus === status;
+        const outletMatch = "allOutlets" === outlet || order.outlet === outlet;
 
         return (
           // outletMatch &&
@@ -1003,7 +1003,6 @@ export default function OrderTable({ AllOrders }) {
                 <select
                   name="filterOutlet"
                   id="filterOutlet"
-                  required
                   // disabled
                   // defaultValue={}
                   //  onChange={handleFilterOutlet}
@@ -1033,7 +1032,6 @@ export default function OrderTable({ AllOrders }) {
                 <select
                   name="filterOrderStatus"
                   id="filterOrderStatus"
-                  required
                   className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                 >
                   <option value="allStatus">Select a Status</option>
